@@ -55,16 +55,11 @@ const Sidebar = () => {
             label: "Settings",
             path: "/setting",
           },
-          {
-            icon: <FaProjectDiagram className="text-lg" />,
-            label: "Projects",
-            path: "/projects",
-          },
+
         ]
       : []),
 
     ...(user?.role === "customer" ? [] : []),
-    ...(user?.role === "vendor" ? [] : []),
     {
       icon: <FiExternalLink className="text-lg" />,
       label: "Log Out",
