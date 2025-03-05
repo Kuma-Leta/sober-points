@@ -53,12 +53,12 @@ const Login = () => {
             Login
           </button>
           {error && <p className="text-red-500 text-center">{error}</p>}
-          {/* <div className="m-auto text-center flex text-lg">
+          <div className="m-auto text-center flex text-lg">
             <p>Have account already?</p>{" "}
             <Link className=" text-primary" to={"/auth/register"}>
               Register now
             </Link>
-          </div> */}
+          </div>
         </form>
       </div>
     </div>
