@@ -1,0 +1,152 @@
+import React, { useEffect, useState } from "react";
+import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from "react-toastify";
+import Login from "./auth/login";
+import ProtectedRoute from "./auth/ProtectedRoute";
+import Header from "./components/common/header";
+import Footer from "./components/common/footer";
+import Sidebar from "./components/sidebar";
+import Register from "./auth/register";
+import Logout from "./auth/Logout";
+import { useSelector } from "react-redux";
+import Users from "./pages/users/users";
+import ForgotPassword from "./auth/password/forgotPassword";
+import ResetPassword from "./auth/password/resetPassword";
+import LandingPage from "./pages/landing";
+import Setting from "./pages/company/setting";
+import { API_URL } from "./constants/url";
+import Overview from "./pages/overview";
+
+function Pages() {
+  const user = useSelector((state) => state.auth.user);
+  useEffect(() => {
+    const updateFavicon = (url) => {
+      const link =
+        document.querySelector("link[rel='icon']") ||
+        document.createElement("link");
+      link.rel = "icon";
+      link.type = "image/svg+xml";
+      link.href = url;
+      document.head.appendChild(link);
+    };
+
+    // Example usage
+    if (user?.company?.logo) {
+      updateFavicon(`${API_URL}/${user?.company?.logo}`);
+    }
+  }, [user]);
+  return (
+    <Routes>
+      <>
+        <Route
+          path="/users"
+          element={
+            <ProtectedRoute>
+              <Users /> 
+            </ProtectedRoute>
+          }
+        />
+        <Route path="/admins/:username" element={<Overview />} />
+        <Route path="/ld" element={<LandingPage />} />
+        <Route path="/users" element={<Users />} />
+        <Route
+          path="/setting"
+          element={
+            <ProtectedRoute>
+              <Setting />
+            </ProtectedRoute>
+          }
+        />
+      </>
+
+      <Route path="/check-in" element={<ProtectedRoute></ProtectedRoute>} />
+      <Route path="/*" element={<>Not found</>} />
+      <Route path="/auth/login" element={<Login />} />
+      <Route path="/auth/forgot-password" element={<ForgotPassword />} />
+      <Route path="/auth/reset-password" element={<ResetPassword />} />
+      <Route path="/auth/logout" element={<Logout />} />
+    </Routes>
+  );
+}
+
+
+const Routing = () => {
+  const location = useLocation();
+  const noSidebarRoutes = [
+    "/auth/login",
+    "/ld",
+    "/auth/register",
+    "/auth/forgot-password",
+    "/auth/reset-password",
+  ];
+  
+  const hideSideBar = !noSidebarRoutes.some((path) =>
+    location.pathname.startsWith(path)
+  );
+  const user = useSelector((state) => state.auth.user);
+  const shouldShowSidebar = !noSidebarRoutes.includes(location.pathname);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  if (location.pathname === "/auth/login") {
+    return (
+      <div className=" bg-whiteBlue max-w-[120rem] dark:bg-darkBg ">
+        <Login />
+           <Footer />
+      </div>
+    );
+  }
+
+  return (
+    <div className="max-w-[120rem] bg-whiteBlue dark:text-darkText dark:bg-darkBg mx-auto min-h-screen">
+      <ToastContainer />
+      <div className="flex min-h-screen flex-col">
+        <div className="flex flex-1">
+          {/* Sidebar */}
+          {shouldShowSidebar && user && hideSideBar && (
+            <div className="sticky top-0 h-screen">
+              <Sidebar />
+            </div>
+          )}
+  
+          {/* Main Content Container */}
+          <div className={`flex-1 flex flex-col ${isMobile ? 'z-50' : ''}`}>
+            {/* Header */}
+            <div className={`sticky top-0 z-[15] bg-white dark:bg-darkCard w-full`}>
+              <div className={`${shouldShowSidebar && user && hideSideBar && isMobile ? 'pl-[2.5rem]' : ''}`}>
+                <Header />
+              </div>
+            </div>
+  
+            {/* Main Content */}
+            <main className={`flex-1 p-4 dark:bg-darkBg ${isMobile ? 'relative' : ''}`}>
+              <Pages />
+            </main>
+          </div>
+        </div>
+  
+        {/* Footer */}
+        <Footer />
+      </div>
+    </div>
+  );
+  
+};
+
+
+const App = () => (
+  <BrowserRouter>
+    <Routing />
+  </BrowserRouter>
+);
+
+export default App;
