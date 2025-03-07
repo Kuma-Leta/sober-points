@@ -25,7 +25,9 @@ const useAuth = () => {
       try {
         const res = await axiosInstance.get("/me");
         dispatch(loginSuccess(token, res.data));
-      } catch (err) {}
+      } catch (err) {
+        dispatch(loginFailure("an authorized"));
+      }
     }
 
     fetchUser();
@@ -164,7 +166,7 @@ const useAuth = () => {
   };
   const logoutUser = async () => {
     dispatch(logout());
-    dispatch(loginSuccess('', {}));
+    dispatch(loginSuccess("", {}));
     await axiosInstance.get("/logout");
   };
 
