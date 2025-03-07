@@ -6,7 +6,7 @@ import Login from "./auth/login";
 import ProtectedRoute from "./auth/ProtectedRoute";
 import Header from "./components/common/header";
 import Footer from "./components/common/footer";
-import Sidebar from "./components/sidebar";
+import Sidebar from "./components/sidebar/index";
 import Register from "./auth/register";
 import Logout from "./auth/Logout";
 import { useSelector } from "react-redux";
@@ -16,7 +16,7 @@ import ResetPassword from "./auth/password/resetPassword";
 import LandingPage from "./pages/landing";
 import Setting from "./pages/company/setting";
 import { API_URL } from "./constants/url";
-import Overview from "./pages/overview";
+import Features from "./pages/company/Services";
 import VenueForm from "./pages/venues/VenueForm";
 import MapComponent from "./pages/venues/MapComponent";
 
@@ -43,6 +43,7 @@ function Pages() {
   return (
     <Routes>
       <>
+        <Route path="/" element={<LandingPage />} />
         <Route
           path="/users"
           element={
@@ -51,7 +52,6 @@ function Pages() {
             </ProtectedRoute>
           }
         />
-        <Route path="/admins/:username" element={<Overview />} />
         <Route path="/ld" element={<LandingPage />} />
         {/* <Route path="/users" element={<Users />} /> */}
         <Route path="/venue/form" element={<VenueForm />} />
@@ -65,15 +65,15 @@ function Pages() {
           }
         />
       </>
-
+      <Route path="/auth/register" element={<Register />} />
       <Route path="/check-in" element={<ProtectedRoute></ProtectedRoute>} />
-      <Route path="/*" element={<>Not found</>} />
       <Route path="/auth/login" element={<Login />} />
       <Route path="/auth/register" element={<Register />} />
       <Route path="/map" element={<MapComponent />} />
       <Route path="/auth/forgot-password" element={<ForgotPassword />} />
       <Route path="/auth/reset-password" element={<ResetPassword />} />
       <Route path="/auth/logout" element={<Logout />} />
+      <Route path="/*" element={<>Not found</>} />
     </Routes>
   );
 }

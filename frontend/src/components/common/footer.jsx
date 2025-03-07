@@ -1,107 +1,115 @@
 import React, { useEffect, useState } from "react";
 import { FiMoon, FiSun } from "react-icons/fi";
+import { motion } from "framer-motion";
+import { FaFacebookF, FaTwitter, FaInstagram } from "react-icons/fa";
 
 export default function Footer() {
   return (
-    <footer className="bg-gray-100 dark:bg-darkCard py-10">
-      <div className="container mx-auto px-4">
-        <DarkModeToggle />
+    <footer className="bg-gray-100 dark:bg-darkCard py-12 px-6">
+      <div className="max-w-6xl mx-auto">
         <div className="flex flex-col md:flex-row md:justify-between">
-          <div className="flex flex-col md:flex-row md:space-x-4">
-            <div className="mb-4">
-              <h3 className="text-xl font-bold">Company</h3>
-              <ul className="mt-2">
-                <li className="mt-2">
+          {/* Company & Support */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="flex flex-col md:flex-row md:space-x-12"
+          >
+            <div className="mb-6 md:mb-0">
+              <h3 className="text-xl font-bold text-gray-800 dark:text-white">
+                Company
+              </h3>
+              <ul className="mt-3 space-y-2 text-gray-600 dark:text-gray-300">
+                <li className="hover:text-red-600 transition">
                   <a href="#">About Us</a>
                 </li>
-                <li className="mt-2">
+                <li className="hover:text-red-600 transition">
                   <a href="#">Contact Us</a>
                 </li>
-                <li className="mt-2">
+                <li className="hover:text-red-600 transition">
                   <a href="#">Careers</a>
                 </li>
               </ul>
             </div>
-            <div className="mb-4">
-              <h3 className="text-xl font-bold">Support</h3>
-              <ul className="mt-2">
-                <li className="mt-2">
+
+            <div>
+              <h3 className="text-xl font-bold text-gray-800 dark:text-white">
+                Support
+              </h3>
+              <ul className="mt-3 space-y-2 text-gray-600 dark:text-gray-300">
+                <li className="hover:text-red-600 transition">
                   <a href="#">Help & Support</a>
                 </li>
-                <li className="mt-2">
+                <li className="hover:text-red-600 transition">
                   <a href="#">Privacy Policy</a>
                 </li>
-                <li className="mt-2">
+                <li className="hover:text-red-600 transition">
                   <a href="#">Terms & Conditions</a>
                 </li>
               </ul>
             </div>
-          </div>
-          <div className="mt-4 md:mt-0">
-            <h3 className="text-xl font-bold">Subscribe to our newsletter</h3>
-            <form className="mt-2">
+          </motion.div>
+
+          {/* Newsletter Subscription */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3, duration: 0.6 }}
+            className="mt-8 md:mt-0"
+          >
+            <h3 className="text-xl font-bold text-gray-800 dark:text-white">
+              Subscribe to Our Newsletter
+            </h3>
+            <form className="mt-3 flex">
               <input
                 type="email"
                 placeholder="Enter your email"
-                className="w-full p-2 dark:bg-darkBg dark:border-gray-500 rounded-md"
+                className="w-full p-3 rounded-l-md dark:bg-darkBg dark:text-gray-300 border border-gray-300 dark:border-gray-600 focus:border-red-500 outline-none"
               />
-              <button className="w-full mt-2 bg-blue-500 text-white p-2 rounded-md">
+              <button className="bg-red-600 hover:bg-red-500 text-white px-5 py-3 rounded-r-md transition">
                 Subscribe
               </button>
             </form>
-          </div>
+          </motion.div>
         </div>
-        <hr className="my-8 border-gray-300" />
-        <div className="flex flex-col md:flex-row md:justify-between">
-          <div className="text-center md:text-left">
-            <p>&copy; 2021 All rights reserved.</p>
-          </div>
-          <div className="text-center md:text-right">
-            <ul className="flex justify-center md:justify-end space-x-4">
-              <li>
-                <a href="#">
-                  <i className="fab fa-facebook-f"></i>
-                </a>
-              </li>
-              <li>
-                <a href="#">
-                  <i className="fab fa-twitter"></i>
-                </a>
-              </li>
-              <li>
-                <a href="#">
-                  <i className="fab fa-instagram"></i>
-                </a>
-              </li>
-            </ul>
-          </div>
+
+        {/* Divider */}
+        <hr className="my-8 border-gray-300 dark:border-gray-700" />
+
+        {/* Bottom Section */}
+        <div className="flex flex-col md:flex-row md:justify-between items-center">
+          <p className="text-gray-600 dark:text-gray-300 text-center md:text-left">
+            &copy; {new Date().getFullYear()} Sober Points. All rights reserved.
+          </p>
+
+          {/* Social Media Links */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5, duration: 0.6 }}
+            className="flex space-x-4 mt-4 md:mt-0"
+          >
+            <a
+              href="#"
+              className="text-gray-600 dark:text-gray-300 hover:text-red-600 transition text-xl"
+            >
+              <FaFacebookF />
+            </a>
+            <a
+              href="#"
+              className="text-gray-600 dark:text-gray-300 hover:text-red-600 transition text-xl"
+            >
+              <FaTwitter />
+            </a>
+            <a
+              href="#"
+              className="text-gray-600 dark:text-gray-300 hover:text-red-600 transition text-xl"
+            >
+              <FaInstagram />
+            </a>
+          </motion.div>
         </div>
       </div>
     </footer>
   );
 }
-
-const DarkModeToggle = () => {
-  const [darkMode, setDarkMode] = useState(
-    localStorage.getItem("theme") === "dark"
-  );
-
-  useEffect(() => {
-    if (darkMode) {
-      document.documentElement.classList.add("dark");
-      localStorage.setItem("theme", "dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-      localStorage.setItem("theme", "dark");
-    }
-  }, [darkMode]);
-
-  return (
-    <button
-      onClick={() => setDarkMode(!darkMode)}
-      className="p-2 rounded-full transition-all bg-gray-200 dark:bg-gray-700"
-    >
-      {darkMode ? <FiSun size={20} /> : <FiMoon size={20} />}
-    </button>
-  );
-};
