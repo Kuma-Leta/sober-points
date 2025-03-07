@@ -19,12 +19,12 @@ export default {
         darkText: "#E5E7EB", // Light gray text
       },
 
-      height: {
-        "leaflet-container": "100%",
-      },
-      width: {
-        "leaflet-container": "100%",
-      },
+      // height: {
+      //   "leaflet-container": "100%",
+      // },
+      // width: {
+      //   "leaflet-container": "100%",
+      // },
     },
   },
 

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../api/api";
+import MapComponent from "./MapComponent";
 
 export default function VenueForm({
   mode = "create",
@@ -13,9 +14,11 @@ export default function VenueForm({
     address: "",
     latitude: null,
     longitude: null,
+    description: "",
     menu: "",
     images: [],
   });
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
@@ -26,9 +29,9 @@ export default function VenueForm({
 
   const handleFileChange = (e) => {
     const files = e.target.files;
-    const validFiles = Array.from(files).filter((file) => {
-      return file.type.startsWith("image/") && file.size <= 5 * 1024 * 1024; // 5MB limit
-    });
+    const validFiles = Array.from(files).filter(
+      (file) => file.type.startsWith("image/") && file.size <= 5 * 1024 * 1024
+    );
     setFormData({ ...formData, images: validFiles });
   };
 
@@ -36,14 +39,13 @@ export default function VenueForm({
     e.preventDefault();
     setError(null);
     setLoading(true);
+
     const formDataToSend = new FormData();
     Object.keys(formData).forEach((key) => {
-      if (key === "images") {
-        if (formData.images.length > 0) {
-          Array.from(formData.images).forEach((file) =>
-            formDataToSend.append("images", file)
-          );
-        }
+      if (key === "images" && formData.images.length > 0) {
+        formData.images.forEach((file) =>
+          formDataToSend.append("images", file)
+        );
       } else {
         formDataToSend.append(key, formData[key]);
       }
@@ -66,86 +68,80 @@ export default function VenueForm({
     }
   };
 
-  const handleFormReset = () => {
-    setFormData({
-      name: "",
-      address: "",
-      latitude: null,
-      longitude: null,
-      menu: "",
-      images: [],
-    });
-    setError(null);
-    onClose();
-  };
-
-  const handleRegisterLocation = () => {
-    navigate("/map", { state: { formData } }); // Navigate to the map page
-  };
-
   return (
-    <div className="p-4 w-full max-w-lg bg-white dark:bg-darkCard rounded-md">
-      <h2 className="text-xl mb-4">
-        {mode === "create" ? "Add New Venue" : "Edit Venue"}
-      </h2>
-      {error && <div className="text-red-500 mb-4">{error}</div>}
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <input
-          type="text"
-          name="name"
-          placeholder="Venue Name"
-          onChange={handleChange}
-          required
-          className="w-full px-3 py-2 border rounded-lg"
-        />
-        <input
-          type="text"
-          name="address"
-          placeholder="Address"
-          onChange={handleChange}
-          required
-          className="w-full px-3 py-2 border rounded-lg"
-        />
-        <textarea
-          name="menu"
-          placeholder="Menu Details"
-          onChange={handleChange}
-          className="w-full px-3 py-2 border rounded-lg"
-        ></textarea>
-        <input
-          type="file"
-          name="images"
-          multiple
-          onChange={handleFileChange}
-          className="w-full px-3 py-2 border rounded-lg"
-        />
+    <div className="p-4 w-full max-w-6xl mx-auto bg-white dark:bg-darkCard rounded-md">
+      <div className="flex flex-col md:flex-row gap-4">
+        {/* Left: Form Section */}
+        <div className="w-full md:w-1/2">
+          <h2 className="text-xl mb-4">
+            {mode === "create" ? "Add New Venue" : "Edit Venue"}
+          </h2>
+          {error && <div className="text-red-500 mb-4">{error}</div>}
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <input
+              type="text"
+              name="name"
+              placeholder="Venue Name"
+              onChange={handleChange}
+              required
+              className="w-full px-3 py-2 border rounded-lg"
+            />
+            <input
+              type="text"
+              name="address"
+              placeholder="Address"
+              onChange={handleChange}
+              required
+              className="w-full px-3 py-2 border rounded-lg"
+            />
+            <textarea
+              name="description"
+              placeholder="Description"
+              onChange={handleChange}
+              className="w-full px-3 py-2 border rounded-lg"
+            ></textarea>
+            <textarea
+              name="menu"
+              placeholder="Menu Details"
+              onChange={handleChange}
+              className="w-full px-3 py-2 border rounded-lg"
+            ></textarea>
+            <input
+              type="file"
+              name="images"
+              multiple
+              onChange={handleFileChange}
+              className="w-full px-3 py-2 border rounded-lg"
+            />
+          </form>
+        </div>
+
+        {/* Right: Map Section */}
+        <div className="w-full md:w-1/2">
+          <MapComponent setFormData={setFormData} />
+        </div>
+      </div>
+
+      {/* Bottom: Action Buttons */}
+      <div className="w-full flex justify-end mt-4">
         <button
           type="button"
-          onClick={handleRegisterLocation}
-          className="w-full bg-green-500 px-4 py-2 rounded text-white"
+          className="bg-gray-400 px-4 py-2 mr-2 rounded text-white"
+          onClick={onClose}
         >
-          Register Location
+          Cancel
         </button>
-        <div className="flex justify-end">
-          <button
-            type="button"
-            className="bg-gray-400 px-4 py-2 mr-2 rounded text-white"
-            onClick={handleFormReset}
-          >
-            Cancel
-          </button>
-          <button
-            type="submit"
-            aria-label={mode === "create" ? "Create Venue" : "Update Venue"}
-            className={`bg-blue-500 px-4 py-2 rounded text-white ${
-              loading ? "opacity-50" : ""
-            }`}
-            disabled={loading}
-          >
-            {loading ? "Saving..." : mode === "create" ? "Create" : "Update"}
-          </button>
-        </div>
-      </form>
+        <button
+          type="submit"
+          onClick={handleSubmit}
+          className={`bg-blue-500 px-4 py-2 rounded text-white ${
+            loading ? "opacity-50" : ""
+          }`}
+          disabled={loading}
+        >
+          {loading ? "Saving..." : mode === "create" ? "Create" : "Update"}
+        </button>
+      </div>
     </div>
   );
 }

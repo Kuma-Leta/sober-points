@@ -1,4 +1,3 @@
-// models/Venue.js
 const mongoose = require("mongoose");
 
 const VenueSchema = new mongoose.Schema(
@@ -9,18 +8,33 @@ const VenueSchema = new mongoose.Schema(
       trim: true,
       maxlength: [100, "Venue name cannot exceed 100 characters"],
     },
+    description: {
+      type: String,
+      trim: true,
+      maxlength: [500, "Description cannot exceed 500 characters"],
+    },
     address: {
       type: String,
       required: [true, "Address is required"],
       trim: true,
     },
-    latitude: {
-      type: Number,
-      required: [true, "Latitude is required"],
-    },
-    longitude: {
-      type: Number,
-      required: [true, "Longitude is required"],
+    location: {
+      type: {
+        type: String,
+        enum: ["Point"],
+        default: "Point",
+      },
+      coordinates: {
+        type: [Number], // [longitude, latitude]
+        required: true,
+        validate: {
+          validator: function (value) {
+            return value.length === 2;
+          },
+          message:
+            "Location must contain exactly two values: [longitude, latitude]",
+        },
+      },
     },
     images: {
       type: [String], // Array of image URLs
