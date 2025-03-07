@@ -82,6 +82,12 @@ const Header = () => {
           <button className="flex items-center space-x-2 focus:outline-none">
             {isAuthenticated ? (
               <div className="flex items-center gap-1" onClick={toggleDropdown}>
+                <Link
+                  to={"/venue/form"}
+                  className="bg-primary hover:bg-opacity-80 p-2 py-1 text-white  rounded-lg"
+                >
+                  Post Venue
+                </Link>
                 <img
                   className="w-6 h-6 rounded-full object-cover"
                   src={getProfilePicUrl(user?.profilePicture)}
@@ -103,12 +109,6 @@ const Header = () => {
                   sign up for free
                 </Link>
 
-                <Link
-                  to={"/venue/form"}
-                  className="bg-primary hover:bg-opacity-80 p-2 py-1 text-white  rounded-lg"
-                >
-                  Venue
-                </Link>
                 <Link
                   to={"/auth/login"}
                   className="bg-ternary hover:bg-opacity-80 p-2 py-1 text-white rounded-lg"
