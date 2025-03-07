@@ -64,7 +64,7 @@ exports.createUser = async (req, res) => {
 
     res.status(201).json(user);
   } catch (error) {
-    console.log(error)
+    console.log(error);
     res.status(500).json({ message: error.message });
   }
 };
@@ -117,9 +117,15 @@ exports.getUsers = async (req, res) => {
 
     let query;
     if (role === "super-user") {
-      query = User.find().select("-__v").populate("company", "name").sort({ createdAt: 1 });
+      query = User.find()
+        .select("-__v")
+        .populate("company", "name")
+        .sort({ createdAt: 1 });
     } else {
-      query = User.find({ company }).select("-__v").populate("company", "name").sort({ createdAt: 1 });
+      query = User.find({ company })
+        .select("-__v")
+        .populate("company", "name")
+        .sort({ createdAt: 1 });
     }
 
     const features = new APIfeatures(query, req.query)
@@ -129,7 +135,9 @@ exports.getUsers = async (req, res) => {
       .limiting()
       .paginatinating();
 
-    const totalRecords = await User.countDocuments(await features.query.getQuery());
+    const totalRecords = await User.countDocuments(
+      await features.query.getQuery()
+    );
 
     const users = await features.query;
 
@@ -150,7 +158,6 @@ exports.getUsers = async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 };
-
 
 // Get all users of company
 exports.getAllCompanyUsers = async (req, res) => {

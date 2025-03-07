@@ -17,9 +17,13 @@ import LandingPage from "./pages/landing";
 import Setting from "./pages/company/setting";
 import { API_URL } from "./constants/url";
 import Overview from "./pages/overview";
+import VenueForm from "./pages/venues/VenueForm";
+import MapComponent from "./pages/venues/MapComponent";
 
 function Pages() {
+  console.log("Pages component rendered");
   const user = useSelector((state) => state.auth.user);
+
   useEffect(() => {
     const updateFavicon = (url) => {
       const link =
@@ -49,7 +53,9 @@ function Pages() {
         />
         <Route path="/admins/:username" element={<Overview />} />
         <Route path="/ld" element={<LandingPage />} />
-        <Route path="/users" element={<Users />} />
+        {/* <Route path="/users" element={<Users />} /> */}
+        <Route path="/venue/form" element={<VenueForm />} />
+
         <Route
           path="/setting"
           element={
@@ -64,6 +70,7 @@ function Pages() {
       <Route path="/*" element={<>Not found</>} />
       <Route path="/auth/login" element={<Login />} />
       <Route path="/auth/register" element={<Register />} />
+      <Route path="/map" element={<MapComponent />} />
       <Route path="/auth/forgot-password" element={<ForgotPassword />} />
       <Route path="/auth/reset-password" element={<ResetPassword />} />
       <Route path="/auth/logout" element={<Logout />} />
