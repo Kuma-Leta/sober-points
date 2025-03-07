@@ -2,10 +2,7 @@
 export default {
   darkMode: "class",
   // darkMode: "media",
-  content: [
-    "./index.html",
-    "./src/**/*.{js,ts,jsx,tsx}",
-  ],
+  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
       colors: {
@@ -21,7 +18,17 @@ export default {
         darkCard: "#1E293B", // Dark mode card
         darkText: "#E5E7EB", // Light gray text
       },
+
+      // height: {
+      //   "leaflet-container": "100%",
+      // },
+      // width: {
+      //   "leaflet-container": "100%",
+      // },
     },
   },
+
+  /* Custom styles for Leaflet */
+
   plugins: [],
-}
+};

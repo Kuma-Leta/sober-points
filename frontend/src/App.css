@@ -1,3 +1,5 @@
+@import url("https://unpkg.com/leaflet/dist/leaflet.css");
+
 ::-webkit-scrollbar {
   width: 4px;
 }
