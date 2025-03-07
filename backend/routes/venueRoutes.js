@@ -4,14 +4,11 @@ const router = express.Router();
 const { authenticate, authorize } = require("../middleware/authMiddleware");
 const {
   createVenue,
-  createVenues,
   getAllVenues,
   getVenueById,
   updateVenue,
   deleteVenue,
 } = require("../controllers/venueController");
-
-router.post("/test", createVenues);
 
 // 📌 Create Venue
 router.post("/", authenticate, authorize(["admin", "customer"]), createVenue);

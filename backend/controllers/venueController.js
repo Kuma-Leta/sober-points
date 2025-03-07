@@ -4,47 +4,7 @@ const multer = require("multer");
 const fs = require("fs");
 const path = require("path");
 
-exports.createVenues = async (req, res) => {
-  try {
-    const { name, description, address, location, menu } = req.body;
 
-    // Validate required fields
-    if (!name || !address || !location || !location.coordinates) {
-      return res
-        .status(400)
-        .json({ error: "Please provide all required fields" });
-    }
-
-    // Upload images to the server (if provided)
-    let imageUrls = [];
-    if (req.files && req.files.images) {
-      const files = Array.isArray(req.files.images)
-        ? req.files.images
-        : [req.files.images];
-      files.forEach((file) => {
-        imageUrls.push(file.path);
-      });
-    }
-
-    // Create venue
-    const venue = new Venue({
-      name,
-      description,
-      address,
-      location: {
-        type: "Point",
-        coordinates: location.coordinates, // [longitude, latitude]
-      },
-      images: imageUrls,
-      menu,
-    });
-
-    await venue.save();
-    res.status(201).json(venue);
-  } catch (error) {
-    res.status(400).json({ error: error.message });
-  }
-};
 
 // 📌 Create Venue
 exports.createVenue = async (req, res) => {

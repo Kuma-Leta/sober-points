@@ -95,7 +95,7 @@ const useAuth = () => {
       }
       setLoading(false);
     } catch (error) {
-      toast.error(data.error.message || "Registration failed");
+      toast.error("Registration failed");
       setLoading(false);
       dispatch(
         loginFailure(
