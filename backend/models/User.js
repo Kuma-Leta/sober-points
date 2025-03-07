@@ -8,7 +8,6 @@ const userSchema = new Schema({
   password: { type: String, required: true },
   company: { type: Schema.Types.ObjectId, ref: "Company"},
   username: { type: String, required: true },
-  trailEnd: { type: Boolean, default: false },
   role: {
     type: String,
     required: true,

@@ -1,7 +1,12 @@
 import React, { useState } from "react";
 import { FiChevronDown, FiChevronUp } from "react-icons/fi";
 import SkeletonLoader from "./SkeletonLoader"; // Import the SkeletonLoader component
-import { useReactTable, getCoreRowModel, getSortedRowModel, flexRender } from '@tanstack/react-table';
+import {
+  useReactTable,
+  getCoreRowModel,
+  getSortedRowModel,
+  flexRender,
+} from "@tanstack/react-table";
 
 const Table = ({ columns, data, DetailComponent, loading, error }) => {
   const [expandedRows, setExpandedRows] = useState([]);
@@ -39,17 +44,23 @@ const Table = ({ columns, data, DetailComponent, loading, error }) => {
       <table className="min-w-full border-collapse dark:bg-darkCard table">
         <thead className="table-header-group">
           {table.getHeaderGroups().map((headerGroup) => (
-            <tr key={headerGroup.id} className="border dark:border-gray-800 dark:text-darkText table-row">
+            <tr
+              key={headerGroup.id}
+              className="border dark:border-gray-800 dark:text-darkText table-row"
+            >
               {headerGroup.headers.map((header) => (
                 <th
                   key={header.id}
                   className="p-2 cursor-pointer font-semibold text-left table-cell"
                   onClick={header.column.getToggleSortingHandler()}
                 >
-                  {flexRender(header.column.columnDef.header, header.getContext())}
+                  {flexRender(
+                    header.column.columnDef.header,
+                    header.getContext()
+                  )}
                   {{
-                    asc: ' 🔼',
-                    desc: ' 🔽',
+                    asc: " 🔼",
+                    desc: " 🔽",
                   }[header.column.getIsSorted()] ?? null}
                 </th>
               ))}
@@ -64,7 +75,10 @@ const Table = ({ columns, data, DetailComponent, loading, error }) => {
         ) : error ? (
           <tbody>
             <tr className="dark:border-gray-800">
-              <td colSpan={columns.length + 1} className="text-red-800 bg-yellow-300 p-1 px-2 text-center">
+              <td
+                colSpan={columns.length + 1}
+                className="text-red-800 bg-yellow-300 p-1 px-2 text-center"
+              >
                 {error}
               </td>
             </tr>
@@ -76,7 +90,10 @@ const Table = ({ columns, data, DetailComponent, loading, error }) => {
                 <tr className="border dark:border-gray-800 table-row">
                   {row.getVisibleCells().map((cell) => (
                     <td key={cell.id} className="p-2 relative table-cell">
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
                     </td>
                   ))}
                   {DetailComponent && (
@@ -108,7 +125,10 @@ const Table = ({ columns, data, DetailComponent, loading, error }) => {
         ) : (
           <tbody>
             <tr>
-              <td colSpan={columns.length + 1} className="text-red-800 bg-yellow-300 p-1 px-2 text-center">
+              <td
+                colSpan={columns.length + 1}
+                className="text-red-800 bg-yellow-300 p-1 px-2 text-center"
+              >
                 No data found
               </td>
             </tr>
