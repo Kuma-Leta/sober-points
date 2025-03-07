@@ -17,9 +17,13 @@ import LandingPage from "./pages/landing";
 import Setting from "./pages/company/setting";
 import { API_URL } from "./constants/url";
 import Overview from "./pages/overview";
+import VenueForm from "./pages/venues/VenueForm";
+import MapComponent from "./pages/venues/MapComponent";
 
 function Pages() {
+  console.log("Pages component rendered");
   const user = useSelector((state) => state.auth.user);
+
   useEffect(() => {
     const updateFavicon = (url) => {
       const link =
@@ -43,13 +47,15 @@ function Pages() {
           path="/users"
           element={
             <ProtectedRoute>
-              <Users /> 
+              <Users />
             </ProtectedRoute>
           }
         />
         <Route path="/admins/:username" element={<Overview />} />
         <Route path="/ld" element={<LandingPage />} />
-        <Route path="/users" element={<Users />} />
+        {/* <Route path="/users" element={<Users />} /> */}
+        <Route path="/venue/form" element={<VenueForm />} />
+
         <Route
           path="/setting"
           element={
@@ -63,13 +69,14 @@ function Pages() {
       <Route path="/check-in" element={<ProtectedRoute></ProtectedRoute>} />
       <Route path="/*" element={<>Not found</>} />
       <Route path="/auth/login" element={<Login />} />
+      <Route path="/auth/register" element={<Register />} />
+      <Route path="/map" element={<MapComponent />} />
       <Route path="/auth/forgot-password" element={<ForgotPassword />} />
       <Route path="/auth/reset-password" element={<ResetPassword />} />
       <Route path="/auth/logout" element={<Logout />} />
     </Routes>
   );
 }
-
 
 const Routing = () => {
   const location = useLocation();
@@ -80,7 +87,7 @@ const Routing = () => {
     "/auth/forgot-password",
     "/auth/reset-password",
   ];
-  
+
   const hideSideBar = !noSidebarRoutes.some((path) =>
     location.pathname.startsWith(path)
   );
@@ -101,7 +108,7 @@ const Routing = () => {
     return (
       <div className=" bg-whiteBlue max-w-[120rem] dark:bg-darkBg ">
         <Login />
-           <Footer />
+        <Footer />
       </div>
     );
   }
@@ -117,31 +124,41 @@ const Routing = () => {
               <Sidebar />
             </div>
           )}
-  
+
           {/* Main Content Container */}
-          <div className={`flex-1 flex flex-col ${isMobile ? 'z-50' : ''}`}>
+          <div className={`flex-1 flex flex-col ${isMobile ? "z-50" : ""}`}>
             {/* Header */}
-            <div className={`sticky top-0 z-[15] bg-white dark:bg-darkCard w-full`}>
-              <div className={`${shouldShowSidebar && user && hideSideBar && isMobile ? 'pl-[2.5rem]' : ''}`}>
+            <div
+              className={`sticky top-0 z-[15] bg-white dark:bg-darkCard w-full`}
+            >
+              <div
+                className={`${
+                  shouldShowSidebar && user && hideSideBar && isMobile
+                    ? "pl-[2.5rem]"
+                    : ""
+                }`}
+              >
                 <Header />
               </div>
             </div>
-  
+
             {/* Main Content */}
-            <main className={`flex-1 p-4 dark:bg-darkBg ${isMobile ? 'relative' : ''}`}>
+            <main
+              className={`flex-1 p-4 dark:bg-darkBg ${
+                isMobile ? "relative" : ""
+              }`}
+            >
               <Pages />
             </main>
           </div>
         </div>
-  
+
         {/* Footer */}
         <Footer />
       </div>
     </div>
   );
-  
 };
-
 
 const App = () => (
   <BrowserRouter>
