@@ -106,6 +106,15 @@ const Routing = () => {
     );
   }
 
+  if (location.pathname === "/auth/register") {
+    return (
+      <div className=" bg-whiteBlue max-w-[120rem] dark:bg-darkBg ">
+        <Register />
+        <Footer />
+      </div>
+    );
+  }
+
   return (
     <div className="max-w-[120rem] bg-whiteBlue dark:text-darkText dark:bg-darkBg mx-auto min-h-screen">
       <ToastContainer />

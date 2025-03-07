@@ -17,8 +17,8 @@ const Register = () => {
   };
 
   return (
-    <div className="w-full flex flex-col h-screen justify-center items-center m-auto">
-      <div className="p-14 w-full md:w-auto md:min-w-[400px] mb-10 border bg-gray-200">
+    <div className="w-full flex flex-col h-screen dark:text-darkText justify-center dark:bg-darkBg  items-center m-auto">
+      <div className="p-14 w-full md:w-auto md:min-w-[400px] mb-10 border dark:bg-darkCard bg-gray-200">
         <h1 className="mb-4 text-2xl">Sign Up</h1>
         <form className="w-full pb-5" onSubmit={handleRegister}>
           <div className="mb-4 w-full">
@@ -27,7 +27,7 @@ const Register = () => {
               placeholder="Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full border-b-2 border-primary p-3 focus:outline-none"
+              className="w-full border-b-2 dark:bg-darkBg  border-primary p-3 focus:outline-none"
             />
           </div>
           <div className="mb-4 w-full">
@@ -36,7 +36,7 @@ const Register = () => {
               placeholder="Name"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full border-b-2 border-primary p-3 focus:outline-none"
+              className="w-full border-b-2 dark:bg-darkBg  border-primary p-3 focus:outline-none"
             />
           </div>
           <div className="mb-6 items-end flex flex-col">
@@ -45,7 +45,7 @@ const Register = () => {
               placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full border-b-2 border-primary p-3 focus:outline-none"
+              className="w-full border-b-2 dark:bg-darkBg  border-primary p-3 focus:outline-none"
             />
           </div>
           <button
