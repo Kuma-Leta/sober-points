@@ -18,6 +18,7 @@ import Setting from "./pages/company/setting";
 import { API_URL } from "./constants/url";
 import Overview from "./pages/overview";
 import VenueForm from "./pages/venues/VenueForm";
+import MapComponent from "./pages/venues/MapComponent";
 
 function Pages() {
   console.log("Pages component rendered");
@@ -69,6 +70,7 @@ function Pages() {
       <Route path="/*" element={<>Not found</>} />
       <Route path="/auth/login" element={<Login />} />
       <Route path="/auth/register" element={<Register />} />
+      <Route path="/map" element={<MapComponent />} />
       <Route path="/auth/forgot-password" element={<ForgotPassword />} />
       <Route path="/auth/reset-password" element={<ResetPassword />} />
       <Route path="/auth/logout" element={<Logout />} />
@@ -126,11 +128,14 @@ const Routing = () => {
       <div className="flex min-h-screen flex-col">
         <div className="flex flex-1">
           {/* Sidebar */}
-          {shouldShowSidebar && user && hideSideBar && (
-            <div className="sticky top-0 h-screen">
-              <Sidebar />
-            </div>
-          )}
+          {shouldShowSidebar &&
+            user &&
+            user.role === "admin" &&
+            hideSideBar && (
+              <div className="sticky top-0 h-screen">
+                <Sidebar />
+              </div>
+            )}
 
           {/* Main Content Container */}
           <div className={`flex-1 flex flex-col ${isMobile ? "z-50" : ""}`}>
