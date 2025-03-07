@@ -78,7 +78,7 @@ const Header = () => {
               </li>
             </ul>
           )}
-          {isAuthenticated && <div>{user.company.name}</div>}
+          {isAuthenticated && <div>{user?.company?.name}</div>}
           <button className="flex items-center space-x-2 focus:outline-none">
             {isAuthenticated ? (
               <div className="flex items-center gap-1" onClick={toggleDropdown}>

@@ -25,7 +25,9 @@ const useAuth = () => {
       try {
         const res = await axiosInstance.get("/me");
         dispatch(loginSuccess(token, res.data));
-      } catch (err) {}
+      } catch (err) {
+        dispatch(loginFailure("an authorized"));
+      }
     }
 
     fetchUser();
@@ -77,8 +79,11 @@ const useAuth = () => {
       });
 
       const data = response.data;
-      if (response.status === 200) {
+      if (response.status === 201) {
         setSuccessMessage(
+          "Registration successful! Please check your email to verify your account."
+        );
+        toast.success(
           "Registration successful! Please check your email to verify your account."
         );
         dispatch(loginSuccess(data.token, data.data.user));
@@ -86,9 +91,11 @@ const useAuth = () => {
       } else {
         dispatch(loginFailure(data.error.message || "Registration failed"));
         setError(data.error.message || "Registration failed");
+        toast.error(data.error.message || "Registration failed");
       }
       setLoading(false);
     } catch (error) {
+      toast.error(data.error.message || "Registration failed");
       setLoading(false);
       dispatch(
         loginFailure(
@@ -164,7 +171,7 @@ const useAuth = () => {
   };
   const logoutUser = async () => {
     dispatch(logout());
-    dispatch(loginSuccess('', {}));
+    dispatch(loginSuccess("", {}));
     await axiosInstance.get("/logout");
   };
 

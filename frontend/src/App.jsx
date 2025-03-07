@@ -70,6 +70,7 @@ function Pages() {
       <Route path="/*" element={<>Not found</>} />
       <Route path="/auth/login" element={<Login />} />
       <Route path="/auth/register" element={<Register />} />
+      <Route path="/auth/register" element={<Register />} />
       <Route path="/map" element={<MapComponent />} />
       <Route path="/auth/forgot-password" element={<ForgotPassword />} />
       <Route path="/auth/reset-password" element={<ResetPassword />} />
@@ -108,6 +109,15 @@ const Routing = () => {
     return (
       <div className=" bg-whiteBlue max-w-[120rem] dark:bg-darkBg ">
         <Login />
+        <Footer />
+      </div>
+    );
+  }
+
+  if (location.pathname === "/auth/register") {
+    return (
+      <div className=" bg-whiteBlue max-w-[120rem] dark:bg-darkBg ">
+        <Register />
         <Footer />
       </div>
     );
