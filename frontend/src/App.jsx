@@ -62,6 +62,7 @@ function Pages() {
       <Route path="/auth/register" element={<Register />} />
       <Route path="/check-in" element={<ProtectedRoute></ProtectedRoute>} />
       <Route path="/auth/login" element={<Login />} />
+      <Route path="/auth/register" element={<Register />} />
       <Route path="/auth/forgot-password" element={<ForgotPassword />} />
       <Route path="/auth/reset-password" element={<ResetPassword />} />
       <Route path="/auth/logout" element={<Logout />} />
@@ -105,17 +106,29 @@ const Routing = () => {
     );
   }
 
+  if (location.pathname === "/auth/register") {
+    return (
+      <div className=" bg-whiteBlue max-w-[120rem] dark:bg-darkBg ">
+        <Register />
+        <Footer />
+      </div>
+    );
+  }
+
   return (
     <div className="max-w-[120rem] bg-whiteBlue dark:text-darkText dark:bg-darkBg mx-auto min-h-screen">
       <ToastContainer />
       <div className="flex min-h-screen flex-col">
         <div className="flex flex-1">
           {/* Sidebar */}
-          {shouldShowSidebar && user && hideSideBar && (
-            <div className="sticky top-0 h-screen">
-              <Sidebar />
-            </div>
-          )}
+          {shouldShowSidebar &&
+            user &&
+            user.role === "admin" &&
+            hideSideBar && (
+              <div className="sticky top-0 h-screen">
+                <Sidebar />
+              </div>
+            )}
 
           {/* Main Content Container */}
           <div className={`flex-1 flex flex-col ${isMobile ? "z-50" : ""}`}>
