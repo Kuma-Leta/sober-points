@@ -2,13 +2,9 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../api/api";
 import MapComponent from "./MapComponent";
+import { FaTimes } from "react-icons/fa"; // Import remove icon
 
-export default function VenueForm({
-  mode = "create",
-  venueId,
-  onClose,
-  onUpdate,
-}) {
+export default function VenueForm({ mode = "create", venueId, onClose }) {
   const [formData, setFormData] = useState({
     name: "",
     address: "",
@@ -32,7 +28,18 @@ export default function VenueForm({
     const validFiles = Array.from(files).filter(
       (file) => file.type.startsWith("image/") && file.size <= 5 * 1024 * 1024
     );
-    setFormData({ ...formData, images: validFiles });
+    setFormData((prev) => ({
+      ...prev,
+      images: [...prev.images, ...validFiles], // Append new files to existing ones
+    }));
+  };
+
+  const handleRemoveImage = (index) => {
+    const updatedImages = formData.images.filter((_, i) => i !== index);
+    setFormData((prev) => ({
+      ...prev,
+      images: updatedImages,
+    }));
   };
 
   const handleSubmit = async (e) => {
@@ -40,24 +47,36 @@ export default function VenueForm({
     setError(null);
     setLoading(true);
 
+    // Prepare FormData for file uploads
     const formDataToSend = new FormData();
-    Object.keys(formData).forEach((key) => {
-      if (key === "images" && formData.images.length > 0) {
-        formData.images.forEach((file) =>
-          formDataToSend.append("images", file)
-        );
-      } else {
-        formDataToSend.append(key, formData[key]);
-      }
-    });
+    formDataToSend.append("name", formData.name);
+    formDataToSend.append("address", formData.address);
+    formDataToSend.append("description", formData.description);
+    formDataToSend.append("menu", formData.menu);
+    formDataToSend.append("location[coordinates][0]", formData.longitude); // Longitude
+    formDataToSend.append("location[coordinates][1]", formData.latitude); // Latitude
+
+    // Append images
+    if (formData.images.length > 0) {
+      formData.images.forEach((file) => {
+        formDataToSend.append("images", file);
+      });
+    }
 
     try {
       if (mode === "create") {
-        await axiosInstance.post("/venues", formDataToSend);
+        await axiosInstance.post("/venues", formDataToSend, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
       } else {
-        await axiosInstance.put(`/venues/${venueId}`, formDataToSend);
+        await axiosInstance.put(`/venues/${venueId}`, formDataToSend, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
       }
-      onUpdate();
       handleFormReset();
     } catch (error) {
       setError(
@@ -66,6 +85,18 @@ export default function VenueForm({
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleFormReset = () => {
+    setFormData({
+      name: "",
+      address: "",
+      latitude: null,
+      longitude: null,
+      description: "",
+      menu: "",
+      images: [],
+    });
   };
 
   return (
@@ -83,6 +114,7 @@ export default function VenueForm({
               name="name"
               placeholder="Venue Name"
               onChange={handleChange}
+              value={formData.name}
               required
               className="w-full px-3 py-2 border rounded-lg"
             />
@@ -91,6 +123,7 @@ export default function VenueForm({
               name="address"
               placeholder="Address"
               onChange={handleChange}
+              value={formData.address}
               required
               className="w-full px-3 py-2 border rounded-lg"
             />
@@ -98,12 +131,14 @@ export default function VenueForm({
               name="description"
               placeholder="Description"
               onChange={handleChange}
+              value={formData.description}
               className="w-full px-3 py-2 border rounded-lg"
             ></textarea>
             <textarea
               name="menu"
               placeholder="Menu Details"
               onChange={handleChange}
+              value={formData.menu}
               className="w-full px-3 py-2 border rounded-lg"
             ></textarea>
             <input
@@ -112,7 +147,33 @@ export default function VenueForm({
               multiple
               onChange={handleFileChange}
               className="w-full px-3 py-2 border rounded-lg"
+              accept="image/*"
             />
+
+            {/* Image Previews */}
+            {formData.images.length > 0 && (
+              <div className="mt-4">
+                <h3 className="text-lg mb-2">Selected Images</h3>
+                <div className="flex flex-wrap gap-2">
+                  {formData.images.map((file, index) => (
+                    <div key={index} className="relative">
+                      <img
+                        src={URL.createObjectURL(file)}
+                        alt={`Preview ${index + 1}`}
+                        className="w-20 h-20 object-cover rounded-lg"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveImage(index)}
+                        className="absolute top-0 right-0 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 transition"
+                      >
+                        <FaTimes className="w-4 h-4" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </form>
         </div>
 

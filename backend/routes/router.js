@@ -21,7 +21,7 @@ router.get("/me", authenticate, authController.me);
 router.post(
   "/users",
   authenticate,
-  authorize(["admin",'super-user']),
+  authorize(["admin", "super-user"]),
   userController.createUser
 );
 
@@ -61,4 +61,6 @@ router.delete(
 //companies
 router.use("/companies", require("./company"));
 
+// Venues
+router.use("/venues", require("./venue")); // <-- Add this line
 module.exports = router;
