@@ -15,16 +15,16 @@ const SearchBar = ({ setQuery }) => {
       <input
         type="text"
         placeholder="Search for venues..."
-        className={`w-full border rounded-full px-4 py-3 pl-12 text-gray-700 dark:text-darkText bg-white dark:bg-darkCard shadow-md outline-none transition-all ${
+        className={`w-full border rounded-full px-4 py-3 pl-12 text-grayColor dark:text-darkText bg-white dark:bg-darkCard shadow-md outline-none transition-all ${
           inputFocused
-            ? "border-red-500 ring-2 ring-red-300"
-            : "border-gray-300"
+            ? "border-primary ring-2 ring-primaryLight"
+            : "border-gray-300 dark:border-grayColor"
         }`}
         onChange={(e) => setQuery(e.target.value)}
         onFocus={() => setInputFocused(true)}
         onBlur={() => setInputFocused(false)}
       />
-      <FaSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500" />
+      <FaSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 text-grayColor dark:text-darkText" />
     </motion.div>
   );
 };

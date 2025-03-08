@@ -60,7 +60,7 @@ const Features = () => {
               className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6 p-5 sm:p-6 bg-white dark:bg-darkCard shadow-md rounded-lg transition-all"
             >
               {/* Icon */}
-              <div className="p-3 sm:p-4 bg-red-600 text-white rounded-full flex items-center justify-center shadow-md">
+              <div className="p-3 sm:p-4 bg-primary text-white rounded-full flex items-center justify-center shadow-md">
                 {feature.icon}
               </div>
               <div className="text-center sm:text-left">

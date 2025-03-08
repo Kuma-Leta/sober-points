@@ -16,34 +16,34 @@ export default function Footer() {
             className="flex flex-col md:flex-row md:space-x-12"
           >
             <div className="mb-6 md:mb-0">
-              <h3 className="text-xl font-bold text-gray-800 dark:text-white">
+              <h3 className="text-xl font-bold text-grayColor dark:text-darkText">
                 Company
               </h3>
-              <ul className="mt-3 space-y-2 text-gray-600 dark:text-gray-300">
-                <li className="hover:text-red-600 transition">
+              <ul className="mt-3 space-y-2 text-grayColor dark:text-darkText">
+                <li className="hover:text-primary transition">
                   <a href="#">About Us</a>
                 </li>
-                <li className="hover:text-red-600 transition">
+                <li className="hover:text-primary transition">
                   <a href="#">Contact Us</a>
                 </li>
-                <li className="hover:text-red-600 transition">
+                <li className="hover:text-primary transition">
                   <a href="#">Careers</a>
                 </li>
               </ul>
             </div>
 
             <div>
-              <h3 className="text-xl font-bold text-gray-800 dark:text-white">
+              <h3 className="text-xl font-bold text-grayColor dark:text-darkText">
                 Support
               </h3>
-              <ul className="mt-3 space-y-2 text-gray-600 dark:text-gray-300">
-                <li className="hover:text-red-600 transition">
+              <ul className="mt-3 space-y-2 text-grayColor dark:text-darkText">
+                <li className="hover:text-primary transition">
                   <a href="#">Help & Support</a>
                 </li>
-                <li className="hover:text-red-600 transition">
+                <li className="hover:text-primary transition">
                   <a href="#">Privacy Policy</a>
                 </li>
-                <li className="hover:text-red-600 transition">
+                <li className="hover:text-primary transition">
                   <a href="#">Terms & Conditions</a>
                 </li>
               </ul>
@@ -57,16 +57,16 @@ export default function Footer() {
             transition={{ delay: 0.3, duration: 0.6 }}
             className="mt-8 md:mt-0"
           >
-            <h3 className="text-xl font-bold text-gray-800 dark:text-white">
+            <h3 className="text-xl font-bold text-grayColor dark:text-darkText">
               Subscribe to Our Newsletter
             </h3>
             <form className="mt-3 flex">
               <input
                 type="email"
                 placeholder="Enter your email"
-                className="w-full p-3 rounded-l-md dark:bg-darkBg dark:text-gray-300 border border-gray-300 dark:border-gray-600 focus:border-red-500 outline-none"
+                className="w-full p-3 rounded-l-md bg-white dark:bg-darkBg dark:text-darkText border border-grayColor dark:border-darkText focus:border-primary outline-none"
               />
-              <button className="bg-red-600 hover:bg-red-500 text-white px-5 py-3 rounded-r-md transition">
+              <button className="bg-primary hover:bg-primaryLight text-white px-5 py-3 rounded-r-md transition">
                 Subscribe
               </button>
             </form>
@@ -74,11 +74,11 @@ export default function Footer() {
         </div>
 
         {/* Divider */}
-        <hr className="my-8 border-gray-300 dark:border-gray-700" />
+        <hr className="my-8 border-grayColor dark:border-darkText" />
 
         {/* Bottom Section */}
         <div className="flex flex-col md:flex-row md:justify-between items-center">
-          <p className="text-gray-600 dark:text-gray-300 text-center md:text-left">
+          <p className="text-grayColor dark:text-darkText text-center md:text-left">
             &copy; {new Date().getFullYear()} Sober Points. All rights reserved.
           </p>
 
@@ -91,19 +91,19 @@ export default function Footer() {
           >
             <a
               href="#"
-              className="text-gray-600 dark:text-gray-300 hover:text-red-600 transition text-xl"
+              className="text-grayColor dark:text-darkText hover:text-primary transition text-xl"
             >
               <FaFacebookF />
             </a>
             <a
               href="#"
-              className="text-gray-600 dark:text-gray-300 hover:text-red-600 transition text-xl"
+              className="text-grayColor dark:text-darkText hover:text-primary transition text-xl"
             >
               <FaTwitter />
             </a>
             <a
               href="#"
-              className="text-gray-600 dark:text-gray-300 hover:text-red-600 transition text-xl"
+              className="text-grayColor dark:text-darkText hover:text-primary transition text-xl"
             >
               <FaInstagram />
             </a>
