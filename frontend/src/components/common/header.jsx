@@ -69,7 +69,7 @@ const Header = () => {
           <DarkModeToggle />
 
           {isAuthenticated ? (
-            <div className="relative">
+            <div className="relative flex items-center">
               <Link
                 to={"/venue/form"}
                 className="bg-primary hover:bg-opacity-80 p-2 py-1 text-white  rounded-lg"
