@@ -70,6 +70,12 @@ const Header = () => {
 
           {isAuthenticated ? (
             <div className="relative">
+              <Link
+                to={"/venue/form"}
+                className="bg-primary hover:bg-opacity-80 p-2 py-1 text-white  rounded-lg"
+              >
+                Post Venue
+              </Link>
               <button
                 onClick={() => setDropdownOpen(!dropdownOpen)}
                 className="flex items-center space-x-2"
