@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../api/api";
 import MapComponent from "./MapComponent";
@@ -18,6 +18,7 @@ export default function VenueForm({ mode = "create", venueId, onClose }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+  const formRef = useRef(null); // Ref to the form for programmatic submission
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -102,14 +103,14 @@ export default function VenueForm({ mode = "create", venueId, onClose }) {
   return (
     <div className="p-4 w-full max-w-6xl mx-auto bg-white dark:bg-darkCard rounded-md mt-20">
       {/* Add margin-top (mt-20) to create space below the header */}
-      <div className="flex flex-col md:flex-row gap-4">
-        {/* Left: Form Section */}
-        <div className="w-full md:w-1/2">
+      <div className="flex flex-col gap-4">
+        {/* Form Section */}
+        <div className="w-full">
           <h2 className="text-xl mb-4">
             {mode === "create" ? "Add New Venue" : "Edit Venue"}
           </h2>
           {error && <div className="text-red-500 mb-4">{error}</div>}
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form ref={formRef} onSubmit={handleSubmit} className="space-y-4">
             <input
               type="text"
               name="name"
@@ -175,39 +176,37 @@ export default function VenueForm({ mode = "create", venueId, onClose }) {
                 </div>
               </div>
             )}
-
-            {/* Bottom: Action Buttons */}
-            <div className="w-full flex justify-end mt-4">
-              <button
-                type="button"
-                className="bg-gray-400 px-4 py-2 mr-2 rounded text-white"
-                onClick={() => {
-                  console.log("Cancel button clicked"); // Debugging
-                  onClose();
-                }}
-              >
-                Cancel
-              </button>
-              <button
-                type="submit"
-                className={`bg-blue-500 px-4 py-2 rounded text-white ${
-                  loading ? "opacity-50" : ""
-                }`}
-                disabled={loading}
-              >
-                {loading
-                  ? "Saving..."
-                  : mode === "create"
-                  ? "Create"
-                  : "Update"}
-              </button>
-            </div>
           </form>
         </div>
 
-        {/* Right: Map Section */}
-        <div className="w-full md:w-1/2">
+        {/* Map Section */}
+        <div className="w-full">
+          <p className="justify-center mt-4"> Select Venue Location </p>
           <MapComponent setFormData={setFormData} />
+        </div>
+
+        {/* Action Buttons (Moved below the map) */}
+        <div className="w-full flex justify-center mt-4">
+          <button
+            type="button"
+            className="bg-gray-400 px-4 py-2 mr-2 rounded text-white"
+            onClick={() => {
+              console.log("Cancel button clicked"); // Debugging
+              onClose();
+            }}
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            onClick={() => formRef.current.submit()} // Programmatically submit the form
+            className={`bg-red-600 px-4 py-2 rounded text-white ${
+              loading ? "opacity-50" : ""
+            }`}
+            disabled={loading}
+          >
+            {loading ? "Saving..." : mode === "create" ? "Create" : "Update"}
+          </button>
         </div>
       </div>
     </div>
