@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../api/api";
 import MapComponent from "./MapComponent";
@@ -34,7 +34,9 @@ export default function VenueForm({ mode = "create", venueId, onClose }) {
       images: [...prev.images, ...validFiles], // Append new files to existing ones
     }));
   };
-
+  useEffect(() => {
+    console.log("Form Data Updated:", formData); // Debugging
+  }, [formData]);
   const handleRemoveImage = (index) => {
     const updatedImages = formData.images.filter((_, i) => i !== index);
     setFormData((prev) => ({
@@ -46,6 +48,18 @@ export default function VenueForm({ mode = "create", venueId, onClose }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
+
+    // Validate latitude and longitude
+    if (
+      isNaN(formData.latitude) ||
+      isNaN(formData.longitude) ||
+      formData.latitude === null ||
+      formData.longitude === null
+    ) {
+      setError("Please select a valid location on the map.");
+      return;
+    }
+
     setLoading(true);
 
     // Prepare FormData for file uploads
@@ -64,22 +78,43 @@ export default function VenueForm({ mode = "create", venueId, onClose }) {
       });
     }
 
+    // Log the form data being sent
+    console.log("Form Data Being Sent:", {
+      name: formData.name,
+      address: formData.address,
+      description: formData.description,
+      menu: formData.menu,
+      latitude: formData.latitude,
+      longitude: formData.longitude,
+      images: formData.images,
+    });
+
     try {
+      let response;
       if (mode === "create") {
-        await axiosInstance.post("/venues", formDataToSend, {
+        response = await axiosInstance.post("/venues", formDataToSend, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
         });
       } else {
-        await axiosInstance.put(`/venues/${venueId}`, formDataToSend, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        });
+        response = await axiosInstance.put(
+          `/venues/${venueId}`,
+          formDataToSend,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
       }
+
+      console.log("API Response:", response.data); // Debugging
+
+      // Reset the form only after successful submission
       handleFormReset();
     } catch (error) {
+      console.error("API Error:", error); // Debugging
       setError(
         error.response?.data?.message || error.message || "Error saving venue"
       );
@@ -87,7 +122,6 @@ export default function VenueForm({ mode = "create", venueId, onClose }) {
       setLoading(false);
     }
   };
-
   const handleFormReset = () => {
     setFormData({
       name: "",
@@ -143,6 +177,11 @@ export default function VenueForm({ mode = "create", venueId, onClose }) {
               value={formData.menu}
               className="w-full px-3 py-2 border rounded-lg"
             ></textarea>
+
+            <label className="block text-gray-600 font-medium mb-1">
+              Select Venue Images
+            </label>
+
             <input
               type="file"
               name="images"
@@ -181,7 +220,10 @@ export default function VenueForm({ mode = "create", venueId, onClose }) {
 
         {/* Map Section */}
         <div className="w-full">
-          <p className="justify-center mt-4"> Select Venue Location </p>
+          {/* Styled <p> element */}
+          <p className="text-center text-lg font-semibold mb-4 p-3 bg-gray-100 rounded-lg shadow-sm">
+            Select Venue Location
+          </p>
           <MapComponent setFormData={setFormData} />
         </div>
 
@@ -189,10 +231,10 @@ export default function VenueForm({ mode = "create", venueId, onClose }) {
         <div className="w-full flex justify-center mt-4">
           <button
             type="button"
-            className="bg-gray-400 px-4 py-2 mr-2 rounded text-white"
+            className="bg-gray-400 px-4 py-2 mr-2 rounded text-white hover:bg-gray-500 transition"
             onClick={() => {
               console.log("Cancel button clicked"); // Debugging
-              onClose();
+              navigate("/"); // Navigate to the home page
             }}
           >
             Cancel
@@ -200,7 +242,7 @@ export default function VenueForm({ mode = "create", venueId, onClose }) {
           <button
             type="button"
             onClick={() => formRef.current.submit()} // Programmatically submit the form
-            className={`bg-red-600 px-4 py-2 rounded text-white ${
+            className={`bg-red-600 px-4 py-2 rounded text-white hover:bg-red-700 transition ${
               loading ? "opacity-50" : ""
             }`}
             disabled={loading}

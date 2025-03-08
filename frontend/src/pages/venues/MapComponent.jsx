@@ -91,6 +91,10 @@ export default function MapComponent({ setFormData }) {
     useMapEvents({
       dblclick(e) {
         const { lat, lng } = e.latlng;
+        if (isNaN(lat) || isNaN(lng)) {
+          console.error("Invalid latitude or longitude values.");
+          return;
+        }
         setMarkerPosition([lat, lng]);
         setShowLocationCard(true); // Show location card on double-click
       },
@@ -120,11 +124,19 @@ export default function MapComponent({ setFormData }) {
 
   // Handle confirmation to save location
   const handleConfirmLocation = () => {
+    console.log("Marker Position:", markerPosition); // Debugging
+    if (isNaN(markerPosition[0]) || isNaN(markerPosition[1])) {
+      console.error("Invalid latitude or longitude values.");
+      return;
+    }
+
+    // Update the parent component's formData with the selected latitude and longitude
     setFormData((prev) => ({
       ...prev,
       latitude: markerPosition[0],
       longitude: markerPosition[1],
     }));
+
     setShowLocationCard(false); // Hide location card
   };
 
