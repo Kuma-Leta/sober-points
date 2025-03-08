@@ -4,53 +4,84 @@ const multer = require("multer");
 const fs = require("fs");
 const path = require("path");
 
+// 📌 Create Venue
 
+// Configure Multer for file uploads
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, path.join(__dirname, "../uploads")); // Save files in the "uploads" directory
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + "-" + file.originalname); // Unique filename
+  },
+});
+
+const upload = multer({
+  storage: storage,
+  limits: { fileSize: 5 * 1024 * 1024 }, // Limit file size to 5MB
+  fileFilter: function (req, file, cb) {
+    // Accept only image files
+    if (file.mimetype.startsWith("image/")) {
+      cb(null, true);
+    } else {
+      cb(new Error("Only image files are allowed!"), false);
+    }
+  },
+}).array("images", 5); // Allow up to 5 images
 
 // 📌 Create Venue
 exports.createVenue = async (req, res) => {
-  try {
-    const { name, description, address, location, menu } = req.body;
-    const createdBy = req.user._id; // Assuming user ID is available in the request
-
-    // Validate required fields
-    if (!name || !address || !location || !location.coordinates) {
-      return res
-        .status(400)
-        .json({ error: "Please provide all required fields" });
+  // Handle file uploads using Multer
+  upload(req, res, async (err) => {
+    if (err) {
+      // Handle Multer errors
+      return res.status(400).json({ error: err.message });
     }
 
-    // Upload images to the server (if provided)
-    let imageUrls = [];
-    if (req.files && req.files.images) {
-      const files = Array.isArray(req.files.images)
-        ? req.files.images
-        : [req.files.images];
-      files.forEach((file) => {
-        imageUrls.push(file.path);
+    try {
+      const { name, description, address, location, menu } = req.body;
+      const createdBy = req.user._id; // Assuming user ID is available in the request
+
+      // Validate required fields
+      if (!name || !address || !location || !location.coordinates) {
+        return res
+          .status(400)
+          .json({ error: "Please provide all required fields" });
+      }
+
+      // Get uploaded file paths (if any)
+      let imageUrls = [];
+      if (req.files && req.files.length > 0) {
+        req.files.forEach((file) => {
+          imageUrls.push(file.path); // Save file paths
+        });
+      }
+
+      // Create venue
+      const venue = new Venue({
+        name,
+        description,
+        address,
+        location: {
+          type: "Point",
+          coordinates: location.coordinates, // [longitude, latitude]
+        },
+        images: imageUrls,
+        menu,
+        createdBy,
       });
+
+      // Save venue to the database
+      await venue.save();
+
+      // Return success response
+      res.status(201).json(venue);
+    } catch (error) {
+      // Handle other errors
+      res.status(400).json({ error: error.message });
     }
-
-    // Create venue
-    const venue = new Venue({
-      name,
-      description,
-      address,
-      location: {
-        type: "Point",
-        coordinates: location.coordinates, // [longitude, latitude]
-      },
-      images: imageUrls,
-      menu,
-      createdBy,
-    });
-
-    await venue.save();
-    res.status(201).json(venue);
-  } catch (error) {
-    res.status(400).json({ error: error.message });
-  }
+  });
 };
-
 // 📌 Get All Venues with Filtering, Sorting, Pagination
 exports.getAllVenues = async (req, res) => {
   try {
@@ -115,19 +146,19 @@ if (!fs.existsSync(uploadsDir)) {
   fs.mkdirSync(uploadsDir, { recursive: true });
 }
 
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "uploads/");
-  },
-  filename: function (req, file, cb) {
-    cb(null, Date.now() + "-" + file.originalname);
-  },
-});
+// const storage = multer.diskStorage({
+//   destination: function (req, file, cb) {
+//     cb(null, "uploads/");
+//   },
+//   filename: function (req, file, cb) {
+//     cb(null, Date.now() + "-" + file.originalname);
+//   },
+// });
 
-// Initialize the upload middleware
-const upload = multer({ storage: storage });
+// // Initialize the upload middleware
+// const upload = multer({ storage: storage });
 
-// 📌 Update Venue
+// // 📌 Update Venue
 exports.updateVenue = async (req, res) => {
   upload.array("images", 5)(req, res, async (err) => {
     if (err) {
