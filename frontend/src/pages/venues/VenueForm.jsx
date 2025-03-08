@@ -100,7 +100,8 @@ export default function VenueForm({ mode = "create", venueId, onClose }) {
   };
 
   return (
-    <div className="p-4 w-full max-w-6xl mx-auto bg-white dark:bg-darkCard rounded-md">
+    <div className="p-4 w-full max-w-6xl mx-auto bg-white dark:bg-darkCard rounded-md mt-20">
+      {/* Add margin-top (mt-8) to create space below the header */}
       <div className="flex flex-col md:flex-row gap-4">
         {/* Left: Form Section */}
         <div className="w-full md:w-1/2">
