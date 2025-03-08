@@ -225,7 +225,7 @@ exports.deleteVenue = async (req, res) => {
         .json({ message: "Not authorized to delete this venue" });
     }
 
-    await venue.remove();
+    await Venue.deleteOne({ _id: req.params.id }); // ✅ Correct way to delete
     res.json({ message: "Venue deleted successfully" });
   } catch (error) {
     res.status(500).json({ error: error.message });
