@@ -101,7 +101,7 @@ export default function VenueForm({ mode = "create", venueId, onClose }) {
 
   return (
     <div className="p-4 w-full max-w-6xl mx-auto bg-white dark:bg-darkCard rounded-md mt-20">
-      {/* Add margin-top (mt-8) to create space below the header */}
+      {/* Add margin-top (mt-20) to create space below the header */}
       <div className="flex flex-col md:flex-row gap-4">
         {/* Left: Form Section */}
         <div className="w-full md:w-1/2">
@@ -175,6 +175,33 @@ export default function VenueForm({ mode = "create", venueId, onClose }) {
                 </div>
               </div>
             )}
+
+            {/* Bottom: Action Buttons */}
+            <div className="w-full flex justify-end mt-4">
+              <button
+                type="button"
+                className="bg-gray-400 px-4 py-2 mr-2 rounded text-white"
+                onClick={() => {
+                  console.log("Cancel button clicked"); // Debugging
+                  onClose();
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                className={`bg-blue-500 px-4 py-2 rounded text-white ${
+                  loading ? "opacity-50" : ""
+                }`}
+                disabled={loading}
+              >
+                {loading
+                  ? "Saving..."
+                  : mode === "create"
+                  ? "Create"
+                  : "Update"}
+              </button>
+            </div>
           </form>
         </div>
 
@@ -182,27 +209,6 @@ export default function VenueForm({ mode = "create", venueId, onClose }) {
         <div className="w-full md:w-1/2">
           <MapComponent setFormData={setFormData} />
         </div>
-      </div>
-
-      {/* Bottom: Action Buttons */}
-      <div className="w-full flex justify-end mt-4">
-        <button
-          type="button"
-          className="bg-gray-400 px-4 py-2 mr-2 rounded text-white"
-          onClick={onClose}
-        >
-          Cancel
-        </button>
-        <button
-          type="submit"
-          onClick={handleSubmit}
-          className={`bg-blue-500 px-4 py-2 rounded text-white ${
-            loading ? "opacity-50" : ""
-          }`}
-          disabled={loading}
-        >
-          {loading ? "Saving..." : mode === "create" ? "Create" : "Update"}
-        </button>
       </div>
     </div>
   );
