@@ -40,24 +40,37 @@ export default function VenueForm({
     setError(null);
     setLoading(true);
 
+    // Prepare FormData for file uploads
     const formDataToSend = new FormData();
-    Object.keys(formData).forEach((key) => {
-      if (key === "images" && formData.images.length > 0) {
-        formData.images.forEach((file) =>
-          formDataToSend.append("images", file)
-        );
-      } else {
-        formDataToSend.append(key, formData[key]);
-      }
-    });
+    formDataToSend.append("name", formData.name);
+    formDataToSend.append("address", formData.address);
+    formDataToSend.append("description", formData.description);
+    formDataToSend.append("menu", formData.menu);
+    formDataToSend.append("location[coordinates][0]", formData.longitude); // Longitude
+    formDataToSend.append("location[coordinates][1]", formData.latitude); // Latitude
+
+    // Append images
+    if (formData.images.length > 0) {
+      formData.images.forEach((file) => {
+        formDataToSend.append("images", file);
+      });
+    }
 
     try {
       if (mode === "create") {
-        await axiosInstance.post("/venues", formDataToSend);
+        await axiosInstance.post("/venues", formDataToSend, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
       } else {
-        await axiosInstance.put(`/venues/${venueId}`, formDataToSend);
+        await axiosInstance.put(`/venues/${venueId}`, formDataToSend, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
       }
-      onUpdate();
+      // onUpdate();
       handleFormReset();
     } catch (error) {
       setError(
@@ -66,6 +79,18 @@ export default function VenueForm({
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleFormReset = () => {
+    setFormData({
+      name: "",
+      address: "",
+      latitude: null,
+      longitude: null,
+      description: "",
+      menu: "",
+      images: [],
+    });
   };
 
   return (
@@ -83,6 +108,7 @@ export default function VenueForm({
               name="name"
               placeholder="Venue Name"
               onChange={handleChange}
+              value={formData.name}
               required
               className="w-full px-3 py-2 border rounded-lg"
             />
@@ -91,6 +117,7 @@ export default function VenueForm({
               name="address"
               placeholder="Address"
               onChange={handleChange}
+              value={formData.address}
               required
               className="w-full px-3 py-2 border rounded-lg"
             />
@@ -98,12 +125,14 @@ export default function VenueForm({
               name="description"
               placeholder="Description"
               onChange={handleChange}
+              value={formData.description}
               className="w-full px-3 py-2 border rounded-lg"
             ></textarea>
             <textarea
               name="menu"
               placeholder="Menu Details"
               onChange={handleChange}
+              value={formData.menu}
               className="w-full px-3 py-2 border rounded-lg"
             ></textarea>
             <input
@@ -112,6 +141,7 @@ export default function VenueForm({
               multiple
               onChange={handleFileChange}
               className="w-full px-3 py-2 border rounded-lg"
+              accept="image/*"
             />
           </form>
         </div>

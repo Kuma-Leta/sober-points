@@ -48,33 +48,57 @@ export default function MapComponent({ setFormData }) {
         (position) => {
           const { latitude, longitude } = position.coords;
           setMarkerPosition([latitude, longitude]);
+          setFormData((prev) => ({
+            ...prev,
+            latitude,
+            longitude,
+          }));
         },
         (error) => {
           console.error("Error getting current location:", error);
           // Fallback to a default location if geolocation fails
           setMarkerPosition([9.145, 40.489]); // Default: Ethiopia
+          setFormData((prev) => ({
+            ...prev,
+            latitude: 9.145,
+            longitude: 40.489,
+          }));
         }
       );
     } else {
       console.error("Geolocation is not supported by this browser.");
       // Fallback to a default location if geolocation is not supported
       setMarkerPosition([9.145, 40.489]); // Default: Ethiopia
+      setFormData((prev) => ({
+        ...prev,
+        latitude: 9.145,
+        longitude: 40.489,
+      }));
     }
-  }, []);
+  }, [setFormData]);
 
-  const handleSaveLocation = () => {
+  // Handle map click to update marker position
+  const handleMapClick = (e) => {
+    const { lat, lng } = e.latlng;
+    setMarkerPosition([lat, lng]);
     setFormData((prev) => ({
       ...prev,
-      latitude: markerPosition[0],
-      longitude: markerPosition[1],
+      latitude: lat,
+      longitude: lng,
     }));
   };
 
+  // Handle location search
   const handleSearch = async (e) => {
     e.preventDefault();
     const location = await geocodeLocation(searchQuery);
     if (location) {
       setMarkerPosition([location.lat, location.lng]);
+      setFormData((prev) => ({
+        ...prev,
+        latitude: location.lat,
+        longitude: location.lng,
+      }));
     } else {
       alert("Location not found. Please try another search.");
     }
@@ -109,6 +133,7 @@ export default function MapComponent({ setFormData }) {
           center={markerPosition}
           zoom={13} // Higher zoom level for better visibility of the current location
           className="h-full w-full rounded-md"
+          onClick={handleMapClick}
         >
           <TileLayer
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -122,7 +147,13 @@ export default function MapComponent({ setFormData }) {
         <button
           type="button"
           className="absolute bottom-4 right-4 bg-blue-500 text-white px-4 py-2 rounded shadow-md hover:bg-blue-600 transition"
-          onClick={handleSaveLocation}
+          onClick={() =>
+            setFormData((prev) => ({
+              ...prev,
+              latitude: markerPosition[0],
+              longitude: markerPosition[1],
+            }))
+          }
         >
           Save Location
         </button>
