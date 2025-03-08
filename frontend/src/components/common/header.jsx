@@ -2,11 +2,11 @@ import React, { useState, useEffect, useRef } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 import { useSelector } from "react-redux";
-import logo from "../../assets/images/logo.jpg";
+import logo from "../../assets/images/logo.png";
 import { BsSearch } from "react-icons/bs";
 import { FaUser, FaBars, FaTimes } from "react-icons/fa";
 import { FiSun, FiMoon } from "react-icons/fi";
-
+import defaultUserProfile from "../../assets/images/user.png";
 const Header = () => {
   const { logout } = useAuth();
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
@@ -76,7 +76,7 @@ const Header = () => {
               >
                 <img
                   className="w-7 h-7 rounded-full object-cover"
-                  src={user?.profilePicture}
+                  src={user?.profilePicture || defaultUserProfile}
                   alt="User"
                 />
                 <span className="text-sm">{user?.name || user?.username}</span>
