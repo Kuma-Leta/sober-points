@@ -241,7 +241,7 @@ export default function VenueForm({ mode = "create", venueId, onClose }) {
           </button>
           <button
             type="button"
-            onClick={() => formRef.current.submit()} // Programmatically submit the form
+            onClick={(e) => handleSubmit(e)} // Call handleSubmit manually
             className={`bg-red-600 px-4 py-2 rounded text-white hover:bg-red-700 transition ${
               loading ? "opacity-50" : ""
             }`}
