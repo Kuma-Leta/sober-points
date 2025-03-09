@@ -34,9 +34,11 @@ export default function VenueForm({ mode = "create", venueId, onClose }) {
       images: [...prev.images, ...validFiles], // Append new files to existing ones
     }));
   };
+
   useEffect(() => {
     console.log("Form Data Updated:", formData); // Debugging
   }, [formData]);
+
   const handleRemoveImage = (index) => {
     const updatedImages = formData.images.filter((_, i) => i !== index);
     setFormData((prev) => ({
@@ -122,6 +124,7 @@ export default function VenueForm({ mode = "create", venueId, onClose }) {
       setLoading(false);
     }
   };
+
   const handleFormReset = () => {
     setFormData({
       name: "",
@@ -138,96 +141,101 @@ export default function VenueForm({ mode = "create", venueId, onClose }) {
     <div className="p-4 w-full max-w-6xl mx-auto bg-white dark:bg-darkCard rounded-md mt-20">
       {/* Add margin-top (mt-20) to create space below the header */}
       <div className="flex flex-col gap-4">
-        {/* Form Section */}
-        <div className="w-full">
-          <h2 className="text-xl mb-4">
-            {mode === "create" ? "Add New Venue" : "Edit Venue"}
-          </h2>
-          {error && <div className="text-red-500 mb-4">{error}</div>}
-          <form ref={formRef} onSubmit={handleSubmit} className="space-y-4">
-            <input
-              type="text"
-              name="name"
-              placeholder="Venue Name"
-              onChange={handleChange}
-              value={formData.name}
-              required
-              className="w-full px-3 py-2 border rounded-lg"
-            />
-            <input
-              type="text"
-              name="address"
-              placeholder="Address"
-              onChange={handleChange}
-              value={formData.address}
-              required
-              className="w-full px-3 py-2 border rounded-lg"
-            />
-            <textarea
-              name="description"
-              placeholder="Description"
-              onChange={handleChange}
-              value={formData.description}
-              className="w-full px-3 py-2 border rounded-lg"
-            ></textarea>
-            <textarea
-              name="menu"
-              placeholder="Menu Details"
-              onChange={handleChange}
-              value={formData.menu}
-              className="w-full px-3 py-2 border rounded-lg"
-            ></textarea>
+        {/* Flex container for form and map */}
+        <div className="flex flex-col md:flex-row gap-4">
+          {/* Form Section */}
+          <div className="w-full md:w-1/2">
+            <h2 className="text-xl mb-4">
+              {mode === "create" ? "Add New Venue" : "Edit Venue"}
+            </h2>
+            {error && <div className="text-red-500 mb-4">{error}</div>}
+            <form ref={formRef} onSubmit={handleSubmit} className="space-y-4">
+              <input
+                type="text"
+                name="name"
+                placeholder="Venue Name"
+                onChange={handleChange}
+                value={formData.name}
+                required
+                className="w-full px-3 py-2 border rounded-lg"
+              />
+              <input
+                type="text"
+                name="address"
+                placeholder="Address"
+                onChange={handleChange}
+                value={formData.address}
+                required
+                className="w-full px-3 py-2 border rounded-lg"
+              />
+              <textarea
+                name="description"
+                placeholder="Description"
+                onChange={handleChange}
+                value={formData.description}
+                className="w-full px-3 py-2 border rounded-lg"
+              ></textarea>
+              <textarea
+                name="menu"
+                placeholder="Menu Details"
+                onChange={handleChange}
+                value={formData.menu}
+                className="w-full px-3 py-2 border rounded-lg"
+              ></textarea>
 
-            <label className="block text-gray-600 font-medium mb-1">
-              Select Venue Images
-            </label>
+              <label className="block text-gray-600 font-medium mb-1">
+                Select Venue Images
+              </label>
 
-            <input
-              type="file"
-              name="images"
-              multiple
-              onChange={handleFileChange}
-              className="w-full px-3 py-2 border rounded-lg"
-              accept="image/*"
-            />
+              <input
+                type="file"
+                name="images"
+                multiple
+                onChange={handleFileChange}
+                className="w-full px-3 py-2 border rounded-lg"
+                accept="image/*"
+              />
 
-            {/* Image Previews */}
-            {formData.images.length > 0 && (
-              <div className="mt-4">
-                <h3 className="text-lg mb-2">Selected Images</h3>
-                <div className="flex flex-wrap gap-2">
-                  {formData.images.map((file, index) => (
-                    <div key={index} className="relative">
-                      <img
-                        src={URL.createObjectURL(file)}
-                        alt={`Preview ${index + 1}`}
-                        className="w-20 h-20 object-cover rounded-lg"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => handleRemoveImage(index)}
-                        className="absolute top-0 right-0 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 transition"
-                      >
-                        <FaTimes className="w-4 h-4" />
-                      </button>
-                    </div>
-                  ))}
+              {/* Image Previews */}
+              {formData.images.length > 0 && (
+                <div className="mt-4">
+                  <h3 className="text-lg mb-2">Selected Images</h3>
+                  <div className="flex flex-wrap gap-2">
+                    {formData.images.map((file, index) => (
+                      <div key={index} className="relative">
+                        <img
+                          src={URL.createObjectURL(file)}
+                          alt={`Preview ${index + 1}`}
+                          className="w-20 h-20 object-cover rounded-lg"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveImage(index)}
+                          className="absolute top-0 right-0 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 transition"
+                        >
+                          <FaTimes className="w-4 h-4" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            )}
-          </form>
+              )}
+            </form>
+          </div>
+
+          {/* Map Section */}
+          <div className="w-full md:w-1/2">
+            {/* Styled <p> element */}
+            <p className="text-center text-lg font-semibold mb-4 p-3 bg-gray-100 rounded-lg shadow-sm">
+              Select Venue Location
+            </p>
+            <div className="relative h-80 w-full rounded-md border">
+              <MapComponent setFormData={setFormData} />
+            </div>
+          </div>
         </div>
 
-        {/* Map Section */}
-        <div className="w-full">
-          {/* Styled <p> element */}
-          <p className="text-center text-lg font-semibold mb-4 p-3 bg-gray-100 rounded-lg shadow-sm">
-            Select Venue Location
-          </p>
-          <MapComponent setFormData={setFormData} />
-        </div>
-
-        {/* Action Buttons (Moved below the map) */}
+        {/* Action Buttons (Moved below the form and map) */}
         <div className="w-full flex justify-center mt-4">
           <button
             type="button"
