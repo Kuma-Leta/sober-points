@@ -20,7 +20,6 @@ import Features from "./pages/company/Services";
 import VenueForm from "./pages/venues/VenueForm";
 
 function Pages() {
-  console.log("Pages component rendered");
   const user = useSelector((state) => state.auth.user);
 
   useEffect(() => {
