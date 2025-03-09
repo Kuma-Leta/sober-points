@@ -5,6 +5,7 @@ import {
   Marker,
   useMap,
   useMapEvents,
+  Tooltip, // Import Tooltip from react-leaflet
 } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
@@ -161,17 +162,17 @@ export default function MapComponent({ setFormData }) {
   return (
     <div className="w-full">
       {/* Flex container for search and map */}
-      <div className="w-full mb-4">
+      <div className="w-full mb-4 dark:bg-darkBg">
         {/* Left: Search Bar and Suggestions */}
 
         <form onSubmit={handleSearch} className="w-full">
-          <div className="relative">
+          <div className="relative pb-1">
             <input
               type="text"
               placeholder="Search for a location..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full px-3 py-2 border rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 pl-10 pr-10"
+              className="w-full  px-3 py-2 border rounded-lg shadow-md dark:bg-darkBg focus:outline-none focus:ring-2 focus:ring-red-600 pl-10 pr-10"
             />
             {/* Search Icon */}
             <button
@@ -194,12 +195,12 @@ export default function MapComponent({ setFormData }) {
         </form>
         {/* Dropdown Suggestions */}
         {suggestions.length > 0 && (
-          <div className="absolute z-50 w-full bg-white border border-gray-300 rounded-lg shadow-lg mt-1">
+          <div className="absolute z-50 w-full bg-white dark:bg-darkBg border border-gray-300 rounded-lg shadow-lg mt-1">
             {suggestions.map((location, index) => (
               <div
                 key={index}
                 onClick={() => handleSuggestionClick(location)}
-                className="p-2 hover:bg-gray-100 cursor-pointer"
+                className="p-2 hover:bg-red-500 dark:bg-darkBg cursor-pointer"
               >
                 {location.name}
               </div>
@@ -219,11 +220,21 @@ export default function MapComponent({ setFormData }) {
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
               attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             />
-            {/* Marker */}
+            {/* Marker with Tooltip */}
             <Marker
               position={markerPosition}
               key={`${markerPosition[0]}-${markerPosition[1]}`} // Force re-render on position change
-            />
+            >
+              <Tooltip
+                direction="top" // Position of the tooltip
+                offset={[0, -10]} // Adjust the offset for better positioning
+                permanent={false} // Show only on hover
+                opacity={0.9} // Slightly transparent
+                className="font-medium text-sm" // Custom styling
+              >
+                Double-click to select this location
+              </Tooltip>
+            </Marker>
             {/* Map Click Handler */}
             <MapClickHandler />
             {/* Update Map View */}
@@ -232,9 +243,9 @@ export default function MapComponent({ setFormData }) {
 
           {/* Floating Location Card */}
           {showLocationCard && (
-            <div className="absolute top-4 right-4 z-[1000]">
-              <div className="bg-white p-6 rounded-lg shadow-lg w-72">
-                <h3 className="text-lg font-semibold mb-4">
+            <div className="absolute  top-4 right-4 z-[1000]">
+              <div className="bg-white p-6 dark:bg-darkBg rounded-lg shadow-lg w-72">
+                <h3 className="text-lg font-semibold  mb-4">
                   Selected Location
                 </h3>
                 <p className="mb-2">
@@ -256,7 +267,7 @@ export default function MapComponent({ setFormData }) {
                   <button
                     type="button"
                     onClick={handleConfirmLocation}
-                    className="bg-red-600 px-4 py-2 rounded text-white hover:bg-blue-600 transition"
+                    className="bg-red-600 px-4 py-2 rounded text-white hover:bg-red-700 transition"
                   >
                     Confirm
                   </button>
