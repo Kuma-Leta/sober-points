@@ -259,7 +259,7 @@ export default function MapComponent({ setFormData }) {
                     <button
                       type="button"
                       onClick={handleConfirmLocation}
-                      className="bg-blue-500 px-4 py-2 rounded text-white hover:bg-blue-600 transition"
+                      className="bg-red-600 px-4 py-2 rounded text-white hover:bg-blue-600 transition"
                     >
                       Confirm
                     </button>
