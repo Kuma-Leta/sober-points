@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../api/api";
 import MapComponent from "./MapComponent";
@@ -18,14 +18,7 @@ export default function VenueForm({ mode = "create", venueId, onClose }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
-
-  const handleCancel = () => {
-    if (onClose) {
-      onClose(); // Close modal if provided
-    } else {
-      navigate("/"); // Go back to home/landing page
-    }
-  };
+  const formRef = useRef(null); // Ref to the form for programmatic submission
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -41,7 +34,9 @@ export default function VenueForm({ mode = "create", venueId, onClose }) {
       images: [...prev.images, ...validFiles], // Append new files to existing ones
     }));
   };
-
+  useEffect(() => {
+    console.log("Form Data Updated:", formData); // Debugging
+  }, [formData]);
   const handleRemoveImage = (index) => {
     const updatedImages = formData.images.filter((_, i) => i !== index);
     setFormData((prev) => ({
@@ -53,6 +48,18 @@ export default function VenueForm({ mode = "create", venueId, onClose }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
+
+    // Validate latitude and longitude
+    if (
+      isNaN(formData.latitude) ||
+      isNaN(formData.longitude) ||
+      formData.latitude === null ||
+      formData.longitude === null
+    ) {
+      setError("Please select a valid location on the map.");
+      return;
+    }
+
     setLoading(true);
 
     // Prepare FormData for file uploads
@@ -71,22 +78,43 @@ export default function VenueForm({ mode = "create", venueId, onClose }) {
       });
     }
 
+    // Log the form data being sent
+    console.log("Form Data Being Sent:", {
+      name: formData.name,
+      address: formData.address,
+      description: formData.description,
+      menu: formData.menu,
+      latitude: formData.latitude,
+      longitude: formData.longitude,
+      images: formData.images,
+    });
+
     try {
+      let response;
       if (mode === "create") {
-        await axiosInstance.post("/venues", formDataToSend, {
+        response = await axiosInstance.post("/venues", formDataToSend, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
         });
       } else {
-        await axiosInstance.put(`/venues/${venueId}`, formDataToSend, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        });
+        response = await axiosInstance.put(
+          `/venues/${venueId}`,
+          formDataToSend,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
       }
-      handleCancel();
+
+      console.log("API Response:", response.data); // Debugging
+
+      // Reset the form only after successful submission
+      handleFormReset();
     } catch (error) {
+      console.error("API Error:", error); // Debugging
       setError(
         error.response?.data?.message || error.message || "Error saving venue"
       );
@@ -94,20 +122,29 @@ export default function VenueForm({ mode = "create", venueId, onClose }) {
       setLoading(false);
     }
   };
+  const handleFormReset = () => {
+    setFormData({
+      name: "",
+      address: "",
+      latitude: null,
+      longitude: null,
+      description: "",
+      menu: "",
+      images: [],
+    });
+  };
 
   return (
-    <div className="pt-[80px] px-6 sm:px-10 w-full max-w-6xl mx-auto bg-white dark:bg-darkCard rounded-md shadow-lg">
-      <h2 className="text-2xl font-semibold mb-6 text-center text-darkText dark:text-gray-300">
-        {mode === "create" ? "Add New Venue" : "Edit Venue"}
-      </h2>
-
-      {error && <div className="text-primary mb-4">{error}</div>}
-
-      {/* Form & Map Layout */}
-      <div className="flex flex-col md:flex-row gap-6">
-        {/* Left Side: Form */}
-        <div className="w-full md:w-1/2">
-          <form onSubmit={handleSubmit} className="space-y-4">
+    <div className="p-4 w-full max-w-6xl mx-auto bg-white dark:bg-darkCard rounded-md mt-20">
+      {/* Add margin-top (mt-20) to create space below the header */}
+      <div className="flex flex-col gap-4">
+        {/* Form Section */}
+        <div className="w-full">
+          <h2 className="text-xl mb-4">
+            {mode === "create" ? "Add New Venue" : "Edit Venue"}
+          </h2>
+          {error && <div className="text-red-500 mb-4">{error}</div>}
+          <form ref={formRef} onSubmit={handleSubmit} className="space-y-4">
             <input
               type="text"
               name="name"
@@ -140,6 +177,10 @@ export default function VenueForm({ mode = "create", venueId, onClose }) {
               value={formData.menu}
               className="w-full px-4 py-2 border rounded-lg dark:bg-darkBg dark:text-gray-300"
             ></textarea>
+
+            <label className="block text-gray-600 font-medium mb-1">
+              Select Venue Images
+            </label>
 
             <input
               type="file"
@@ -179,31 +220,38 @@ export default function VenueForm({ mode = "create", venueId, onClose }) {
           )}
         </div>
 
-        {/* Right Side: Map */}
-        <div className="w-full md:w-1/2">
+        {/* Map Section */}
+        <div className="w-full">
+          {/* Styled <p> element */}
+          <p className="text-center text-lg font-semibold mb-4 p-3 bg-gray-100 rounded-lg shadow-sm">
+            Select Venue Location
+          </p>
           <MapComponent setFormData={setFormData} />
         </div>
-      </div>
 
-      {/* Bottom: Action Buttons */}
-      <div className="w-full flex justify-end mt-4">
-        <button
-          type="button"
-          className="bg-grayColor hover:bg-gray-500 dark:hover:bg-gray-600 text-white px-4 py-2 mr-2 rounded-lg transition"
-          onClick={handleCancel}
-        >
-          Cancel
-        </button>
-        <button
-          type="submit"
-          onClick={handleSubmit}
-          className={`bg-primary hover:bg-primaryLight dark:hover:bg-primaryDark text-white px-5 py-2 rounded-lg transition ${
-            loading ? "opacity-50" : ""
-          }`}
-          disabled={loading}
-        >
-          {loading ? "Saving..." : mode === "create" ? "Create" : "Update"}
-        </button>
+        {/* Action Buttons (Moved below the map) */}
+        <div className="w-full flex justify-center mt-4">
+          <button
+            type="button"
+            className="bg-gray-400 px-4 py-2 mr-2 rounded text-white hover:bg-gray-500 transition"
+            onClick={() => {
+              console.log("Cancel button clicked"); // Debugging
+              navigate("/"); // Navigate to the home page
+            }}
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            onClick={(e) => handleSubmit(e)} // Call handleSubmit manually
+            className={`bg-red-600 px-4 py-2 rounded text-white hover:bg-red-700 transition ${
+              loading ? "opacity-50" : ""
+            }`}
+            disabled={loading}
+          >
+            {loading ? "Saving..." : mode === "create" ? "Create" : "Update"}
+          </button>
+        </div>
       </div>
     </div>
   );
