@@ -74,14 +74,19 @@ exports.createVenue = async (req, res) => {
       // Save venue to the database
       await venue.save();
 
-      // Return success response
-      res.status(201).json(venue);
+      // Return success response with message
+      res.status(201).json({
+        success: true,
+        message: "Venue uploaded successfully!",
+        venue,
+      });
     } catch (error) {
       // Handle other errors
       res.status(400).json({ error: error.message });
     }
   });
 };
+
 // 📌 Get All Venues with Filtering, Sorting, Pagination
 exports.getAllVenues = async (req, res) => {
   try {

@@ -21,7 +21,6 @@ import VenueForm from "./pages/venues/VenueForm";
 import VenuesPage from "./pages/company/VenuesPage";
 
 function Pages() {
-  console.log("Pages component rendered");
   const user = useSelector((state) => state.auth.user);
 
   useEffect(() => {
