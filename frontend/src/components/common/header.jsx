@@ -1,10 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 import { useSelector } from "react-redux";
 import logo from "../../assets/images/logo.png";
-import { BsSearch } from "react-icons/bs";
-import { FaUser, FaBars, FaTimes } from "react-icons/fa";
+import { FaUser, FaBars, FaTimes, FaPlus } from "react-icons/fa";
 import { FiSun, FiMoon } from "react-icons/fi";
 import defaultUserProfile from "../../assets/images/user.png";
 
@@ -15,7 +14,6 @@ const Header = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const dropdownRef = useRef(null);
-  const navigate = useNavigate();
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -28,29 +26,29 @@ const Header = () => {
   }, []);
 
   return (
-    <header className="fixed top-0 left-0 w-full bg-white dark:bg-darkCard shadow-md z-50">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between py-2">
+    <header className="fixed top-0 left-0 w-full bg-white dark:bg-darkCard shadow-md z-50 h-18 flex items-center">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between w-full">
         {/* Mobile Menu Button */}
         <button
           className="text-grayColor dark:text-darkText sm:hidden"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
         >
-          {mobileMenuOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
+          {mobileMenuOpen ? <FaTimes size={20} /> : <FaBars size={20} />}
         </button>
 
         {/* Logo */}
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center space-x-3">
           <Link to="/">
             <img
               src={logo}
               alt="Sober Points Logo"
-              className="w-20 h-auto object-contain"
+              className="w-16 sm:w-20 h-auto object-contain"
             />
           </Link>
         </div>
 
         {/* Navigation Links */}
-        <nav className="hidden sm:flex space-x-6 text-grayColor dark:text-darkText text-sm font-medium">
+        <nav className="hidden sm:flex space-x-4 text-grayColor dark:text-darkText text-sm font-medium">
           <Link to="/" className="hover:text-primary transition">
             Home
           </Link>
@@ -66,23 +64,27 @@ const Header = () => {
         </nav>
 
         {/* Auth & Dark Mode Toggle */}
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center space-x-3">
           <DarkModeToggle />
 
           {isAuthenticated ? (
-            <div className="relative flex items-center">
+            <div className="relative flex items-center space-x-2">
+              {/* Post Venue Button */}
               <Link
-                to={"/venue/form"}
-                className="bg-primary hover:bg-opacity-80 p-2 py-1 text-white  rounded-lg"
+                to="/venue/form"
+                className="hidden sm:flex bg-primary hover:bg-primaryLight text-white px-3 py-1 rounded-md items-center space-x-1 text-sm transition"
               >
-                Post Venue
+                <FaPlus />
+                {/* <span>Post Venue</span> */}
               </Link>
+
+              {/* User Dropdown */}
               <button
                 onClick={() => setDropdownOpen(!dropdownOpen)}
                 className="flex items-center space-x-2"
               >
                 <img
-                  className="w-7 h-7 rounded-full object-cover border border-grayColor dark:border-darkText"
+                  className="w-8 h-8 sm:w-9 sm:h-9 rounded-full object-cover border border-grayColor dark:border-darkText"
                   src={user?.profilePicture || defaultUserProfile}
                   alt="User"
                 />
@@ -116,7 +118,7 @@ const Header = () => {
             <div className="flex space-x-2">
               <Link
                 to="/auth/login"
-                className="border border-primary text-primary px-3 py-1 rounded-full hover:bg-primary hover:text-white text-sm transition"
+                className="border border-primary text-primary px-3 py-1 rounded-md hover:bg-primary hover:text-white text-sm transition"
               >
                 Login
               </Link>
@@ -128,7 +130,7 @@ const Header = () => {
       {/* Mobile Menu */}
       {mobileMenuOpen && (
         <div className="sm:hidden bg-white dark:bg-darkCard shadow-md p-4">
-          <nav className="flex flex-col space-y-3 text-center">
+          <nav className="flex flex-col space-y-2 text-center">
             <Link
               to="/"
               className="text-grayColor dark:text-darkText hover:text-primary transition"
@@ -186,9 +188,9 @@ const DarkModeToggle = () => {
       className="p-2 rounded-full transition-all bg-gray-200 dark:bg-gray-700"
     >
       {darkMode ? (
-        <FiSun size={18} className="text-primary" />
+        <FiSun size={16} className="text-primary" />
       ) : (
-        <FiMoon size={18} className="text-primary" />
+        <FiMoon size={16} className="text-primary" />
       )}
     </button>
   );

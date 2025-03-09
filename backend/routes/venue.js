@@ -8,8 +8,10 @@ const {
   getVenueById,
   updateVenue,
   deleteVenue,
+  getNearbyVenues,
 } = require("../controllers/venueController");
 
+router.get("/nearby", getNearbyVenues);
 // 📌 Create Venue
 router.post("/", authenticate, authorize(["admin", "customer"]), createVenue);
 

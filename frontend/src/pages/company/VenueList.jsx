@@ -153,12 +153,12 @@ const VenueList = () => {
             {/* Venue Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
               {groupedVenues[country].map((venue) => (
-                <motion.div
+                <div
                   key={venue.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.1 * venue.id, duration: 0.5 }}
-                  whileHover={{ scale: 1.05 }}
+                  // initial={{ opacity: 0, y: 20 }}
+                  // animate={{ opacity: 1, y: 0 }}
+                  // transition={{ delay: 0.1 * venue.id, duration: 0.5 }}
+                  // whileHover={{ scale: 1.05 }}
                   className="relative group overflow-hidden rounded-lg shadow-md cursor-pointer"
                 >
                   {/* Venue Image */}
@@ -166,7 +166,7 @@ const VenueList = () => {
                     src={venue.src}
                     alt={venue.name}
                     loading="lazy"
-                    className="w-full h-64 object-cover rounded-lg transition-transform duration-300 group-hover:scale-105"
+                    className="w-full h-64 object-cover rounded-lg transition-transform duration-100 group-hover:scale-105"
                   />
 
                   {/* Overlay */}
@@ -175,7 +175,7 @@ const VenueList = () => {
                       {venue.name}
                     </span>
                   </div>
-                </motion.div>
+                </div>
               ))}
             </div>
           </div>

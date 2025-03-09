@@ -5,7 +5,7 @@ const router = express.Router();
 const userController = require("../controllers/userController");
 const authController = require("../controllers/authController");
 const { authenticate, authorize } = require("../middleware/authMiddleware");
-
+const venueRoutes = require("./venue");
 // Authentication route
 router.post("/login", authController.login);
 router.get("/logout", authController.logoutUser);
@@ -60,7 +60,7 @@ router.delete(
 
 //companies
 router.use("/companies", require("./company"));
+router.use("/venues", venueRoutes); // <-- Add this line
 
 // Venues
-router.use("/venues", require("./venue")); // <-- Add this line
 module.exports = router;

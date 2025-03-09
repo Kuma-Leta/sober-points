@@ -1,15 +1,19 @@
 import React, { useState } from "react";
-import { motion } from "framer-motion"; // For animations
-import Login from "../../auth/login";
+import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import SearchBar from "../../components/search";
-import bgImage from "../../assets/images/netherlands3.jpg"; // Replace with your actual image path
+import bgImage from "../../assets/images/netherlands3.jpg";
 
 const HeroSection = () => {
-  const [showLogin, setShowLogin] = useState(false);
+  const [query, setQuery] = useState("");
 
-  if (showLogin) {
-    return <Login />;
-  }
+  const navigate = useNavigate();
+
+  const handleSearch = (e) => {
+    if (e.key === "Enter" && query.trim()) {
+      navigate(`/venues?query=${query}`);
+    }
+  };
 
   return (
     <section
@@ -21,7 +25,6 @@ const HeroSection = () => {
         backgroundRepeat: "no-repeat",
       }}
     >
-      {/* Content Container */}
       <motion.div
         initial={{ opacity: 0, y: -30 }}
         animate={{ opacity: 1, y: 0 }}
@@ -33,7 +36,6 @@ const HeroSection = () => {
         </h1>
       </motion.div>
 
-      {/* Subtitle */}
       <motion.p
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -43,17 +45,14 @@ const HeroSection = () => {
         Explore sober-friendly restaurants, cafes, and social spots near you.
       </motion.p>
 
-      {/* Search Bar */}
       <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ delay: 0.6, duration: 0.6 }}
         className="w-full max-w-lg mt-6"
       >
-        <SearchBar />
+        <SearchBar setQuery={setQuery} onSearch={handleSearch} />
       </motion.div>
-
-      {/* Call to Action */}
     </section>
   );
 };

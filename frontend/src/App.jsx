@@ -18,6 +18,7 @@ import Setting from "./pages/company/setting";
 import { API_URL } from "./constants/url";
 import Features from "./pages/company/Services";
 import VenueForm from "./pages/venues/VenueForm";
+import VenuesPage from "./pages/company/VenuesPage";
 
 function Pages() {
   console.log("Pages component rendered");
@@ -48,6 +49,14 @@ function Pages() {
           element={
             <ProtectedRoute>
               <Users />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/venues/nearby"
+          element={
+            <ProtectedRoute>
+              <VenuesPage />
             </ProtectedRoute>
           }
         />

@@ -119,7 +119,7 @@ export default function MapComponent({ setFormData }) {
             />
             <button
               type="submit"
-              className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition"
+              className="bg-primary text-white px-4 py-2 rounded-lg hover:bg-primaryLight transition"
             >
               Search
             </button>
@@ -128,7 +128,7 @@ export default function MapComponent({ setFormData }) {
       </div>
 
       {/* Map Container */}
-      <div className="relative h-80 w-full rounded-md border">
+      <div className="relative h-80 z-0 w-full rounded-md border">
         <MapContainer
           center={markerPosition}
           zoom={13} // Higher zoom level for better visibility of the current location
