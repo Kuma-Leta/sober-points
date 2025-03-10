@@ -1,81 +1,97 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import axiosInstance from "../../api/api";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  fetchVenues,
+  fetchNearbyVenues,
+  searchVenues,
+} from "../../redux/venue/venueSlice";
 import VenueLists from "./VenueLists";
 import VenueMap from "./VenueMap";
 import SearchBar from "../../components/search";
 import Header from "../../components/common/header";
-
 const VenuesPage = () => {
-  const [venues, setVenues] = useState([]);
-  const [query, setQuery] = useState("");
-  const [mapCenter, setMapCenter] = useState({
-    lat: 51.509865,
-    lng: -0.118092,
-  }); // Default London
-  const [showMap, setShowMap] = useState(false);
+  const dispatch = useDispatch();
   const [searchParams] = useSearchParams();
+  const { venues, nearbyVenues, searchResults, loading, error } = useSelector(
+    (state) => state.venues
+  );
+
+  // ✅ Track user's location
+  const [userLocation, setUserLocation] = useState(null);
+  const [mapCenter, setMapCenter] = useState({
+    lat: 51.509865, // Default to London
+    lng: -0.118092,
+  });
+
+  // ✅ Fetch user's location
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          setUserLocation({ lat: latitude, lng: longitude });
+          setMapCenter({ lat: latitude, lng: longitude });
+        },
+        (error) => console.error("Error getting location:", error)
+      );
+    }
+  }, []);
 
   useEffect(() => {
     const lat = parseFloat(searchParams.get("lat"));
     const lng = parseFloat(searchParams.get("lng"));
-    const queryParam = searchParams.get("query");
+    const query = searchParams.get("query");
 
     if (lat && lng) {
       setMapCenter({ lat, lng });
-      setShowMap(true);
-      fetchVenues(lat, lng, queryParam);
-    } else if (queryParam) {
-      setShowMap(false);
-      setQuery(queryParam);
-      fetchVenues(mapCenter.lat, mapCenter.lng, queryParam);
+      dispatch(fetchNearbyVenues({ lat, lng }));
+    } else if (query) {
+      dispatch(searchVenues(query));
+    } else {
+      dispatch(fetchVenues());
     }
-  }, [searchParams]);
-
-  // ✅ **Fetch Nearby Venues**
-  const fetchVenues = async (lat, lng, query = "") => {
-    try {
-      const response = await axiosInstance.get(
-        `/venues/nearby/?lat=${lat}&lng=${lng}`
-      );
-
-      // ✅ **Transform image paths to valid URLs**
-      const transformedVenues = response.data.map((venue) => ({
-        ...venue,
-        images: venue.images.map(
-          (image) => `http://localhost:5000/uploads/${image.split("\\").pop()}`
-        ),
-      }));
-
-      setVenues(transformedVenues);
-      console.log(transformedVenues);
-    } catch (error) {
-      console.error("Error fetching venues:", error);
-      setVenues([]);
-    }
-  };
+  }, [dispatch, searchParams]);
 
   return (
     <div className="flex flex-col min-h-screen bg-white dark:bg-darkBg">
-      {/* ✅ **Header Section** */}
       <Header />
-
-      {/* ✅ **Main Content Layout** */}
       <div className="flex flex-col md:flex-row flex-1 pt-20">
-        {/* ✅ **Map - Full Width on Mobile, 50% on Desktop** */}
-        {/* ✅ **Venue List - Full Width on Mobile, 50% on Desktop** */}
-        <div className="w-full md:w-1/2 p-6 bg-white dark:bg-darkCard overflow-y-auto">
-          <SearchBar setQuery={setQuery} />
-          <VenueLists venues={venues} />
+        <div className="w-full md:w-1/2 p-6 bg-white dark:bg-darkCard overflow-y-auto h-screen">
+          <SearchBar />
+          {loading ? (
+            <p className="text-gray-500">Loading venues...</p>
+          ) : error ? (
+            <p className="text-red-500">{error}</p>
+          ) : (
+            <VenueLists
+              venues={
+                searchResults.length > 0
+                  ? searchResults
+                  : nearbyVenues.length > 0
+                  ? nearbyVenues
+                  : venues
+              }
+            />
+          )}
         </div>
-        {showMap && (
-          <div className="w-full md:w-1/2 h-80 md:h-full z-0">
-            <VenueMap venues={venues} center={mapCenter} />
-          </div>
-        )}
+
+        {/* Sticky Map (Updates on Move) */}
+        <div className="w-full md:w-1/2 h-screen sticky top-0 z-0">
+          <VenueMap
+            venues={
+              searchResults.length > 0
+                ? searchResults
+                : nearbyVenues.length > 0
+                ? nearbyVenues
+                : venues
+            }
+            center={mapCenter}
+            userLocation={userLocation}
+          />
+        </div>
       </div>
     </div>
   );
 };
-
 export default VenuesPage;

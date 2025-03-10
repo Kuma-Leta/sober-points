@@ -1,18 +1,54 @@
-import React from "react";
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import React, { useEffect, useState } from "react";
+import {
+  MapContainer,
+  TileLayer,
+  Marker,
+  Popup,
+  useMapEvents,
+} from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-import logoMarker from "../../assets/images/logo.png"; // Ensure correct path
+import { useDispatch, useSelector } from "react-redux";
+import { fetchNearbyVenues } from "../../redux/venue/venueSlice";
+import logoMarker from "../../assets/images/logo.png";
 
-// ✅ **Custom Sober Points Icon**
-const customIcon = new L.Icon({
+const venueIcon = new L.Icon({
   iconUrl: logoMarker,
-  iconSize: [40, 40], // Adjust size if needed
-  iconAnchor: [20, 40], // Center the icon properly
+  iconSize: [40, 40],
+  iconAnchor: [20, 40],
   popupAnchor: [0, -40],
 });
 
-const VenueMap = ({ venues, center }) => {
+const userIcon = new L.Icon.Default();
+
+function MapEvents({ setMapCenter }) {
+  const map = useMapEvents({
+    moveend: () => {
+      const center = map.getCenter();
+      console.log("Map center updated:", center);
+      setMapCenter({ lat: center.lat, lng: center.lng });
+    },
+  });
+
+  return null;
+}
+
+const VenueMap = ({ userLocation, venues }) => {
+  const dispatch = useDispatch();
+  const [mapCenter, setMapCenter] = useState({
+    lat: userLocation ? userLocation.lat : 51.509865,
+    lng: userLocation ? userLocation.lng : -0.118092,
+  });
+  console.log("User Location:", userLocation);
+  useEffect(() => {
+    if (mapCenter.lat && mapCenter.lng) {
+      console.log("Fetching venues for:", mapCenter);
+      dispatch(fetchNearbyVenues({ lat: mapCenter.lat, lng: mapCenter.lng }));
+    }
+  }, [dispatch, mapCenter]);
+
+  console.log("Venues prop:", venues);
+
   if (!Array.isArray(venues) || venues.length === 0) {
     return (
       <p className="text-center text-grayColor">No venues found on the map.</p>
@@ -21,34 +57,39 @@ const VenueMap = ({ venues, center }) => {
 
   return (
     <MapContainer
-      center={[center.lat, center.lng]}
+      center={[mapCenter.lat, mapCenter.lng]}
       zoom={13}
       className="h-full w-full rounded-md"
-      style={{ height: "500px" }} // Add a fixed height
+      style={{ height: "500px" }}
     >
       <TileLayer
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
       />
 
-      {/* ✅ **Properly Display Markers for Each Venue** */}
-      {venues.map((venue) => {
-        if (!venue.location || !venue.location.coordinates) return null;
+      <MapEvents setMapCenter={setMapCenter} />
 
-        const [lng, lat] = venue.location.coordinates; // Backend provides [longitude, latitude]
+      {userLocation && (
+        <Marker position={[userLocation.lat, userLocation.lng]} icon={userIcon}>
+          <Popup>
+            <strong>Your Location</strong>
+          </Popup>
+        </Marker>
+      )}
+
+      {venues.map((venue) => {
+        if (!venue.location || !venue.location.coordinates) {
+          console.warn("Invalid venue:", venue);
+          return null;
+        }
+
+        const [lng, lat] = venue.location.coordinates;
 
         return (
-          <Marker key={venue._id} position={[lat, lng]} icon={customIcon}>
+          <Marker key={venue._id} position={[lat, lng]} icon={venueIcon}>
             <Popup>
               <strong>{venue.name}</strong>
               <p>{venue.address}</p>
-              {venue.images && venue.images.length > 0 && (
-                <img
-                  src={venue.images[0]} // Use the transformed image URL
-                  alt={venue.name}
-                  className="w-32 h-24 object-cover rounded-md mt-2"
-                />
-              )}
             </Popup>
           </Marker>
         );
