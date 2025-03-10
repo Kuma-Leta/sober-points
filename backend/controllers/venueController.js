@@ -242,35 +242,39 @@ exports.deleteVenue = async (req, res) => {
 exports.getNearbyVenues = async (req, res) => {
   try {
     const { lat, lng, query } = req.query;
-console.log(lat, lng, query)
+
     if (!lat || !lng) {
       return res
         .status(400)
         .json({ message: "Latitude and longitude are required." });
     }
 
-    // MongoDB Geospatial Query
-    let filter = {
-      location: {
-        $near: {
-          $geometry: {
+    const pipeline = [
+      {
+        $geoNear: {
+          near: {
             type: "Point",
-            coordinates: [parseFloat(lng), parseFloat(lat)],
+            coordinates: [parseFloat(lng), parseFloat(lat)], // Ensure correct order
           },
-          $maxDistance: 5000, // 5km radius
+          distanceField: "distance",
+          spherical: true,
+          distanceMultiplier: 0.001, // Convert meters to kilometers
         },
       },
-    };
+      {
+        $match: query
+          ? {
+              $or: [
+                { name: { $regex: query, $options: "i" } },
+                { description: { $regex: query, $options: "i" } },
+              ],
+            }
+          : {},
+      },
+      { $sort: { distance: 1 } }, // Sort by closest first
+    ];
 
-    // If there's a query, search by name or description
-    if (query) {
-      filter.$or = [
-        { name: { $regex: query, $options: "i" } },
-        { description: { $regex: query, $options: "i" } },
-      ];
-    }
-
-    const venues = await Venue.find(filter).limit(10);
+    const venues = await Venue.aggregate(pipeline);
 
     res.status(200).json(venues);
   } catch (error) {
@@ -278,3 +282,4 @@ console.log(lat, lng, query)
     res.status(500).json({ message: "Error retrieving venues" });
   }
 };
+

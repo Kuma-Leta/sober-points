@@ -16,7 +16,7 @@ router.get("/nearby", getNearbyVenues);
 router.post("/", authenticate, authorize(["admin", "customer"]), createVenue);
 
 // 📌 Get All Venues
-router.get("/", authenticate, getAllVenues);
+router.get("/", getAllVenues);
 
 // 📌 Get Venue by ID
 router.get("/:id", authenticate, getVenueById);
