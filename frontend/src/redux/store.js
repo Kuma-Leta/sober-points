@@ -1,11 +1,12 @@
-// store.js
-import { createStore, combineReducers } from "redux";
-import Reducer from "./reducers";
+import { configureStore } from "@reduxjs/toolkit";
+import venueReducer from "./venue/venueSlice";
+import authReducer from "./reducers"; // Keep authentication management separate
 
-const rootReducer = combineReducers({
-  auth: Reducer,
+const store = configureStore({
+  reducer: {
+    auth: authReducer,
+    venues: venueReducer,
+  },
 });
-
-const store = createStore(rootReducer);
 
 export default store;
