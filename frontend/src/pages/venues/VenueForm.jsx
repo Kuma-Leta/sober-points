@@ -2,9 +2,11 @@ import React, { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../api/api";
 import MapComponent from "./MapComponent";
-import { FaTimes, FaUpload } from "react-icons/fa"; // Import icons
-import { toast, ToastContainer } from "react-toastify"; // Import toast
-import "react-toastify/dist/ReactToastify.css"; // Import toast styles
+import ImageUploader from "./ImageUploader";
+import ToastNotifications, {
+  showSuccess,
+  showError,
+} from "./ToastNotifications";
 
 export default function VenueForm({ mode = "create", venueId, onClose }) {
   const [formData, setFormData] = useState({
@@ -21,45 +23,9 @@ export default function VenueForm({ mode = "create", venueId, onClose }) {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
   const formRef = useRef(null);
-  const fileInputRef = useRef(null);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleFileChange = (e) => {
-    const files = e.target.files;
-    const validFiles = Array.from(files).filter(
-      (file) => file.type.startsWith("image/") && file.size <= 5 * 1024 * 1024
-    );
-    setFormData((prev) => ({
-      ...prev,
-      images: [...prev.images, ...validFiles],
-    }));
-  };
-
-  const handleRemoveImage = (index) => {
-    const updatedImages = formData.images.filter((_, i) => i !== index);
-    setFormData((prev) => ({
-      ...prev,
-      images: updatedImages,
-    }));
-  };
-
-  const handleDragOver = (e) => {
-    e.preventDefault();
-  };
-
-  const handleDrop = (e) => {
-    e.preventDefault();
-    const files = e.dataTransfer.files;
-    const validFiles = Array.from(files).filter(
-      (file) => file.type.startsWith("image/") && file.size <= 5 * 1024 * 1024
-    );
-    setFormData((prev) => ({
-      ...prev,
-      images: [...prev.images, ...validFiles],
-    }));
   };
 
   const handleSubmit = async (e) => {
@@ -112,36 +78,15 @@ export default function VenueForm({ mode = "create", venueId, onClose }) {
         );
       }
 
-      // Show success toast
-      toast.success(
-        `Venue ${mode === "create" ? "created" : "updated"} successfully!`,
-        {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        }
+      showSuccess(
+        `Venue ${mode === "create" ? "created" : "updated"} successfully!`
       );
-
       handleFormReset();
     } catch (error) {
       setError(
         error.response?.data?.message || error.message || "Error saving venue"
       );
-
-      // Show error toast
-      toast.error("Failed to save venue. Please try again.", {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      showError("Failed to save venue. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -161,7 +106,7 @@ export default function VenueForm({ mode = "create", venueId, onClose }) {
 
   return (
     <div className="p-4 w-full max-w-6xl mx-auto bg-white dark:bg-darkCard rounded-md mt-20">
-      <ToastContainer /> {/* Add ToastContainer to render toasts */}
+      <ToastNotifications />
       <div className="flex flex-col gap-4">
         <div className="flex flex-col md:flex-row gap-4">
           <div className="w-full md:w-1/2">
@@ -203,68 +148,15 @@ export default function VenueForm({ mode = "create", venueId, onClose }) {
                 className="w-full px-3 py-2 border dark:bg-darkBg rounded-lg"
               ></textarea>
 
-              {/* File Upload & Preview in Drag-and-Drop Section */}
-              <div className="flex flex-col gap-2">
-                <label className="text-gray-600 dark:bg-darkBg font-medium">
-                  Upload Venue Images
-                </label>
-
-                <div
-                  className="border-2 border-dashed border-gray-400 rounded-lg p-4 flex flex-wrap items-center justify-center text-gray-500 cursor-pointer hover:bg-gray-100 min-h-[100px]"
-                  onDragOver={handleDragOver}
-                  onDrop={handleDrop}
-                >
-                  {formData.images.length > 0 ? (
-                    <div className="flex flex-wrap gap-2">
-                      {formData.images.map((file, index) => (
-                        <div key={index} className="relative">
-                          <img
-                            src={URL.createObjectURL(file)}
-                            alt={`Preview ${index + 1}`}
-                            className="w-20 h-20 object-cover rounded-lg"
-                          />
-                          <button
-                            type="button"
-                            onClick={() => handleRemoveImage(index)}
-                            className="absolute top-0 right-0 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 transition"
-                          >
-                            <FaTimes className="w-4 h-4" />
-                          </button>
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <p>Drag & Drop images here</p>
-                  )}
-                </div>
-
-                <input
-                  type="file"
-                  name="images"
-                  multiple
-                  onChange={handleFileChange}
-                  ref={fileInputRef}
-                  className="hidden"
-                  accept="image/*"
-                />
-
-                <button
-                  type="button"
-                  className="flex items-center justify-center  bg-gray-400 px-4 py-2 mr-2 rounded text-white hover:bg-gray-500 transition"
-                  onClick={() => fileInputRef.current.click()}
-                >
-                  <FaUpload className="mr-2" /> Upload Images
-                </button>
-              </div>
+              <ImageUploader formData={formData} setFormData={setFormData} />
             </form>
           </div>
 
           {/* Map Section */}
           <div className="w-full pt-12 md:w-1/2">
-            <p className="text-center text-gray-600 dark:bg-darkBg font-medium text-base  mb-3 p-2 ">
-              Select Venue Location
+            <p className="text-center  dark:bg-darkBg font-medium text-base mb-3 p-2">
+              Select Venue Location from Map
             </p>
-
             <div className="relative h-80 w-full rounded-md border">
               <MapComponent setFormData={setFormData} />
             </div>
@@ -276,16 +168,13 @@ export default function VenueForm({ mode = "create", venueId, onClose }) {
           <button
             type="button"
             className="bg-gray-400 px-4 py-2 mr-2 rounded text-white hover:bg-gray-500 transition"
-            onClick={() => {
-              console.log("Cancel button clicked"); // Debugging
-              navigate("/"); // Navigate to the home page
-            }}
+            onClick={() => navigate("/")}
           >
             Cancel
           </button>
           <button
             type="button"
-            onClick={(e) => handleSubmit(e)} // Call handleSubmit manually
+            onClick={handleSubmit}
             className={`bg-red-600 px-4 py-2 rounded text-white hover:bg-red-700 transition ${
               loading ? "opacity-50" : ""
             }`}
