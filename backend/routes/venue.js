@@ -9,9 +9,11 @@ const {
   updateVenue,
   deleteVenue,
   getNearbyVenues,
+  searchVenues
 } = require("../controllers/venueController");
 
 router.get("/nearby", getNearbyVenues);
+router.get("/search", searchVenues);
 // 📌 Create Venue
 router.post("/", authenticate, authorize(["admin", "customer"]), createVenue);
 

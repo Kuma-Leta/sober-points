@@ -238,43 +238,40 @@ exports.deleteVenue = async (req, res) => {
 };
 
 
-// 📌 Get Nearby Venues
+
+
 exports.getNearbyVenues = async (req, res) => {
   try {
     const { lat, lng, query } = req.query;
-
+    console.log(lat, lng, query);
     if (!lat || !lng) {
       return res
         .status(400)
         .json({ message: "Latitude and longitude are required." });
     }
 
-    const pipeline = [
-      {
-        $geoNear: {
-          near: {
+    // MongoDB Geospatial Query
+    let filter = {
+      location: {
+        $near: {
+          $geometry: {
             type: "Point",
-            coordinates: [parseFloat(lng), parseFloat(lat)], // Ensure correct order
+            coordinates: [parseFloat(lng), parseFloat(lat)],
           },
-          distanceField: "distance",
-          spherical: true,
-          distanceMultiplier: 0.001, // Convert meters to kilometers
+          // $maxDistance: 5000, // 5km radius
         },
       },
-      {
-        $match: query
-          ? {
-              $or: [
-                { name: { $regex: query, $options: "i" } },
-                { description: { $regex: query, $options: "i" } },
-              ],
-            }
-          : {},
-      },
-      { $sort: { distance: 1 } }, // Sort by closest first
-    ];
+    };
 
-    const venues = await Venue.aggregate(pipeline);
+    // If there's a query, search by name or description
+    if (query) {
+      filter.$or = [
+        { name: { $regex: query, $options: "i" } },
+        { description: { $regex: query, $options: "i" } },
+      ];
+    }
+
+    const venues = await Venue.find(filter).limit(10);
 
     res.status(200).json(venues);
   } catch (error) {
@@ -283,3 +280,71 @@ exports.getNearbyVenues = async (req, res) => {
   }
 };
 
+
+
+
+exports.searchVenues = async (req, res) => {
+  try {
+    let { query, latitude, longitude, page = 1, limit = 10 } = req.query;
+
+    // Convert pagination params to integers
+    const pageNumber = parseInt(page, 10);
+    const pageSize = parseInt(limit, 10);
+    const skip = (pageNumber - 1) * pageSize;
+
+    let referenceLat, referenceLng;
+
+    // If latitude and longitude are provided, use them directly
+    if (latitude && longitude) {
+      referenceLat = parseFloat(latitude);
+      referenceLng = parseFloat(longitude);
+    } else if (query) {
+      // Find the first venue that matches the search query
+      const matchingVenue = await Venue.findOne({
+        name: { $regex: new RegExp(query, "i") }, // Case-insensitive search
+      });
+
+      if (!matchingVenue) {
+        return res.status(404).json({ message: "No matching venue found" });
+      }
+
+      referenceLat = matchingVenue.location.coordinates[1]; // Extract latitude
+      referenceLng = matchingVenue.location.coordinates[0]; // Extract longitude
+    } else {
+      return res.status(400).json({ message: "Please provide either a query or coordinates" });
+    }
+
+    // Step 2: Find all venues, sorted by proximity to the reference point
+    const pipeline = [
+      {
+        $geoNear: {
+          near: {
+            type: "Point",
+            coordinates: [referenceLng, referenceLat], // Ensure correct order
+          },
+          distanceField: "distance",
+          spherical: true,
+          distanceMultiplier: 0.001, // Convert meters to kilometers
+        },
+      },
+      { $sort: { distance: 1 } }, // Sort by closest first
+      { $skip: skip },
+      { $limit: pageSize },
+    ];
+
+    // Execute aggregation query
+    const venues = await Venue.aggregate(pipeline);
+    const totalVenues = await Venue.countDocuments();
+
+    res.status(200).json({
+      referencePoint: { latitude: referenceLat, longitude: referenceLng },
+      totalVenues,
+      totalPages: Math.ceil(totalVenues / pageSize),
+      currentPage: pageNumber,
+      venues,
+    });
+  } catch (error) {
+    console.error("Error fetching nearby venues:", error);
+    res.status(500).json({ message: "Error retrieving venues" });
+  }
+};
