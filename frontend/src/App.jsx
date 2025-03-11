@@ -15,9 +15,9 @@ import ForgotPassword from "./auth/password/forgotPassword";
 import ResetPassword from "./auth/password/resetPassword";
 import LandingPage from "./pages/landing";
 import { API_URL } from "./constants/url";
-import Features from "./pages/company/Services";
+import Features from "./pages/landing/Services";
 import VenueForm from "./pages/venues/VenueForm";
-import VenuesPage from "./pages/company/VenuesPage";
+import VenuesPage from "./pages/landing/VenuesPage";
 
 function Pages() {
   const user = useSelector((state) => state.auth.user);

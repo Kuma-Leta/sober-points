@@ -1,9 +1,9 @@
 import React from "react";
-import HeroSection from "./company/HeroSection";
-import Features from "./company/Services";
-import VenueList from "./company/VenueList";
+import HeroSection from "./landing/HeroSection";
+import Features from "./landing/Services";
+import VenueList from "./landing/VenueList";
 import Pagination from "../ui/pagination";
-import ListOfVenueLinks from "./company/listOfVenuLinks";
+import ListOfVenueLinks from "./landing/listOfVenuLinks";
 
 const LandingPage = () => {
   return (
