@@ -86,8 +86,9 @@ const useAuth = () => {
         toast.success(
           "Registration successful! Please check your email to verify your account."
         );
-        dispatch(loginSuccess(data.token, data.data.user));
-        window.location.href = redirectPath || "/";
+        console.log(data.data);
+        dispatch(loginSuccess(data.token, data.data));
+        // window.location.href = redirectPath || "/";
       } else {
         dispatch(loginFailure(data.error.message || "Registration failed"));
         setError(data.error.message || "Registration failed");
