@@ -14,7 +14,6 @@ import Users from "./pages/users/users";
 import ForgotPassword from "./auth/password/forgotPassword";
 import ResetPassword from "./auth/password/resetPassword";
 import LandingPage from "./pages/landing";
-import Setting from "./pages/company/setting";
 import { API_URL } from "./constants/url";
 import Features from "./pages/company/Services";
 import VenueForm from "./pages/venues/VenueForm";

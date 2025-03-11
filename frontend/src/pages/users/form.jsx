@@ -6,13 +6,11 @@ export default function UserForm({
   userId,
   onClose,
   onUpdate,
-  companyId,
 }) {
   const [userData, setUserData] = useState({
     name: "",
     email: "",
     role: "",
-    companyId: companyId,
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
