@@ -172,7 +172,9 @@ const useAuth = () => {
   const logoutUser = async () => {
     dispatch(logout());
     dispatch(loginSuccess("", {}));
+    console.log("clicked");
     await axiosInstance.get("/logout");
+    window.location.href = "/";
   };
 
   const isLoggedIn = () => {
