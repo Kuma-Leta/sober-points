@@ -96,7 +96,7 @@ const Header = () => {
               {dropdownOpen && (
                 <div
                   ref={dropdownRef}
-                  className="absolute right-0 mt-2 w-40 bg-white dark:bg-darkCard shadow-md rounded-md z-50 text-sm"
+                  className="absolute left-0 top-7 mt-2 w-40 bg-white dark:bg-darkCard shadow-md rounded-md z-50 text-sm"
                 >
                   <Link
                     onClick={() => setDropdownOpen(false)}
