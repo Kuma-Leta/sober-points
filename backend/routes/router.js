@@ -60,8 +60,6 @@ router.delete(
   userController.deleteUser
 );
 
-//companies
-router.use("/companies", require("./company"));
 router.use("/venues", venueRoutes); // <-- Add this line
 
 // Venues
