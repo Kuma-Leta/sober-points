@@ -26,7 +26,7 @@ const useAuth = () => {
         const res = await axiosInstance.get("/me");
         dispatch(loginSuccess(token, res.data));
       } catch (err) {
-        dispatch(loginFailure("an authorized"));
+        dispatch(loginFailure(null));
       }
     }
 
