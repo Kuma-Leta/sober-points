@@ -82,7 +82,9 @@ exports.register = async (req, res) => {
     let user = await User.findOne({ email });
 
     if (user) {
-      return res.status(400).json({ message: "user with this email already exist" });
+      return res
+        .status(400)
+        .json({ message: "user with this email already exist" });
     }
     const baseUsername = getUsernameFromEmail(email);
     const username = await generateUniqueUsername(baseUsername);
@@ -97,7 +99,7 @@ exports.register = async (req, res) => {
     });
 
     const verificationToken = user.createVerificationToken();
-    const test = await user.save();
+    const user1 = await user.save();
 
     // const userLog = { _id: user._id, role: user.role };
     // createSendToken(userLog, 200, res);
@@ -109,11 +111,9 @@ exports.register = async (req, res) => {
     //   subject: "Verify your email address",
     //   message: `Thank you for registering with SCIeLAB .To complete your registration, please verify your email address by clicking the link below: ${verificationUrl} \n`,
     // });
+    const userLog = { _id: user1._id, role: user1.role };
+    createSendToken(userLog, 200, res);
 
-    res.status(201).json({
-      message: "Registration successful!",
-      data: test,
-    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -121,7 +121,9 @@ exports.register = async (req, res) => {
 
 exports.me = async (req, res) => {
   try {
-    const user = await User.findById(req.user._id).select("-password").populate('company', 'name logo _id');
+    const user = await User.findById(req.user._id)
+      .select("-password")
+      .populate("company", "name logo _id");
     if (!user) {
       return res.status(404).json({ message: "Benutzer nicht gefunden" });
     }

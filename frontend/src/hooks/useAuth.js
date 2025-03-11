@@ -79,20 +79,20 @@ const useAuth = () => {
       });
 
       const data = response.data;
-      if (response.status === 201) {
+      if (response.status === 200) {
         setSuccessMessage(
           "Registration successful! Please check your email to verify your account."
         );
         toast.success(
           "Registration successful! Please check your email to verify your account."
         );
-        console.log(data.data);
-        dispatch(loginSuccess(data.token, data.data));
-        // window.location.href = redirectPath || "/";
+        console.log(data.data.user);
+        dispatch(loginSuccess(data.token, data.data.user));
+        window.location.href = redirectPath || "/";
       } else {
-        dispatch(loginFailure(data.error.message || "Registration failed"));
-        setError(data.error.message || "Registration failed");
-        toast.error(data.error.message || "Registration failed");
+        dispatch(loginFailure(data?.error?.message || "Registration failed"));
+        setError(data?.error?.message || "Registration failed");
+        toast.error(data?.error?.message || "Registration failed");
       }
       setLoading(false);
     } catch (error) {
