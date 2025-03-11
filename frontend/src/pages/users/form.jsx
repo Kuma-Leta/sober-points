@@ -124,7 +124,6 @@ export default function UserForm({
             <option value="">Select role</option>
             <option value="admin">Admin</option>
             <option value="customer">Customer</option>
-            <option value="vendor">Vendor</option>
           </select>
         </div>
         <div className="flex justify-end">
