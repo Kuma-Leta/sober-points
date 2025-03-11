@@ -26,7 +26,7 @@ const Header = () => {
   }, []);
 
   return (
-    <header className="fixed top-0 left-0 w-full bg-white dark:bg-darkCard shadow-md z-50 h-18 flex items-center">
+    <header className="sticky top-0 left-0 w-full bg-white dark:bg-darkCard shadow-md z-50 h-18 flex items-center">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between w-full">
         {/* Mobile Menu Button */}
         <button
