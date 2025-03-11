@@ -82,7 +82,7 @@ exports.register = async (req, res) => {
     let user = await User.findOne({ email });
 
     if (user) {
-      return res.status(400).json({ message: "Benutzer existiert bereits" });
+      return res.status(400).json({ message: "user with this email already exist" });
     }
     const baseUsername = getUsernameFromEmail(email);
     const username = await generateUniqueUsername(baseUsername);
