@@ -4,6 +4,7 @@ import { loginFailure, loginSuccess, logout } from "../redux/actions";
 import { useEffect, useState } from "react";
 import axiosInstance from "../api/api";
 import { toast } from "react-toastify";
+import axios from "axios";
 
 const TOKEN_KEY = "_auth_token";
 
@@ -172,7 +173,8 @@ const useAuth = () => {
   const logoutUser = async () => {
     dispatch(logout());
     dispatch(loginSuccess("", {}));
-    await axiosInstance.get("/logout");
+    await axios.get("/logout");
+    navigate("/landing");
   };
 
   const isLoggedIn = () => {

@@ -19,6 +19,7 @@ import { API_URL } from "./constants/url";
 import Features from "./pages/company/Services";
 import VenueForm from "./pages/venues/VenueForm";
 import VenuesPage from "./pages/company/VenuesPage";
+import VenueDetail from "./pages/company/VenueDetail";
 
 function Pages() {
   const user = useSelector((state) => state.auth.user);
@@ -43,6 +44,8 @@ function Pages() {
     <Routes>
       <>
         <Route path="/" element={<LandingPage />} />
+        <Route path="/venues/:id" element={<VenueDetail />} />
+
         <Route
           path="/users"
           element={

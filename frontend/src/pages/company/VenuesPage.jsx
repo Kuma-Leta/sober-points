@@ -10,6 +10,7 @@ import VenueLists from "./VenueLists";
 import VenueMap from "./VenueMap";
 import SearchBar from "../../components/search";
 import Header from "../../components/common/header";
+
 const VenuesPage = () => {
   const dispatch = useDispatch();
   const [searchParams] = useSearchParams();
@@ -23,6 +24,9 @@ const VenuesPage = () => {
     lat: 51.509865, // Default to London
     lng: -0.118092,
   });
+
+  // ✅ Check if the user came from the LandingPage
+  const fromLanding = searchParams.get("fromLanding") === "true";
 
   // ✅ Fetch user's location
   useEffect(() => {
@@ -57,7 +61,11 @@ const VenuesPage = () => {
     <div className="flex flex-col min-h-screen bg-white dark:bg-darkBg">
       <Header />
       <div className="flex flex-col md:flex-row flex-1 pt-20">
-        <div className="w-full md:w-1/2 p-6 bg-white dark:bg-darkCard overflow-y-auto h-screen">
+        <div
+          className={`w-full ${
+            fromLanding ? "md:w-full" : "md:w-1/2"
+          } p-6 bg-white dark:bg-darkCard overflow-y-auto h-screen`}
+        >
           <SearchBar />
           {loading ? (
             <p className="text-gray-500">Loading venues...</p>
@@ -76,22 +84,25 @@ const VenuesPage = () => {
           )}
         </div>
 
-        {/* Sticky Map (Updates on Move) */}
-        <div className="w-full md:w-1/2 h-screen sticky top-0 z-0">
-          <VenueMap
-            venues={
-              searchResults.length > 0
-                ? searchResults
-                : nearbyVenues.length > 0
-                ? nearbyVenues
-                : venues
-            }
-            center={mapCenter}
-            userLocation={userLocation}
-          />
-        </div>
+        {/* Conditionally render the map */}
+        {!fromLanding && (
+          <div className="w-full md:w-1/2 h-screen sticky top-0 z-0">
+            <VenueMap
+              venues={
+                searchResults.length > 0
+                  ? searchResults
+                  : nearbyVenues.length > 0
+                  ? nearbyVenues
+                  : venues
+              }
+              center={mapCenter}
+              userLocation={userLocation}
+            />
+          </div>
+        )}
       </div>
     </div>
   );
 };
+
 export default VenuesPage;

@@ -26,8 +26,15 @@ const Header = () => {
   }, []);
 
   return (
-    <header className="fixed top-0 left-0 w-full bg-white dark:bg-darkCard shadow-md z-50 h-18 flex items-center">
+    <header className="fixed top-0 left-0 w-full bg-white dark:bg-darkCard shadow-md z-50 h-16 flex items-center">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between w-full">
+        {/* Logo */}
+        <div className="flex items-center space-x-3 pl-4">
+          <Link to="/">
+            <img src={logo} alt="Logo" className="w-16 h-auto object-contain" />
+          </Link>
+        </div>
+
         {/* Mobile Menu Button */}
         <button
           className="text-grayColor dark:text-darkText sm:hidden"
@@ -35,17 +42,6 @@ const Header = () => {
         >
           {mobileMenuOpen ? <FaTimes size={20} /> : <FaBars size={20} />}
         </button>
-
-        {/* Logo */}
-        <div className="flex items-center space-x-3">
-          <Link to="/">
-            <img
-              src={logo}
-              alt="Sober Points Logo"
-              className="w-16 sm:w-20 h-auto object-contain"
-            />
-          </Link>
-        </div>
 
         {/* Navigation Links */}
         <nav className="hidden sm:flex space-x-4 text-grayColor dark:text-darkText text-sm font-medium">
@@ -75,7 +71,6 @@ const Header = () => {
                 className="hidden sm:flex bg-primary hover:bg-primaryLight text-white px-3 py-1 rounded-md items-center space-x-1 text-sm transition"
               >
                 <FaPlus />
-                {/* <span>Post Venue</span> */}
               </Link>
 
               {/* User Dropdown */}
@@ -129,29 +124,33 @@ const Header = () => {
 
       {/* Mobile Menu */}
       {mobileMenuOpen && (
-        <div className="sm:hidden bg-white dark:bg-darkCard shadow-md p-4">
-          <nav className="flex flex-col space-y-2 text-center">
+        <div className="sm:hidden absolute top-16 left-0 w-full bg-white dark:bg-darkCard shadow-md z-40">
+          <nav className="flex flex-col space-y-2 p-4">
             <Link
               to="/"
               className="text-grayColor dark:text-darkText hover:text-primary transition"
+              onClick={() => setMobileMenuOpen(false)}
             >
               Home
             </Link>
             <Link
               to="#features"
               className="text-grayColor dark:text-darkText hover:text-primary transition"
+              onClick={() => setMobileMenuOpen(false)}
             >
               Features
             </Link>
             <Link
               to="#services"
               className="text-grayColor dark:text-darkText hover:text-primary transition"
+              onClick={() => setMobileMenuOpen(false)}
             >
               Services
             </Link>
             <Link
               to="#contact"
               className="text-grayColor dark:text-darkText hover:text-primary transition"
+              onClick={() => setMobileMenuOpen(false)}
             >
               Contact
             </Link>

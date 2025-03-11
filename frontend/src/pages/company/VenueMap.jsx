@@ -4,6 +4,7 @@ import {
   TileLayer,
   Marker,
   Popup,
+  useMap,
   useMapEvents,
 } from "react-leaflet";
 import L from "leaflet";
@@ -21,39 +22,72 @@ const venueIcon = new L.Icon({
 
 const userIcon = new L.Icon.Default();
 
-function MapEvents({ setMapCenter }) {
+// ✅ Preserve user zoom level when updating map center
+const UpdateMapCenter = ({ center }) => {
+  const map = useMap();
+  useEffect(() => {
+    if (center.lat && center.lng) {
+      const currentZoom = map.getZoom(); // 🔥 Get user's zoom level
+      map.setView([center.lat, center.lng], currentZoom); // 🔥 Keep zoom level
+    }
+  }, [center, map]);
+
+  return null;
+};
+
+// ✅ Allow users to move the map, updating the center
+const MapEvents = ({ setMapCenter }) => {
   const map = useMapEvents({
     moveend: () => {
       const center = map.getCenter();
-      console.log("Map center updated:", center);
       setMapCenter({ lat: center.lat, lng: center.lng });
     },
   });
 
   return null;
-}
+};
 
-const VenueMap = ({ userLocation, venues }) => {
+const VenueMap = () => {
   const dispatch = useDispatch();
+  const { venues, searchResults } = useSelector((state) => state.venues);
+
+  const [userLocation, setUserLocation] = useState(null);
   const [mapCenter, setMapCenter] = useState({
-    lat: userLocation ? userLocation.lat : 51.509865,
-    lng: userLocation ? userLocation.lng : -0.118092,
+    lat: 51.509865, // Default: London
+    lng: -0.118092,
   });
-  console.log("User Location:", userLocation);
+
+  // ✅ Get user's location on mount
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          setUserLocation({ lat: latitude, lng: longitude });
+          setMapCenter({ lat: latitude, lng: longitude });
+        },
+        (error) => console.warn("Geolocation error:", error.message)
+      );
+    }
+  }, []);
+
+  // ✅ Fetch nearby venues when map center changes
   useEffect(() => {
     if (mapCenter.lat && mapCenter.lng) {
-      console.log("Fetching venues for:", mapCenter);
       dispatch(fetchNearbyVenues({ lat: mapCenter.lat, lng: mapCenter.lng }));
     }
   }, [dispatch, mapCenter]);
 
-  console.log("Venues prop:", venues);
-
-  if (!Array.isArray(venues) || venues.length === 0) {
-    return (
-      <p className="text-center text-grayColor">No venues found on the map.</p>
-    );
-  }
+  // ✅ Update map center if search results change
+  useEffect(() => {
+    if (searchResults.length > 0) {
+      const firstVenue = searchResults[0];
+      if (firstVenue.location && firstVenue.location.coordinates) {
+        const [lng, lat] = firstVenue.location.coordinates;
+        setMapCenter({ lat, lng });
+      }
+    }
+  }, [searchResults]);
 
   return (
     <MapContainer
@@ -67,6 +101,7 @@ const VenueMap = ({ userLocation, venues }) => {
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
       />
 
+      <UpdateMapCenter center={mapCenter} />
       <MapEvents setMapCenter={setMapCenter} />
 
       {userLocation && (
@@ -79,7 +114,6 @@ const VenueMap = ({ userLocation, venues }) => {
 
       {venues.map((venue) => {
         if (!venue.location || !venue.location.coordinates) {
-          console.warn("Invalid venue:", venue);
           return null;
         }
 

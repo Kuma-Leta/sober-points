@@ -24,7 +24,7 @@ export const fetchNearbyVenues = createAsyncThunk(
   "venues/fetchNearby",
   async ({ lat, lng }, thunkAPI) => {
     try {
-      const response = await axios.get(  `http://localhost:5000/api/venues/nearby?lat=${lat}&lng=${lng}`
+      const response = await axios.get(`http://localhost:5000/api/venues/nearby?lat=${lat}&lng=${lng}`
       );
       return response.data;
     } catch (error) {
@@ -40,8 +40,11 @@ export const searchVenues = createAsyncThunk(
   "venues/search",
   async (query, thunkAPI) => {
     try {
-      const response = await axiosInstance.get(`/venues/search?query=${query}`);
-      return response.data;
+      const response = await axios.get(
+        `http://localhost:5000/api/venues/search?query=${query}`
+      );
+    
+      return response.data.venues;
     } catch (error) {
       return thunkAPI.rejectWithValue(
         error.response?.data?.message || "Failed to search venues"
@@ -82,6 +85,7 @@ const venueSlice = createSlice({
       .addCase(fetchNearbyVenues.fulfilled, (state, action) => {
         state.loading = false;
         state.nearbyVenues = action.payload;
+        state.venues = action.payload;
       })
       .addCase(fetchNearbyVenues.rejected, (state, action) => {
         state.loading = false;
@@ -94,6 +98,7 @@ const venueSlice = createSlice({
       .addCase(searchVenues.fulfilled, (state, action) => {
         state.loading = false;
         state.searchResults = action.payload;
+        state.venues = action.payload;
       })
       .addCase(searchVenues.rejected, (state, action) => {
         state.loading = false;

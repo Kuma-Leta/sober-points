@@ -6,12 +6,12 @@ import bgImage from "../../assets/images/netherlands3.jpg";
 
 const HeroSection = () => {
   const [query, setQuery] = useState("");
-
   const navigate = useNavigate();
 
   const handleSearch = (e) => {
     if (e.key === "Enter" && query.trim()) {
-      navigate(`/venues?query=${query}`);
+      // ✅ Append `fromLanding=true` to the URL
+      navigate(`/venues?query=${query}&fromLanding=true`);
     }
   };
 
@@ -29,9 +29,9 @@ const HeroSection = () => {
         initial={{ opacity: 0, y: -30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
-        className="flex flex-col items-center gap-4 mb-6"
+        className="flex flex-col items-center gap-4 mb-4 sm:mb-6"
       >
-        <h1 className="text-4xl sm:text-5xl font-bold text-white">
+        <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white">
           Discover the Best Sober-Friendly Venues
         </h1>
       </motion.div>
@@ -40,7 +40,7 @@ const HeroSection = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3, duration: 0.8 }}
-        className="text-lg text-gray-200 max-w-2xl"
+        className="text-base sm:text-lg text-gray-200 max-w-2xl px-4"
       >
         Explore sober-friendly restaurants, cafes, and social spots near you.
       </motion.p>
@@ -51,6 +51,7 @@ const HeroSection = () => {
         transition={{ delay: 0.6, duration: 0.6 }}
         className="w-full max-w-lg mt-6"
       >
+        {/* Pass the `setQuery` and `onSearch` functions to the SearchBar */}
         <SearchBar setQuery={setQuery} onSearch={handleSearch} />
       </motion.div>
     </section>

@@ -24,13 +24,13 @@ const VenueList = () => {
   }
 
   return (
-    <section className="py-12 bg-gray-50 dark:bg-darkBg">
-      <div className="max-w-6xl mx-auto px-6">
-        <h2 className="text-4xl font-bold text-center text-gray-900 dark:text-white mb-8">
-          Explore <span className="text-primary">Sober-Friendly</span> Venues
+    <section className="py-8 sm:py-12 bg-gray-50 dark:bg-darkBg">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6">
+        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center text-gray-900 dark:text-white mb-6 sm:mb-8">
+          Explore Sober-Friendly Venues
         </h2>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {venues.map((venue, index) => (
             <motion.div
               key={venue._id}
@@ -38,7 +38,7 @@ const VenueList = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 * index, duration: 0.5 }}
               whileHover={{ scale: 1.05 }}
-              className="relative group overflow-hidden rounded-2xl shadow-lg bg-white dark:bg-darkCard transition-all duration-300"
+              className="relative group overflow-hidden rounded-lg shadow-md cursor-pointer bg-white dark:bg-darkCard p-4"
             >
               {/* Venue Image */}
               {venue.images.length > 0 && (
@@ -46,22 +46,20 @@ const VenueList = () => {
                   src={venue.images[0]}
                   alt={venue.name}
                   loading="lazy"
-                  className="w-full h-64 object-cover rounded-t-2xl transition-transform duration-300 group-hover:scale-105"
+                  className="w-full h-48 sm:h-64 object-cover rounded-lg transition-transform duration-100 group-hover:scale-105"
                 />
               )}
 
-              {/* Venue Details */}
-              <div className="p-5">
-                <h3 className="text-xl font-semibold text-gray-800 dark:text-white">
-                  {venue.name}
-                </h3>
-                <p className="text-sm text-gray-600 dark:text-gray-300">
-                  📍 {venue.address}
-                </p>
-              </div>
+              {/* Venue Name */}
+              <h3 className="text-lg font-semibold mt-2 text-gray-800 dark:text-white">
+                {venue.name}
+              </h3>
 
-              {/* Gradient Overlay & Hover Effect */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-0 group-hover:opacity-80 transition-opacity duration-300 flex items-end justify-center p-4">
+              {/* Venue Address */}
+              <p className="text-sm text-grayColor">{venue.address}</p>
+
+              {/* Overlay */}
+              <div className="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                 <span className="text-white text-lg font-semibold">
                   {venue.name}
                 </span>
