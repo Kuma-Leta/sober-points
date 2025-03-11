@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-const GoogleSignInButton = ({ role }) => {
+const GoogleSignInButton = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -21,7 +21,6 @@ const GoogleSignInButton = ({ role }) => {
       const name = decoded.name;
       const profilePicture = decoded.picture;
       const providerId = decoded.sub;
-      console.log(role);
 
       // Send the extracted information to the backend
       const result = await axiosInstance.post("/auth/google", {
@@ -35,9 +34,7 @@ const GoogleSignInButton = ({ role }) => {
       if (result.status === 200) {
         dispatch(loginSuccess(data.token, data.data.user));
         localStorage.setItem("_auth_token", data.token);
-
-        console.log(`/${data.data.user?.role}s/${data.data.user?.username}`);
-        // window.location.href = `/${data.data.user?.role}s/${data.data.user?.username}`;
+        window.location.href = `/`;
       } else {
         toast.success("You don't have account with this ID try register");
         dispatch(loginFailure("Google login failed"));
