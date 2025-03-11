@@ -113,19 +113,75 @@ exports.register = async (req, res) => {
     // });
     const userLog = { _id: user1._id, role: user1.role };
     createSendToken(userLog, 200, res);
-
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
+// Login/Register with Google
+exports.googleLogin = async (req, res) => {
+  const { email, role, name, profilePicture, providerId } = req.body;
+
+  try {
+    // let user = await User.findOne({ "oauth.providerId": providerId });
+    let user = await User.findOne({ email });
+
+    if (!user) {
+      const baseUsername = getUsernameFromEmail(email);
+      const username = await generateUniqueUsername(baseUsername);
+      user = new User({
+        email,
+        name,
+        role,
+        isVerified: true,
+        profilePicture,
+        username,
+        oauth: [{ provider: "google", providerId }],
+      });
+      await user.save();
+    }
+
+    const userLog = { _id: user._id, username: user.username, role: user.role };
+    createSendToken(userLog, 200, res);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// Login/Register with Google
+exports.googleRegister = async (req, res) => {
+  const { email, role, name, profilePicture, providerId } = req.body;
+
+  try {
+    // let user = await User.findOne({ "oauth.providerId": providerId });
+    let user = await User.findOne({ email });
+
+    if (!user) {
+      const baseUsername = getUsernameFromEmail(email);
+      const username = await generateUniqueUsername(baseUsername);
+      user = new User({
+        email,
+        name,
+        role,
+        isVerified: true,
+        profilePicture,
+        username,
+        oauth: [{ provider: "google", providerId }],
+      });
+      await user.save();
+    }
+
+    const userLog = { _id: user._id, username: user.username, role: user.role };
+    createSendToken(userLog, 200, res);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
 exports.me = async (req, res) => {
   try {
-    const user = await User.findById(req.user._id)
-      .select("-password")
-      .populate("company", "name logo _id");
+    const user = await User.findById(req.user._id).select("-password");
     if (!user) {
-      return res.status(404).json({ message: "Benutzer nicht gefunden" });
+      return res.status(404).json({ message: "Not Found" });
     }
     res.json(user);
   } catch (error) {
@@ -137,7 +193,7 @@ exports.forgotPassword = async (req, res) => {
   const { email } = req.body;
 
   try {
-    let user = await User.findOne({ email }).select("-children -__v");
+    let user = await User.findOne({ email }).select("-__v");
 
     if (!user || !user.password)
       return res.status(400).json({ message: "User doesn't exist" });

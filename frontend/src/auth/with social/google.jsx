@@ -22,50 +22,25 @@ const GoogleSignInButton = ({ role }) => {
       const profilePicture = decoded.picture;
       const providerId = decoded.sub;
       console.log(role);
-      if (role) {
-        // Send the extracted information to the backend
-        const result = await axiosInstance.post("/auth/google/register", {
-          email,
-          name,
-          role,
-          profilePicture,
-          providerId,
-        });
 
-        const data = result.data;
-        if (result.status === 200) {
-          dispatch(loginSuccess(data.token, data.data.user));
-          localStorage.setItem("_auth_token", data.token);
-          toast.success(
-            "Successfully registered, Please update your account to proceed e "
-          );
+      // Send the extracted information to the backend
+      const result = await axiosInstance.post("/auth/google", {
+        email,
+        name,
+        profilePicture,
+        providerId,
+      });
 
-          setTimeout(() => (window.location.href = "/update-account"), 4000);
-          console.log(`/${data.data.user?.role}s/${data.data.user?.username}`);
-          // window.location.href = `/${data.data.user?.role}s/${data.data.user?.username}`;
-        } else {
-          dispatch(loginFailure("Google login failed"));
-        }
+      const data = result.data;
+      if (result.status === 200) {
+        dispatch(loginSuccess(data.token, data.data.user));
+        localStorage.setItem("_auth_token", data.token);
+
+        console.log(`/${data.data.user?.role}s/${data.data.user?.username}`);
+        // window.location.href = `/${data.data.user?.role}s/${data.data.user?.username}`;
       } else {
-        // Send the extracted information to the backend
-        const result = await axiosInstance.post("/auth/google", {
-          email,
-          name,
-          profilePicture,
-          providerId,
-        });
-
-        const data = result.data;
-        if (result.status === 200) {
-          dispatch(loginSuccess(data.token, data.data.user));
-          localStorage.setItem("_auth_token", data.token);
-
-          console.log(`/${data.data.user?.role}s/${data.data.user?.username}`);
-          window.location.href = `/${data.data.user?.role}s/${data.data.user?.username}`;
-        } else {
-          toast.success("You don't have account with this ID try register");
-          dispatch(loginFailure("Google login failed"));
-        }
+        toast.success("You don't have account with this ID try register");
+        dispatch(loginFailure("Google login failed"));
       }
     } catch (error) {
       if (error.status === 400) {
