@@ -63,14 +63,7 @@ function Pages() {
         {/* <Route path="/users" element={<Users />} /> */}
         <Route path="/venue/form" element={<VenueForm />} />
 
-        <Route
-          path="/setting"
-          element={
-            <ProtectedRoute>
-              <Setting />
-            </ProtectedRoute>
-          }
-        />
+ 
       </>
       <Route path="/auth/register" element={<Register />} />
       <Route path="/check-in" element={<ProtectedRoute></ProtectedRoute>} />
