@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 
 const VenueLists = () => {
   const { venues, loading, error } = useSelector((state) => state.venues);
-
+  console.log(venues);
   if (!Array.isArray(venues) || venues.length === 0) {
     return <p className="text-grayColor mt-2 text-center">No venues found.</p>;
   }
