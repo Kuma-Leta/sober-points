@@ -14,7 +14,7 @@ exports.addRating = async (req, res) => {
     }
 
     // Check if user has already reviewed the venue
-    const existingReview = await Rating.findOne({ user: userId, venueId });
+    const existingReview = await Rating.findOne({ user: userId, venueId })
     if (existingReview) {
       return res
         .status(400)
@@ -27,13 +27,13 @@ exports.addRating = async (req, res) => {
       review,
       user: userId,
       venueId,
-    });
+    })
 
     // Add rating to venue and update average rating
     venue.reviews.push(newRating._id);
     await venue.calculateAverageRating();
 
-    res.status(201).json({ message: "Review added successfully", newRating });
+    res.status(201).json({ message: "Review added successfully", newRating, });
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
   }
@@ -43,7 +43,7 @@ exports.addRating = async (req, res) => {
 exports.getVenueRatings = async (req, res) => {
   try {
     const { venueId } = req.params;
-
+console.log(venueId)
     const ratings = await Rating.find({ venueId }).populate(
       "user",
       "name email"

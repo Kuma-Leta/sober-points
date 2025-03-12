@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
-const { addRating } = require("../controllers/ratingController");
+const { addRating ,getVenueRatings} = require("../controllers/ratingController");
 const { authenticate } = require("../middleware/authMiddleware");
-router.post("/:venueId/rate", authenticate, addRating);
+router.post("/giveRating", authenticate, addRating);
+router.get("/:venueId/getRating",getVenueRatings)
 module.exports = router;   

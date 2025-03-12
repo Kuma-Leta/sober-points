@@ -57,8 +57,8 @@ export const addVenueRating = createAsyncThunk(
   async ({ venueId, rating, review }, thunkAPI) => {
     try {
       const response = await axios.post(
-        `http://localhost:5000/api/ratings/${venueId}/rate`,
-        { rating, review }
+        `http://localhost:5000/api/ratings/addRatings`,
+        { rating, review,venueId }
       );
       return response.data; // Should return the updated venue data
     } catch (error) {

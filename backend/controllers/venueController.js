@@ -271,7 +271,7 @@ exports.getNearbyVenues = async (req, res) => {
       ];
     }
 
-    const venues = await Venue.find(filter).limit(10);
+    const venues = await Venue.find(filter).limit(10).populate("reviews");
 
     res.status(200).json(venues);
   } catch (error) {

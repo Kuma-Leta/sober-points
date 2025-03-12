@@ -3,27 +3,17 @@ import { motion } from "framer-motion";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { fetchNearbyVenues } from "../../redux/venue/venueSlice";
+import RatingStars from "./RatingStars"; // Import the RatingStars component
 
 const VenueLists = () => {
   const { venues, loading, error } = useSelector((state) => state.venues);
-  // useEffect(() => {
-  //   if (navigator.geolocation) {
-  //     navigator.geolocation.getCurrentPosition(
-  //       (position) => {
-  //         const { latitude, longitude } = position.coords;
-  //         fetchNearbyVenues({ lat: latitude, lng: longitude });
-  //       },
-  //       (error) => console.error("Error getting location:", error)
-  //     );
-  //   }
-  // }, []);
 
   if (!Array.isArray(venues) || venues.length === 0) {
     return <p className="text-grayColor mt-2 text-center">No venues found.</p>;
   }
 
   return (
-    <div className="mt-4 grid grid-cols-1 sm:grid-cols-1  md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-3">
+    <div className="mt-4 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-3">
       {venues.map((venue, index) => (
         <motion.div
           key={venue._id}
@@ -36,7 +26,7 @@ const VenueLists = () => {
           <Link to={`/venues/${venue._id}`}>
             {venue.images.length > 0 && (
               <img
-                src={`http://localhost:5000/uploads/${venue.images[0]}`}
+                src={`http://localhost:5000/uploads/${venue.images[0].replace(/\\/g, "/")}`}
                 alt={venue.name}
                 loading="lazy"
                 className="w-full h-40 sm:h-48 object-cover rounded-t-2xl transition-transform duration-300 group-hover:scale-105"
@@ -49,9 +39,13 @@ const VenueLists = () => {
               <p className="text-sm text-gray-600 dark:text-gray-300">
                 📍 {venue.address}
               </p>
-              <p className="text-sm text-yellow-500">
-                ⭐ {venue.rating || "N/A"}
-              </p>
+              {/* Use the RatingStars component */}
+              <div className="flex items-center">
+                <RatingStars rating={venue.rating || 0} />
+                <span className="ml-2 text-sm text-gray-600 dark:text-gray-300">
+                  ({venue.rating || 0})
+                </span>
+              </div>
             </div>
           </Link>
         </motion.div>

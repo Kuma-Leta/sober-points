@@ -16,7 +16,8 @@ import {
   addVenueRating,
 } from "../../redux/venue/venueSlice";
 import GetDirections from "./GetDirections"; // Import the GetDirections component
-
+import axios from "axios"
+import RatingStars from './RatingStars'
 // Custom icon for the venue marker
 const venueIcon = new L.Icon({
   iconUrl:
@@ -35,6 +36,7 @@ const VenueDetail = () => {
   const [ratingLocation, setRatingLocation] = useState(0);
   const [review, setReview] = useState("");
   const [wantRate, setWantRate] = useState(false);
+  const [ratings, setRatings] = useState([]);
 
   useEffect(() => {
     const foundVenue = venues.find((v) => v._id === id);
@@ -48,6 +50,22 @@ const VenueDetail = () => {
       );
     }
   }, [id, venues, dispatch]);
+
+  useEffect(() => {
+    const fetchRatings = async () => {
+      try {
+        const response = await axios.get(`http://localhost:5000/api/ratings/${id}/getRating`);
+        
+        setRatings(response.data.ratings);
+      } catch (error) {
+        console.error("Error fetching ratings:", error);
+      }
+    };
+
+    if (id) {
+      fetchRatings();
+    }
+  }, [id]);
 
   const handleRatingChange = (ratingType, value) => {
     if (ratingType === "service") {
@@ -67,6 +85,50 @@ const VenueDetail = () => {
     } else {
       alert("Please rate both service and location and provide a review.");
     }
+  };
+
+  const renderRatingStars = (rating) => {
+    const stars = [];
+    for (let i = 1; i <= 5; i++) {
+      stars.push(
+        <span
+          key={i}
+          className={`text-xl ${
+            i <= rating ? "text-yellow-500" : "text-gray-300"
+          }`}
+        >
+          ★
+        </span>
+      );
+    }
+    return stars;
+  };
+
+  const renderRatings = () => {
+    if (ratings.length === 0) {
+      return <p className="text-gray-600">No ratings yet.</p>;
+    }
+
+    return (
+      <div className="space-y-3 sm:space-y-4 mt-3 sm:mt-4">
+        {ratings.map((rating, index) => (
+          <div
+            key={index}
+            className="p-3 sm:p-4 bg-gray-50 rounded-lg shadow-sm border border-gray-200"
+          >
+            <p className="text-gray-700 text-sm sm:text-base">
+              <strong className="text-blue-600">{rating.user.name}</strong> says:
+            </p>
+            <p className="text-gray-600 mt-1 text-sm sm:text-base">
+              {rating.review}
+            </p>
+            <div className="text-yellow-500 mt-1 text-sm sm:text-base">
+              {renderRatingStars(rating.rating)}
+            </div>
+          </div>
+        ))}
+      </div>
+    );
   };
 
   if (loading) {
@@ -98,9 +160,7 @@ const VenueDetail = () => {
         <p className="text-sm sm:text-lg text-gray-600 mt-1 sm:mt-2">
           📍 {venue.address}
         </p>
-        <p className="text-sm sm:text-lg text-yellow-500 mt-1">
-          ⭐ {venue.rating || "N/A"}
-        </p>
+      <RatingStars rating={venue.rating || 0}/>
 
         {/* Image */}
         {venue.images.length > 0 && (
@@ -151,7 +211,7 @@ const VenueDetail = () => {
         <div className="mt-6 sm:mt-8">
           <button
             onClick={() => setWantRate(!wantRate)}
-            className="px-3 py-1.5 sm:px-4 sm:py-2 bg-primary text-white rounded-md hover:bg-blue-700 transition duration-300 text-sm sm:text-base"
+            className="px-3 py-1.5 sm:px-4 sm:py-2 bg-primary text-white rounded-md hover:bg-primaryLight transition duration-300 text-sm sm:text-base"
           >
             {wantRate ? "Close Rating" : "Rate this Venue"}
           </button>
@@ -227,25 +287,7 @@ const VenueDetail = () => {
             <h3 className="text-xl sm:text-2xl font-semibold text-gray-800">
               Reviews:
             </h3>
-            <div className="space-y-3 sm:space-y-4 mt-3 sm:mt-4">
-              {venue.reviews.map((review, index) => (
-                <div
-                  key={index}
-                  className="p-3 sm:p-4 bg-gray-50 rounded-lg shadow-sm border border-gray-200"
-                >
-                  <p className="text-gray-700 text-sm sm:text-base">
-                    <strong className="text-blue-600">{review.user}</strong>{" "}
-                    says:
-                  </p>
-                  <p className="text-gray-600 mt-1 text-sm sm:text-base">
-                    {review.text}
-                  </p>
-                  <p className="text-yellow-500 mt-1 text-sm sm:text-base">
-                    Rating: {review.rating}
-                  </p>
-                </div>
-              ))}
-            </div>
+            {renderRatings()}
           </div>
         )}
 
