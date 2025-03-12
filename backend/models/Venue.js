@@ -53,11 +53,39 @@ const VenueSchema = new mongoose.Schema(
       type: Boolean,
       default: false, // Admin can verify venue submissions
     },
+    rating: {
+      type: Number,
+      min: 1,
+      max: 5,
+      default: 0, // Default rating (will be updated dynamically)
+    },
+    reviews: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Rating", // Reference to Rating model
+      },
+    ],
   },
   { timestamps: true }
 );
 
-// Index for geospatial queries
+// 🔹 Index for geospatial queries
 VenueSchema.index({ location: "2dsphere" });
+
+// 🔹 Function to calculate average rating when a new review is added
+VenueSchema.methods.calculateAverageRating = async function () {
+  const venue = this;
+  const ratings = await mongoose.model("Rating").find({ venueId: venue._id });
+
+  if (ratings.length > 0) {
+    const avgRating =
+      ratings.reduce((sum, review) => sum + review.rating, 0) / ratings.length;
+    venue.rating = avgRating.toFixed(1); // Round to 1 decimal place
+  } else {
+    venue.rating = 0;
+  }
+
+  await venue.save();
+};
 
 module.exports = mongoose.model("Venue", VenueSchema);

@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-
+const {addRating}=require('../controllers/ratingController')
 const { authenticate, authorize } = require("../middleware/authMiddleware");
 const {
   createVenue,
@@ -11,7 +11,7 @@ const {
   getNearbyVenues,
   searchVenues
 } = require("../controllers/venueController");
-
+router.post("/",authenticate, addRating);
 router.get("/nearby", getNearbyVenues);
 router.get("/search", searchVenues);
 // 📌 Create Venue

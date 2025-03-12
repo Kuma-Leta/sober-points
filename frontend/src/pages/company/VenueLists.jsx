@@ -1,17 +1,29 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { motion } from "framer-motion";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import { fetchNearbyVenues } from "../../redux/venue/venueSlice";
 
 const VenueLists = () => {
   const { venues, loading, error } = useSelector((state) => state.venues);
-  console.log(venues);
+  // useEffect(() => {
+  //   if (navigator.geolocation) {
+  //     navigator.geolocation.getCurrentPosition(
+  //       (position) => {
+  //         const { latitude, longitude } = position.coords;
+  //         fetchNearbyVenues({ lat: latitude, lng: longitude });
+  //       },
+  //       (error) => console.error("Error getting location:", error)
+  //     );
+  //   }
+  // }, []);
+
   if (!Array.isArray(venues) || venues.length === 0) {
     return <p className="text-grayColor mt-2 text-center">No venues found.</p>;
   }
 
   return (
-    <div className="mt-4 grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+    <div className="mt-4 grid grid-cols-1 sm:grid-cols-1  md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-3">
       {venues.map((venue, index) => (
         <motion.div
           key={venue._id}
