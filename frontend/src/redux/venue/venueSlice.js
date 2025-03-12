@@ -1,16 +1,14 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axiosInstance from "../../api/api";
 import axios from "axios";
+import axiosInstance from "../../api/api";
 
-// ✅ Fetch all venues
+// Fetch all venues
 export const fetchVenues = createAsyncThunk(
   "venues/fetchAll",
   async (_, thunkAPI) => {
     try {
       const response = await axios.get("http://localhost:5000/api/venues/");
-      console.log(response.data.venues);
       return response.data.venues;
-
     } catch (error) {
       return thunkAPI.rejectWithValue(
         error.response?.data?.message || "Failed to fetch venues"
@@ -19,12 +17,13 @@ export const fetchVenues = createAsyncThunk(
   }
 );
 
-// ✅ Fetch nearby venues based on user location
+// Fetch nearby venues
 export const fetchNearbyVenues = createAsyncThunk(
   "venues/fetchNearby",
   async ({ lat, lng }, thunkAPI) => {
     try {
-      const response = await axios.get(`http://localhost:5000/api/venues/nearby?lat=${lat}&lng=${lng}`
+      const response = await axios.get(
+        `http://localhost:5000/api/venues/nearby?lat=${lat}&lng=${lng}`
       );
       return response.data;
     } catch (error) {
@@ -35,15 +34,14 @@ export const fetchNearbyVenues = createAsyncThunk(
   }
 );
 
-// ✅ Search venues by query
+// Search venues by query
 export const searchVenues = createAsyncThunk(
   "venues/search",
   async (query, thunkAPI) => {
     try {
-      const response = await axios.get(
+      const response = await axiosInstance.get(
         `http://localhost:5000/api/venues/search?query=${query}`
       );
-    
       return response.data.venues;
     } catch (error) {
       return thunkAPI.rejectWithValue(
@@ -53,7 +51,25 @@ export const searchVenues = createAsyncThunk(
   }
 );
 
-// ✅ Define Venue Slice (Reducers & Actions)
+// Add rating to a venue
+export const addVenueRating = createAsyncThunk(
+  "venues/addRating",
+  async ({ venueId, rating, review }, thunkAPI) => {
+    try {
+      const response = await axios.post(
+        `http://localhost:5000/api/ratings/${venueId}/rate`,
+        { rating, review }
+      );
+      return response.data; // Should return the updated venue data
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.message || "Failed to add rating"
+      );
+    }
+  }
+);
+
+// Venue Slice
 const venueSlice = createSlice({
   name: "venues",
   initialState: {
@@ -78,31 +94,17 @@ const venueSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
-      .addCase(fetchNearbyVenues.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
       .addCase(fetchNearbyVenues.fulfilled, (state, action) => {
-        state.loading = false;
         state.nearbyVenues = action.payload;
-        state.venues = action.payload;
-      })
-      .addCase(fetchNearbyVenues.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
-      })
-      .addCase(searchVenues.pending, (state) => {
-        state.loading = true;
-        state.error = null;
       })
       .addCase(searchVenues.fulfilled, (state, action) => {
-        state.loading = false;
         state.searchResults = action.payload;
-        state.venues = action.payload;
       })
-      .addCase(searchVenues.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
+      .addCase(addVenueRating.fulfilled, (state, action) => {
+        const updatedVenue = action.payload;
+        state.venues = state.venues.map((venue) =>
+          venue._id === updatedVenue._id ? updatedVenue : venue
+        );
       });
   },
 });
