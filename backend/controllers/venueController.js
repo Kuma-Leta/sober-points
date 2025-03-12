@@ -317,3 +317,19 @@ exports.deleteAllVenues = async (req, res) => {
     });
   }
 };
+// PATCH /venues/:id/verify
+exports.verifyVenue = async (req, res) => {
+  try {
+    const venue = await Venue.findByIdAndUpdate(
+      req.params.id,
+      { isVerified: true },
+      { new: true }
+    );
+    if (!venue) {
+      return res.status(404).json({ error: "Venue not found" });
+    }
+    res.status(200).json({ success: true, venue });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};

@@ -7,6 +7,7 @@ import Pagination from "../../ui/pagination";
 import Search from "../../components/search";
 import { useSelector } from "react-redux";
 import { FaEdit, FaRegTrashAlt, FaEye } from "react-icons/fa";
+import VenueDetailModal from "./VenueDetailModal"; // Import the new component
 
 export default function Venues() {
   const columns = [
@@ -35,7 +36,7 @@ export default function Venues() {
     const fetchVenues = async () => {
       setLoading(true);
       try {
-        const res = await axiosInstance.get(`/venues/?`, {
+        const res = await axiosInstance.get(`/venues`, {
           params: { page, limit, q: query }, // Pass page, limit, and search query
         });
         setVenues(res.data.venues);
@@ -82,6 +83,26 @@ export default function Venues() {
   const handleSearchChange = (e) => {
     setQuery(e.target.value);
     setPage(1); // Reset to first page on new search
+  };
+
+  const handleVerify = async (venueId) => {
+    try {
+      await axiosInstance.patch(`/venues/${venueId}/verify`, {
+        isVerified: true,
+      });
+      // Update the venue's status in the state
+      setVenues((prevVenues) =>
+        prevVenues.map((venue) =>
+          venue._id === venueId ? { ...venue, isVerified: true } : venue
+        )
+      );
+      setSelectedVenueDetails((prevDetails) => ({
+        ...prevDetails,
+        isVerified: true,
+      }));
+    } catch (error) {
+      console.error("Error verifying venue:", error);
+    }
   };
 
   const [mappedVenues, setMappedVenues] = useState([]);
@@ -180,48 +201,13 @@ export default function Venues() {
         </div>
       </Modal>
 
-      {/* Detail Modal */}
-      <Modal isOpen={selectedVenueDetails !== null} onClose={handleCloseModal}>
-        <div className="p-8 dark:bg-darkCard rounded bg-white">
-          <h2 className="text-xl font-bold mb-4">Venue Details</h2>
-          <div className="space-y-4">
-            <p>
-              <strong>Venue Name:</strong> {selectedVenueDetails?.name}
-            </p>
-            <p>
-              <strong>Created By:</strong>{" "}
-              {selectedVenueDetails?.createdBy?.name || "N/A"}
-            </p>
-            <p>
-              <strong>Email:</strong> {selectedVenueDetails?.createdBy?.email}
-            </p>
-            <p>
-              <strong>Status:</strong>{" "}
-              <span
-                style={{
-                  color: selectedVenueDetails?.isVerified
-                    ? "#14B8A6"
-                    : "#DC2626",
-                  fontWeight: "500",
-                }}
-              >
-                {selectedVenueDetails?.isVerified ? "Verified" : "Unverified"}
-              </span>
-            </p>
-            <p>
-              <strong>Address:</strong> {selectedVenueDetails?.address}
-            </p>
-          </div>
-          <div className="flex justify-end mt-4">
-            <button
-              onClick={handleCloseModal}
-              className="bg-gray-300 text-black px-4 py-2 rounded"
-            >
-              Close
-            </button>
-          </div>
-        </div>
-      </Modal>
+      {/* Render the VenueDetailModal component with verification function */}
+      <VenueDetailModal
+        isOpen={selectedVenueDetails !== null}
+        onClose={handleCloseModal}
+        selectedVenueDetails={selectedVenueDetails}
+        onVerify={() => handleVerify(selectedVenueDetails._id)} // Pass the verify function
+      />
     </div>
   );
 }

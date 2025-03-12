@@ -10,12 +10,16 @@ const {
   deleteVenue,
   getNearbyVenues,
   deleteAllVenues,
+  verifyVenue,
 } = require("../controllers/venueController");
 
 router.get("/nearby", getNearbyVenues);
 // 📌 Create Venue
 router.post("/", authenticate, authorize(["admin", "customer"]), createVenue);
 
+// 📌 Verify Venue
+
+router.patch("/:id/verify", authenticate, authorize(["admin"]), verifyVenue);
 // 📌 Get All Venues
 router.get("/", authenticate, getAllVenues);
 
