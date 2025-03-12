@@ -18,6 +18,20 @@ const VenueSchema = new mongoose.Schema(
       required: [true, "Address is required"],
       trim: true,
     },
+    phone: {
+      type: String,
+      required: [true, "Phone number is required"],
+      trim: true,
+      validate: {
+        validator: function (value) {
+          // Basic phone number validation (e.g., +1234567890 or 123-456-7890)
+          return /^\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}$/.test(
+            value
+          );
+        },
+        message: "Please provide a valid phone number",
+      },
+    },
     location: {
       type: {
         type: String,
@@ -43,6 +57,20 @@ const VenueSchema = new mongoose.Schema(
     menu: {
       type: String, // Optional field for menu details or link
       trim: true,
+    },
+    website: {
+      type: String,
+      trim: true,
+      validate: {
+        validator: function (value) {
+          // Allow empty string or valid URL
+          if (value === "" || value === null) return true; // Allow empty or null
+          return /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/.test(
+            value
+          );
+        },
+        message: "Please provide a valid website URL",
+      },
     },
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,

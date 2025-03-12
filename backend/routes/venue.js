@@ -9,6 +9,7 @@ const {
   updateVenue,
   deleteVenue,
   getNearbyVenues,
+  deleteAllVenues,
 } = require("../controllers/venueController");
 
 router.get("/nearby", getNearbyVenues);
@@ -30,6 +31,12 @@ router.delete(
   authenticate,
   authorize(["admin", "customer"]),
   deleteVenue
+);
+router.delete(
+  "/",
+  authenticate,
+  authorize(["admin", "customer"]),
+  deleteAllVenues
 );
 
 module.exports = router;

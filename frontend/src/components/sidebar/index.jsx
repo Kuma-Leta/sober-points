@@ -3,7 +3,13 @@ import { Link, NavLink } from "react-router-dom";
 import { FiExternalLink } from "react-icons/fi";
 import { TfiBarChart } from "react-icons/tfi";
 import { useSelector } from "react-redux";
-import { FaBuilding, FaBars, FaUsers, FaChevronLeft, FaProjectDiagram } from "react-icons/fa";
+import {
+  FaBuilding,
+  FaBars,
+  FaUsers,
+  FaChevronLeft,
+  FaProjectDiagram,
+} from "react-icons/fa";
 import { getProfilePicUrl } from "../../utils/functions";
 import { IoSettingsOutline } from "react-icons/io5";
 import { API_URL } from "../../constants/url";
@@ -51,11 +57,15 @@ const Sidebar = () => {
             path: "/users",
           },
           {
+            icon: <FaBuilding className="text-lg" />,
+            label: "Venues",
+            path: "/venues",
+          },
+          {
             icon: <IoSettingsOutline className="text-lg" />,
             label: "Settings",
             path: "/setting",
           },
-
         ]
       : []),
 

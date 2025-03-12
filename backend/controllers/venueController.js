@@ -12,7 +12,9 @@ const storage = multer.diskStorage({
     cb(null, path.join(__dirname, "../uploads")); // Save files in the "uploads" directory
   },
   filename: function (req, file, cb) {
-    cb(null, Date.now() + "-" + file.originalname); // Unique filename
+    // Generate a unique filename with the desired format: uploads\\timestamp-originalname
+    const uniqueFilename = `${Date.now()}-${file.originalname}`;
+    cb(null, uniqueFilename); // Unique filename
   },
 });
 
@@ -39,11 +41,13 @@ exports.createVenue = async (req, res) => {
     }
 
     try {
-      const { name, description, address, location, menu } = req.body;
+      const { name, description, address, phone, location, menu, website } =
+        req.body; // Include website field
       const createdBy = req.user._id; // Assuming user ID is available in the request
+      const userRole = req.user.role; // Assuming the user's role is stored in req.user.role
 
       // Validate required fields
-      if (!name || !address || !location || !location.coordinates) {
+      if (!name || !address || !phone || !location || !location.coordinates) {
         return res
           .status(400)
           .json({ error: "Please provide all required fields" });
@@ -53,22 +57,30 @@ exports.createVenue = async (req, res) => {
       let imageUrls = [];
       if (req.files && req.files.length > 0) {
         req.files.forEach((file) => {
-          imageUrls.push(file.path); // Save file paths
+          // Save file paths in the desired format: uploads\\filename
+          const relativePath = `uploads\\${file.filename}`;
+          imageUrls.push(relativePath);
         });
       }
+
+      // Determine if the venue should be verified based on the user's role
+      const isVerified = userRole === "admin"; // Set to true if user is admin, otherwise false
 
       // Create venue
       const venue = new Venue({
         name,
         description,
         address,
+        phone,
         location: {
           type: "Point",
           coordinates: location.coordinates, // [longitude, latitude]
         },
         images: imageUrls,
         menu,
+        website: website && website.trim() !== "" ? website : null, // Handle optional website field
         createdBy,
+        isVerified, // Set isVerified based on the user's role
       });
 
       // Save venue to the database
@@ -86,11 +98,10 @@ exports.createVenue = async (req, res) => {
     }
   });
 };
-
 // 📌 Get All Venues with Filtering, Sorting, Pagination
 exports.getAllVenues = async (req, res) => {
   try {
-    let query = Venue.find();
+    let query = Venue.find().select("-__v");
 
     // Apply APIfeatures for filtering, sorting, limiting, and pagination
     const features = new APIfeatures(query, req.query)
@@ -237,12 +248,11 @@ exports.deleteVenue = async (req, res) => {
   }
 };
 
-
 // 📌 Get Nearby Venues
 exports.getNearbyVenues = async (req, res) => {
   try {
     const { lat, lng, query } = req.query;
-console.log(lat, lng, query)
+    console.log(lat, lng, query);
     if (!lat || !lng) {
       return res
         .status(400)
@@ -276,5 +286,34 @@ console.log(lat, lng, query)
   } catch (error) {
     console.error("Error fetching nearby venues:", error);
     res.status(500).json({ message: "Error retrieving venues" });
+  }
+};
+
+exports.deleteAllVenues = async (req, res) => {
+  try {
+    // Delete all documents in the Venue collection
+    const result = await Venue.deleteMany({});
+
+    // Check if any venues were deleted
+    if (result.deletedCount === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "No venues found to delete.",
+      });
+    }
+
+    // Return success response
+    res.status(200).json({
+      success: true,
+      message: `Successfully deleted ${result.deletedCount} venues.`,
+    });
+  } catch (error) {
+    // Handle errors
+    console.error("Error deleting all venues:", error);
+    res.status(500).json({
+      success: false,
+      message: "An error occurred while deleting venues.",
+      error: error.message,
+    });
   }
 };

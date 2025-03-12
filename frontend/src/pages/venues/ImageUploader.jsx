@@ -70,6 +70,12 @@ export default function ImageUploader({ formData, setFormData }) {
           <p>Drag & Drop images here</p>
         )}
       </div>
+      <div className="flex items-center my-2">
+        <hr className="flex-grow border-gray-300" />
+        <span className="mx-3 text-gray-500">OR</span>
+        <hr className="flex-grow border-gray-300" />
+      </div>
+
       <input
         type="file"
         name="images"
