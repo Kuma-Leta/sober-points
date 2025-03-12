@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
@@ -15,19 +15,34 @@ const defaultIcon = L.icon({
   shadowSize: [41, 41],
 });
 
-export default function MapComponent({ coordinates, isStatic, onClick }) {
-  const [latitude, longitude] = coordinates || [0, 0];
+export default function MapComponent({ coordinates, isStatic }) {
+  const mapRef = useRef(null); // Ref to access the MapContainer instance
+  const [longitude, latitude] = coordinates || [0, 0];
+  const center = [latitude, longitude]; // Leaflet expects [latitude, longitude]
+
+  // Update the map view when coordinates change
+  useEffect(() => {
+    if (mapRef.current && coordinates) {
+      mapRef.current.setView(center, 15); // Set new center and zoom level
+    }
+  }, [coordinates, center]);
 
   return (
     <div className="h-full w-full rounded-lg overflow-hidden shadow-md border border-gray-200 dark:border-gray-700">
       <MapContainer
-        center={[latitude, longitude]}
-        zoom={13}
+        center={center}
+        zoom={15}
         scrollWheelZoom={!isStatic}
-        dragging={!isStatic} // Disable dragging if the map is static
-        doubleClickZoom={!isStatic} // Disable double-click zoom if the map is static
-        style={{ height: "100%", width: "100%" }}
-        onClick={onClick} // Handle map click events
+        dragging={!isStatic}
+        doubleClickZoom={!isStatic}
+        touchZoom={!isStatic}
+        zoomControl={!isStatic}
+        style={{
+          height: "100%",
+          width: "100%",
+          pointerEvents: isStatic ? "none" : "auto",
+        }}
+        ref={mapRef} // Attach the ref to the MapContainer
       >
         {/* Tile Layer */}
         <TileLayer
@@ -36,7 +51,7 @@ export default function MapComponent({ coordinates, isStatic, onClick }) {
         />
 
         {/* Marker */}
-        <Marker position={[latitude, longitude]} icon={defaultIcon}>
+        <Marker position={center} icon={defaultIcon}>
           <Popup className="font-medium">
             Venue Location: <br />
             Latitude: {latitude.toFixed(4)}, <br />
