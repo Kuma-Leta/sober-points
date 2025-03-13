@@ -27,6 +27,7 @@ const Header = () => {
 
   return (
     <header className="fixed top-0 left-0 w-full bg-white dark:bg-darkCard shadow-md z-50 h-16 flex items-center">
+    <header className="bg-white dark:bg-darkCard dark:text-darkText w-[100%] shadow-sm flex items-center justify-between px-2 sm:px-6 py-1 z-10">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between w-full">
         {/* Logo */}
         <div className="flex  items-center  space-x-3 pl-4">
@@ -95,7 +96,7 @@ const Header = () => {
               {dropdownOpen && (
                 <div
                   ref={dropdownRef}
-                  className="absolute right-0 mt-2 w-40 bg-white dark:bg-darkCard shadow-md rounded-md z-50 text-sm"
+                  className="absolute left-0 top-7 mt-2 w-40 bg-white dark:bg-darkCard shadow-md rounded-md z-50 text-sm"
                 >
                   <Link
                     onClick={() => setDropdownOpen(false)}
