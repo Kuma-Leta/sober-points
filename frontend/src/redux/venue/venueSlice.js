@@ -49,7 +49,7 @@ export const searchVenues = createAsyncThunk(
       );
     }
   }
-);
+); 
 
 // Add rating to a venue
 export const addVenueRating = createAsyncThunk(
@@ -96,9 +96,11 @@ const venueSlice = createSlice({
       })
       .addCase(fetchNearbyVenues.fulfilled, (state, action) => {
         state.nearbyVenues = action.payload;
+        state.venues=action.payload
       })
       .addCase(searchVenues.fulfilled, (state, action) => {
         state.searchResults = action.payload;
+        state.venues = action.payload;
       })
       .addCase(addVenueRating.fulfilled, (state, action) => {
         const updatedVenue = action.payload;

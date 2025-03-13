@@ -16,8 +16,9 @@ import {
   addVenueRating,
 } from "../../redux/venue/venueSlice";
 import GetDirections from "./GetDirections"; // Import the GetDirections component
-import axios from "axios"
-import RatingStars from './RatingStars'
+import axios from "axios";
+import RatingStars from "./RatingStars"; // Import the RatingStars component
+
 // Custom icon for the venue marker
 const venueIcon = new L.Icon({
   iconUrl:
@@ -54,8 +55,9 @@ const VenueDetail = () => {
   useEffect(() => {
     const fetchRatings = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/api/ratings/${id}/getRating`);
-        
+        const response = await axios.get(
+          `http://localhost:5000/api/ratings/${id}/getRating`
+        );
         setRatings(response.data.ratings);
       } catch (error) {
         console.error("Error fetching ratings:", error);
@@ -87,21 +89,18 @@ const VenueDetail = () => {
     }
   };
 
-  const renderRatingStars = (rating) => {
-    const stars = [];
-    for (let i = 1; i <= 5; i++) {
-      stars.push(
-        <span
-          key={i}
-          className={`text-xl ${
-            i <= rating ? "text-yellow-500" : "text-gray-300"
-          }`}
-        >
-          ★
-        </span>
-      );
-    }
-    return stars;
+  // Function to calculate time since the review was posted
+  const getTimeSince = (date) => {
+    const now = new Date();
+    const reviewDate = new Date(date);
+    const timeDiff = now - reviewDate;
+    const daysDiff = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+
+    if (daysDiff === 0) return "Today";
+    if (daysDiff === 1) return "1 day ago";
+    if (daysDiff < 7) return `${daysDiff} days ago`;
+    if (daysDiff < 30) return `${Math.floor(daysDiff / 7)} weeks ago`;
+    return `${Math.floor(daysDiff / 30)} months ago`;
   };
 
   const renderRatings = () => {
@@ -110,21 +109,37 @@ const VenueDetail = () => {
     }
 
     return (
-      <div className="space-y-3 sm:space-y-4 mt-3 sm:mt-4">
+      <div className="space-y-4 mt-4">
         {ratings.map((rating, index) => (
           <div
             key={index}
-            className="p-3 sm:p-4 bg-gray-50 rounded-lg shadow-sm border border-gray-200"
+            className="bg-white p-4 rounded-lg shadow-sm border border-gray-200"
           >
-            <p className="text-gray-700 text-sm sm:text-base">
-              <strong className="text-blue-600">{rating.user.name}</strong> says:
-            </p>
-            <p className="text-gray-600 mt-1 text-sm sm:text-base">
-              {rating.review}
-            </p>
-            <div className="text-yellow-500 mt-1 text-sm sm:text-base">
-              {renderRatingStars(rating.rating)}
+            <div className="flex items-center justify-between">
+              <div className="flex items-center">
+                {/* Circle with the first letter of the rater's name */}
+                <div className="w-8 h-8 flex items-center justify-center bg-primary text-white rounded-full mr-2">
+                  <span className="text-sm font-semibold">
+                    {rating.user.name.charAt(0).toUpperCase()}
+                  </span>
+                </div>
+                <div>
+                  <span className="font-semibold text-gray-800">
+                    {rating.user.name}
+                  </span>
+                  <span className="text-sm text-gray-500 ml-2">
+                    {getTimeSince(rating.createdAt)}
+                  </span>
+                </div>
+              </div>
+              <div className="flex items-center">
+                <RatingStars rating={rating.rating} />
+                <span className="ml-2 text-sm text-gray-600">
+                  ({rating.rating})
+                </span>
+              </div>
             </div>
+            <p className="text-gray-600 mt-2">{rating.review}</p>
           </div>
         ))}
       </div>
@@ -160,7 +175,12 @@ const VenueDetail = () => {
         <p className="text-sm sm:text-lg text-gray-600 mt-1 sm:mt-2">
           📍 {venue.address}
         </p>
-      <RatingStars rating={venue.rating || 0}/>
+        <div className="flex items-center mt-1">
+          <RatingStars rating={venue.rating || 0} />
+          <span className="ml-2 text-sm text-gray-600">
+            ({venue.rating || 0})
+          </span>
+        </div>
 
         {/* Image */}
         {venue.images.length > 0 && (
@@ -173,7 +193,7 @@ const VenueDetail = () => {
 
         {/* Map */}
         {latitude && longitude ? (
-          <div className="mt-4 sm:mt-6">
+          <div className="mt-4 sm:mt-6 ">
             <MapContainer
               center={[latitude, longitude]}
               zoom={15}
@@ -181,6 +201,7 @@ const VenueDetail = () => {
                 height: "300px",
                 width: "100%",
                 borderRadius: "12px",
+                zIndex: "0",
               }}
               zoomControl={false}
             >
@@ -197,7 +218,7 @@ const VenueDetail = () => {
             </MapContainer>
 
             {/* Get Directions Button */}
-            <div className="mt-4  p-2 sm:p-3 rounded-md text-center">
+            <div className="mt-4 p-2 sm:p-3 rounded-md text-center">
               <GetDirections destination={{ lat: latitude, lng: longitude }} />
             </div>
           </div>
@@ -282,14 +303,12 @@ const VenueDetail = () => {
         </div>
 
         {/* Reviews Display */}
-        {venue.reviews && venue.reviews.length > 0 && (
-          <div className="mt-6 sm:mt-8">
-            <h3 className="text-xl sm:text-2xl font-semibold text-gray-800">
-              Reviews:
-            </h3>
-            {renderRatings()}
-          </div>
-        )}
+        <div className="mt-6 sm:mt-8">
+          <h3 className="text-xl sm:text-2xl font-semibold text-gray-800">
+            Reviews:
+          </h3>
+          {renderRatings()}
+        </div>
 
         {/* Nearby Venues */}
         <div className="mt-6 sm:mt-8">

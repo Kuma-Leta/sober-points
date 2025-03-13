@@ -29,9 +29,13 @@ const Header = () => {
     <header className="fixed top-0 left-0 w-full bg-white dark:bg-darkCard shadow-md z-50 h-16 flex items-center">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between w-full">
         {/* Logo */}
-        <div className="flex items-center space-x-3 pl-4">
+        <div className="flex  items-center  space-x-3 pl-4">
           <Link to="/">
-            <img src={logo} alt="Logo" className="w-16 h-auto object-contain" />
+            <img
+              src={logo}
+              alt="Logo"
+              className="fixed top-1 left-2 w-10 sm:w-10 md:w-18   h-auto object-contain"
+            />
           </Link>
         </div>
 
