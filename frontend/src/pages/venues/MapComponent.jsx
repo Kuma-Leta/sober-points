@@ -32,43 +32,53 @@ const UpdateMapView = ({ center }) => {
   return null;
 };
 
-export default function MapComponent({ setFormData }) {
-  const [markerPosition, setMarkerPosition] = useState([9.145, 40.489]); // Default: Ethiopia
+export default function MapComponent({
+  setFormData,
+  initialLatitude,
+  initialLongitude,
+}) {
+  const [markerPosition, setMarkerPosition] = useState(
+    initialLatitude && initialLongitude
+      ? [initialLatitude, initialLongitude]
+      : [9.145, 40.489] // Default: Ethiopia
+  );
   const [showLocationCard, setShowLocationCard] = useState(false);
 
-  // Get the user's current location when the component mounts
+  // Get the user's current location when the component mounts (only if no initial coordinates are provided)
   useEffect(() => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords;
-          setMarkerPosition([latitude, longitude]);
-          setFormData((prev) => ({
-            ...prev,
-            latitude,
-            longitude,
-          }));
-        },
-        (error) => {
-          console.error("Error getting current location:", error);
-          setMarkerPosition([9.145, 40.489]); // Default: Ethiopia
-          setFormData((prev) => ({
-            ...prev,
-            latitude: 9.145,
-            longitude: 40.489,
-          }));
-        }
-      );
-    } else {
-      console.error("Geolocation is not supported by this browser.");
-      setMarkerPosition([9.145, 40.489]); // Default: Ethiopia
-      setFormData((prev) => ({
-        ...prev,
-        latitude: 9.145,
-        longitude: 40.489,
-      }));
+    if (!initialLatitude || !initialLongitude) {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            const { latitude, longitude } = position.coords;
+            setMarkerPosition([latitude, longitude]);
+            setFormData((prev) => ({
+              ...prev,
+              latitude,
+              longitude,
+            }));
+          },
+          (error) => {
+            console.error("Error getting current location:", error);
+            setMarkerPosition([9.145, 40.489]); // Default: Ethiopia
+            setFormData((prev) => ({
+              ...prev,
+              latitude: 9.145,
+              longitude: 40.489,
+            }));
+          }
+        );
+      } else {
+        console.error("Geolocation is not supported by this browser.");
+        setMarkerPosition([9.145, 40.489]); // Default: Ethiopia
+        setFormData((prev) => ({
+          ...prev,
+          latitude: 9.145,
+          longitude: 40.489,
+        }));
+      }
     }
-  }, [setFormData]);
+  }, [setFormData, initialLatitude, initialLongitude]);
 
   // Handle map double-click to update marker position and show location card
   const MapClickHandler = () => {

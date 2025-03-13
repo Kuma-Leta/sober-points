@@ -27,9 +27,14 @@ router.get("/", authenticate, getAllVenues);
 router.get("/:id", authenticate, getVenueById);
 
 // 📌 Update Venue
-router.put("/:id", authenticate, authorize(["admin", "Customer"]), updateVenue);
+router.put(
+  "/:venueId",
+  authenticate,
+  authorize(["admin", "Customer"]),
+  updateVenue
+);
 
-// 📌 Delete Venue
+// 📌 Delete one Venue
 router.delete(
   "/:id",
   authenticate,

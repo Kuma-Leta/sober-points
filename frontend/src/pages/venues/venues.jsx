@@ -30,6 +30,7 @@ export default function Venues() {
   const [query, setQuery] = useState(""); // Search query
   const [totalPages, setTotalPages] = useState(1); // Total pages
   const [selectedVenueDetails, setSelectedVenueDetails] = useState(null); // For detail modal
+  // const [isFormOpen, setIsFormOpen] = useState(false);
 
   // Fetch venues with pagination and search query
   useEffect(() => {
@@ -172,12 +173,15 @@ export default function Venues() {
         isOpen={isCreating || selectedVenueId !== null}
         onClose={handleCloseModal}
       >
-        <VenueForm
-          mode={isCreating ? "create" : "edit"}
-          venueId={selectedVenueId}
-          onClose={handleCloseModal}
-          onUpdate={handleUpdate}
-        />
+        <div className="overflow-auto max-h-screen p-4">
+          <VenueForm
+            mode={isCreating ? "create" : "edit"}
+            venueId={selectedVenueId}
+            onClose={handleCloseModal}
+            onUpdate={handleUpdate}
+            // onCloses={() => setIsFormOpen(false)}
+          />
+        </div>
       </Modal>
 
       <Modal isOpen={confirmDelete !== null} onClose={handleCloseModal}>

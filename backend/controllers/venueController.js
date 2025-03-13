@@ -154,78 +154,92 @@ exports.getVenueById = async (req, res) => {
   }
 };
 
-// Define the uploads directory
-const uploadsDir = path.join(__dirname, "uploads");
-
-// Create the uploads directory if it doesn't exist
-if (!fs.existsSync(uploadsDir)) {
-  fs.mkdirSync(uploadsDir, { recursive: true });
-}
-
-// const storage = multer.diskStorage({
-//   destination: function (req, file, cb) {
-//     cb(null, "uploads/");
-//   },
-//   filename: function (req, file, cb) {
-//     cb(null, Date.now() + "-" + file.originalname);
-//   },
-// });
-
-// // Initialize the upload middleware
-// const upload = multer({ storage: storage });
-
 // // 📌 Update Venue
+
 exports.updateVenue = async (req, res) => {
-  upload.array("images", 5)(req, res, async (err) => {
+  upload(req, res, async (err) => {
     if (err) {
-      return res
-        .status(400)
-        .json({ message: "File upload failed", error: err.message });
+      return res.status(400).json({ error: err.message });
     }
+
     try {
-      const { name, description, address, location, menu } = req.body;
+      const { venueId } = req.params; // Get the venue ID from the request parameters
+      const { name, description, address, phone, location, menu, website } =
+        req.body;
 
-      // Find the venue
-      const venue = await Venue.findById(req.params.id);
-      if (!venue) {
-        return res.status(404).json({ message: "Venue not found" });
+      // Parse removedImages from the request body
+      let removedImages = [];
+      if (req.body.removedImages) {
+        removedImages = JSON.parse(req.body.removedImages); // Parse the JSON string
       }
 
-      // Check if the user is the creator of the venue
-      if (venue.createdBy.toString() !== req.user._id.toString()) {
+      // Validate required fields
+      if (!name || !address || !phone || !location || !location.coordinates) {
         return res
-          .status(403)
-          .json({ message: "Not authorized to update this venue" });
+          .status(400)
+          .json({ error: "Please provide all required fields" });
       }
+
+      // Find the venue by ID
+      const venue = await Venue.findById(venueId);
+      if (!venue) {
+        return res.status(404).json({ error: "Venue not found" });
+      }
+
+      // Delete removed images from the server
+      if (removedImages.length > 0) {
+        removedImages.forEach((imagePath) => {
+          const fullPath = path.join(__dirname, "..", imagePath);
+          if (fs.existsSync(fullPath)) {
+            fs.unlinkSync(fullPath); // Delete the file
+          }
+        });
+      }
+
+      // Get uploaded file paths (if any)
+      let imageUrls = venue.images || [];
+      if (req.files && req.files.length > 0) {
+        req.files.forEach((file) => {
+          const relativePath = `uploads\\${file.filename}`;
+          imageUrls.push(relativePath);
+        });
+      }
+
+      // Filter out removed images from the venue's images array
+      if (removedImages.length > 0) {
+        imageUrls = imageUrls.filter((image) => !removedImages.includes(image));
+      }
+
+      console.log("Removed Images:", removedImages);
 
       // Update venue fields
-      venue.name = name || venue.name;
-      venue.description = description || venue.description;
-      venue.address = address || venue.address;
-      venue.menu = menu || venue.menu;
+      venue.name = name;
+      venue.description = description;
+      venue.address = address;
+      venue.phone = phone;
+      venue.location = {
+        type: "Point",
+        coordinates: location.coordinates,
+      };
+      venue.images = imageUrls;
+      venue.menu = menu;
+      venue.website = website && website.trim() !== "" ? website : null;
 
-      // Update location if provided
-      if (location && location.coordinates) {
-        venue.location = {
-          type: "Point",
-          coordinates: location.coordinates,
-        };
-      }
+      // Save the updated venue to the database
+      await venue.save();
 
-      // Update images if provided
-      if (req.files && req.files.length > 0) {
-        const imageUrls = req.files.map((file) => file.path);
-        venue.images = [...venue.images, ...imageUrls];
-      }
-
-      const updatedVenue = await venue.save();
-      res.json(updatedVenue);
+      // Return success response with message
+      res.status(200).json({
+        success: true,
+        message: "Venue updated successfully!",
+        venue,
+      });
     } catch (error) {
+      console.error("Error updating venue:", error); // Log the error
       res.status(400).json({ error: error.message });
     }
   });
 };
-
 // 📌 Delete Venue
 exports.deleteVenue = async (req, res) => {
   try {
@@ -234,8 +248,11 @@ exports.deleteVenue = async (req, res) => {
       return res.status(404).json({ message: "Venue not found" });
     }
 
-    // Check if the user is the creator of the venue
-    if (venue.createdBy.toString() !== req.user._id.toString()) {
+    // Allow deletion if the user is an admin or the creator of the venue
+    if (
+      req.user.role !== "admin" &&
+      venue.createdBy.toString() !== req.user._id.toString()
+    ) {
       return res
         .status(403)
         .json({ message: "Not authorized to delete this venue" });

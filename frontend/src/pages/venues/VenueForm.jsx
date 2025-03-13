@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../api/api";
 import MapComponent from "./MapComponent";
@@ -25,6 +25,40 @@ export default function VenueForm({ mode = "create", venueId }) {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
   const formRef = useRef(null);
+  const [removedImages, setRemovedImages] = useState([]); // Track removed images
+
+  // Fetch venue data if in edit mode
+  useEffect(() => {
+    if (mode === "edit" && venueId) {
+      console.log("Venue ID:", venueId); // Log the venueId
+      const fetchVenueData = async () => {
+        setLoading(true);
+        try {
+          const response = await axiosInstance.get(`/venues/${venueId}`);
+          const venueData = response.data;
+          setFormData({
+            name: venueData.name,
+            address: venueData.address,
+            phone: venueData.phone,
+            latitude: venueData.location.coordinates[1],
+            longitude: venueData.location.coordinates[0],
+            description: venueData.description,
+            menu: venueData.menu,
+            website: venueData.website || "",
+            images: venueData.images || [],
+          });
+        } catch (error) {
+          console.error("Error fetching venue data:", error);
+          setError("Failed to fetch venue data. Please try again.");
+          showError("Failed to fetch venue data. Please try again.");
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      fetchVenueData();
+    }
+  }, [mode, venueId]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -81,15 +115,16 @@ export default function VenueForm({ mode = "create", venueId }) {
     formDataToSend.append("location[coordinates][0]", formData.longitude);
     formDataToSend.append("location[coordinates][1]", formData.latitude);
 
+    // Append removed images
+    // Append removed images
+    if (removedImages.length > 0) {
+      formDataToSend.append("removedImages", JSON.stringify(removedImages));
+    }
+
     if (formData.images.length > 0) {
       formData.images.forEach((file) => {
         formDataToSend.append("images", file);
       });
-    }
-
-    // Log FormData for debugging
-    for (let [key, value] of formDataToSend.entries()) {
-      console.log(key, value);
     }
 
     try {
@@ -116,7 +151,6 @@ export default function VenueForm({ mode = "create", venueId }) {
         `Venue ${mode === "create" ? "created" : "updated"} successfully!`
       );
       handleFormReset();
-      // onClose(); // Close the form after successful submission
     } catch (error) {
       console.error(
         "Error saving venue:",
@@ -143,6 +177,7 @@ export default function VenueForm({ mode = "create", venueId }) {
       website: "", // Reset website field
       images: [],
     });
+    setRemovedImages([]); // Reset removedImages
   };
 
   return (
@@ -191,7 +226,12 @@ export default function VenueForm({ mode = "create", venueId }) {
                 className="w-full px-3 py-2 border dark:bg-darkBg rounded-lg"
               ></textarea>
 
-              <ImageUploader formData={formData} setFormData={setFormData} />
+              <ImageUploader
+                formData={formData}
+                setFormData={setFormData}
+                removedImages={removedImages}
+                setRemovedImages={setRemovedImages}
+              />
             </form>
           </div>
 
@@ -209,7 +249,7 @@ export default function VenueForm({ mode = "create", venueId }) {
             <input
               type="text"
               name="website"
-              placeholder="Website (optional)"
+              placeholder="Website Link (optional)"
               onChange={handleChange}
               value={formData.website}
               className="w-full px-3 py-2 mb-3 border dark:bg-darkBg rounded-lg"
@@ -218,7 +258,11 @@ export default function VenueForm({ mode = "create", venueId }) {
               Select Venue Location from Map
             </p>
             <div className="relative h-80 w-full rounded-md border">
-              <MapComponent setFormData={setFormData} />
+              <MapComponent
+                setFormData={setFormData}
+                initialLatitude={formData.latitude}
+                initialLongitude={formData.longitude}
+              />
             </div>
           </div>
         </div>
