@@ -14,9 +14,8 @@ import Users from "./pages/users/users";
 import ForgotPassword from "./auth/password/forgotPassword";
 import ResetPassword from "./auth/password/resetPassword";
 import LandingPage from "./pages/landing";
-import Setting from "./pages/company/setting";
 import { API_URL } from "./constants/url";
-import Features from "./pages/company/Services";
+import Features from "./pages/landing/Services";
 import VenueForm from "./pages/venues/VenueForm";
 import VenuesPage from "./pages/company/VenuesPage";
 import VenueDetail from "./pages/company/VenueDetail";
@@ -62,18 +61,18 @@ function Pages() {
             </ProtectedRoute>
           }
         />
-        <Route path="/ld" element={<LandingPage />} />
-        {/* <Route path="/users" element={<Users />} /> */}
-        <Route path="/venue/form" element={<VenueForm />} />
-
         <Route
-          path="/setting"
+          path="/venues"
           element={
             <ProtectedRoute>
-              <Setting />
+              <Venues />
             </ProtectedRoute>
           }
         />
+
+        <Route path="/ld" element={<LandingPage />} />
+        {/* <Route path="/users" element={<Users />} /> */}
+        <Route path="/venue/form" element={<VenueForm />} />
       </>
       <Route path="/auth/register" element={<Register />} />
       <Route path="/check-in" element={<ProtectedRoute></ProtectedRoute>} />

@@ -11,7 +11,7 @@ exports.sendEmail = async (options) => {
   });
 
   const mailOptions = {
-    from: `"project x" <${process.env.EMAIL_FROM}>`,
+    from: `"Sober-point" <${process.env.EMAIL_FROM}>`,
     to: options.email,
     subject: options.subject,
     html: options.message,
@@ -32,7 +32,7 @@ exports.emailUser = async (options) => {
   });
 
   const mailOptions = {
-    from: `"project x"<${process.env.EMAIL_FROM}>`,
+    from: `"Sober-point"<${process.env.EMAIL_FROM}>`,
     to: process.env.EMAIL_FROM,
     subject: options.subject,
     html: options.message,

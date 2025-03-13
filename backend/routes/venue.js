@@ -10,6 +10,8 @@ const {
   deleteVenue,
   getNearbyVenues,
   searchVenues
+  deleteAllVenues,
+  verifyVenue,
 } = require("../controllers/venueController");
 router.post("/",authenticate, addRating);
 router.get("/nearby", getNearbyVenues);
@@ -17,6 +19,9 @@ router.get("/search", searchVenues);
 // 📌 Create Venue
 router.post("/", authenticate, authorize(["admin", "customer"]), createVenue);
 
+// 📌 Verify Venue
+
+router.patch("/:id/verify", authenticate, authorize(["admin"]), verifyVenue);
 // 📌 Get All Venues
 router.get("/", getAllVenues);
 
@@ -24,14 +29,25 @@ router.get("/", getAllVenues);
 router.get("/:id", authenticate, getVenueById);
 
 // 📌 Update Venue
-router.put("/:id", authenticate, authorize(["admin", "Customer"]), updateVenue);
+router.put(
+  "/:venueId",
+  authenticate,
+  authorize(["admin", "Customer"]),
+  updateVenue
+);
 
-// 📌 Delete Venue
+// 📌 Delete one Venue
 router.delete(
   "/:id",
   authenticate,
   authorize(["admin", "customer"]),
   deleteVenue
+);
+router.delete(
+  "/",
+  authenticate,
+  authorize(["admin", "customer"]),
+  deleteAllVenues
 );
 
 module.exports = router;

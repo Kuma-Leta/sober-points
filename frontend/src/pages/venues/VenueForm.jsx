@@ -1,19 +1,23 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../api/api";
 import MapComponent from "./MapComponent";
-import { FaTimes, FaUpload } from "react-icons/fa"; // Import icons
-import { toast, ToastContainer } from "react-toastify"; // Import toast
-import "react-toastify/dist/ReactToastify.css"; // Import toast styles
+import ImageUploader from "./ImageUploader";
+import ToastNotifications, {
+  showSuccess,
+  showError,
+} from "./ToastNotifications";
 
-export default function VenueForm({ mode = "create", venueId, onClose }) {
+export default function VenueForm({ mode = "create", venueId }) {
   const [formData, setFormData] = useState({
     name: "",
     address: "",
+    phone: "",
     latitude: null,
     longitude: null,
     description: "",
     menu: "",
+    website: "", // New website field
     images: [],
   });
 
@@ -21,70 +25,101 @@ export default function VenueForm({ mode = "create", venueId, onClose }) {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
   const formRef = useRef(null);
-  const fileInputRef = useRef(null);
+  const [removedImages, setRemovedImages] = useState([]); // Track removed images
+
+  // Fetch venue data if in edit mode
+  useEffect(() => {
+    if (mode === "edit" && venueId) {
+      console.log("Venue ID:", venueId); // Log the venueId
+      const fetchVenueData = async () => {
+        setLoading(true);
+        try {
+          const response = await axiosInstance.get(`/venues/${venueId}`);
+          const venueData = response.data;
+          setFormData({
+            name: venueData.name,
+            address: venueData.address,
+            phone: venueData.phone,
+            latitude: venueData.location.coordinates[1],
+            longitude: venueData.location.coordinates[0],
+            description: venueData.description,
+            menu: venueData.menu,
+            website: venueData.website || "",
+            images: venueData.images || [],
+          });
+        } catch (error) {
+          console.error("Error fetching venue data:", error);
+          setError("Failed to fetch venue data. Please try again.");
+          showError("Failed to fetch venue data. Please try again.");
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      fetchVenueData();
+    }
+  }, [mode, venueId]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleFileChange = (e) => {
-    const files = e.target.files;
-    const validFiles = Array.from(files).filter(
-      (file) => file.type.startsWith("image/") && file.size <= 5 * 1024 * 1024
-    );
-    setFormData((prev) => ({
-      ...prev,
-      images: [...prev.images, ...validFiles],
-    }));
-  };
-
-  const handleRemoveImage = (index) => {
-    const updatedImages = formData.images.filter((_, i) => i !== index);
-    setFormData((prev) => ({
-      ...prev,
-      images: updatedImages,
-    }));
-  };
-
-  const handleDragOver = (e) => {
-    e.preventDefault();
-  };
-
-  const handleDrop = (e) => {
-    e.preventDefault();
-    const files = e.dataTransfer.files;
-    const validFiles = Array.from(files).filter(
-      (file) => file.type.startsWith("image/") && file.size <= 5 * 1024 * 1024
-    );
-    setFormData((prev) => ({
-      ...prev,
-      images: [...prev.images, ...validFiles],
-    }));
+  const validatePhone = (phone) => {
+    // Basic phone number validation (e.g., +1234567890 or 123-456-7890)
+    const phoneRegex =
+      /^\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}$/;
+    return phoneRegex.test(phone);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
 
+    // Validate required fields
     if (
+      !formData.name ||
+      !formData.address ||
+      !formData.phone ||
       isNaN(formData.latitude) ||
       isNaN(formData.longitude) ||
       formData.latitude === null ||
       formData.longitude === null
     ) {
-      setError("Please select a valid location on the map.");
+      setError(
+        "Please fill out all required fields and select a valid location on the map."
+      );
+      return;
+    }
+
+    // Validate phone number
+    if (!validatePhone(formData.phone)) {
+      setError("Please provide a valid phone number.");
       return;
     }
 
     setLoading(true);
 
+    // Construct FormData
     const formDataToSend = new FormData();
     formDataToSend.append("name", formData.name);
     formDataToSend.append("address", formData.address);
+    formDataToSend.append("phone", formData.phone);
     formDataToSend.append("description", formData.description);
     formDataToSend.append("menu", formData.menu);
+
+    // Append website only if it's not empty
+    if (formData.website.trim() !== "") {
+      formDataToSend.append("website", formData.website);
+    }
+
     formDataToSend.append("location[coordinates][0]", formData.longitude);
     formDataToSend.append("location[coordinates][1]", formData.latitude);
+
+    // Append removed images
+    // Append removed images
+    if (removedImages.length > 0) {
+      formDataToSend.append("removedImages", JSON.stringify(removedImages));
+    }
 
     if (formData.images.length > 0) {
       formData.images.forEach((file) => {
@@ -112,36 +147,19 @@ export default function VenueForm({ mode = "create", venueId, onClose }) {
         );
       }
 
-      // Show success toast
-      toast.success(
-        `Venue ${mode === "create" ? "created" : "updated"} successfully!`,
-        {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        }
+      showSuccess(
+        `Venue ${mode === "create" ? "created" : "updated"} successfully!`
       );
-
       handleFormReset();
     } catch (error) {
+      console.error(
+        "Error saving venue:",
+        error.response?.data || error.message
+      );
       setError(
         error.response?.data?.message || error.message || "Error saving venue"
       );
-
-      // Show error toast
-      toast.error("Failed to save venue. Please try again.", {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      showError("Failed to save venue. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -151,19 +169,23 @@ export default function VenueForm({ mode = "create", venueId, onClose }) {
     setFormData({
       name: "",
       address: "",
+      phone: "",
       latitude: null,
       longitude: null,
       description: "",
       menu: "",
+      website: "", // Reset website field
       images: [],
     });
+    setRemovedImages([]); // Reset removedImages
   };
 
   return (
-    <div className="p-4 w-full max-w-6xl mx-auto bg-white dark:bg-darkCard rounded-md mt-20">
-      <ToastContainer /> {/* Add ToastContainer to render toasts */}
+    <div className="p-4 w-full max-w-6xl mx-auto bg-white dark:bg-darkCard rounded-md mt-10">
+      <ToastNotifications />
       <div className="flex flex-col gap-4">
         <div className="flex flex-col md:flex-row gap-4">
+          {/* Left Section */}
           <div className="w-full md:w-1/2">
             <h2 className="text-xl mb-4">
               {mode === "create" ? "Add New Venue" : "Edit Venue"}
@@ -188,6 +210,7 @@ export default function VenueForm({ mode = "create", venueId, onClose }) {
                 required
                 className="w-full px-3 py-2 border dark:bg-darkBg rounded-lg"
               />
+
               <textarea
                 name="description"
                 placeholder="Description"
@@ -203,70 +226,43 @@ export default function VenueForm({ mode = "create", venueId, onClose }) {
                 className="w-full px-3 py-2 border dark:bg-darkBg rounded-lg"
               ></textarea>
 
-              {/* File Upload & Preview in Drag-and-Drop Section */}
-              <div className="flex flex-col gap-2">
-                <label className="text-gray-600 dark:bg-darkBg font-medium">
-                  Upload Venue Images
-                </label>
-
-                <div
-                  className="border-2 border-dashed border-gray-400 rounded-lg p-4 flex flex-wrap items-center justify-center text-gray-500 cursor-pointer hover:bg-gray-100 min-h-[100px]"
-                  onDragOver={handleDragOver}
-                  onDrop={handleDrop}
-                >
-                  {formData.images.length > 0 ? (
-                    <div className="flex flex-wrap gap-2">
-                      {formData.images.map((file, index) => (
-                        <div key={index} className="relative">
-                          <img
-                            src={URL.createObjectURL(file)}
-                            alt={`Preview ${index + 1}`}
-                            className="w-20 h-20 object-cover rounded-lg"
-                          />
-                          <button
-                            type="button"
-                            onClick={() => handleRemoveImage(index)}
-                            className="absolute top-0 right-0 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 transition"
-                          >
-                            <FaTimes className="w-4 h-4" />
-                          </button>
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <p>Drag & Drop images here</p>
-                  )}
-                </div>
-
-                <input
-                  type="file"
-                  name="images"
-                  multiple
-                  onChange={handleFileChange}
-                  ref={fileInputRef}
-                  className="hidden"
-                  accept="image/*"
-                />
-
-                <button
-                  type="button"
-                  className="flex items-center justify-center  bg-gray-400 px-4 py-2 mr-2 rounded text-white hover:bg-gray-500 transition"
-                  onClick={() => fileInputRef.current.click()}
-                >
-                  <FaUpload className="mr-2" /> Upload Images
-                </button>
-              </div>
+              <ImageUploader
+                formData={formData}
+                setFormData={setFormData}
+                removedImages={removedImages}
+                setRemovedImages={setRemovedImages}
+              />
             </form>
           </div>
 
-          {/* Map Section */}
+          {/* Right Section */}
           <div className="w-full pt-12 md:w-1/2">
-            <p className="text-center text-gray-600 dark:bg-darkBg font-medium text-base  mb-3 p-2 ">
-              Select Venue Location
+            <input
+              type="text"
+              name="phone"
+              placeholder="Phone Number (e.g., +1234567890)"
+              onChange={handleChange}
+              value={formData.phone}
+              required
+              className="w-full px-3 py-2 mb-3 border dark:bg-darkBg rounded-lg"
+            />
+            <input
+              type="text"
+              name="website"
+              placeholder="Website Link (optional)"
+              onChange={handleChange}
+              value={formData.website}
+              className="w-full px-3 py-2 mb-3 border dark:bg-darkBg rounded-lg"
+            />
+            <p className="text-left dark:bg-darkBg font-medium text-base mb-1 p-1">
+              Select Venue Location from Map
             </p>
-
             <div className="relative h-80 w-full rounded-md border">
-              <MapComponent setFormData={setFormData} />
+              <MapComponent
+                setFormData={setFormData}
+                initialLatitude={formData.latitude}
+                initialLongitude={formData.longitude}
+              />
             </div>
           </div>
         </div>
@@ -276,16 +272,13 @@ export default function VenueForm({ mode = "create", venueId, onClose }) {
           <button
             type="button"
             className="bg-gray-400 px-4 py-2 mr-2 rounded text-white hover:bg-gray-500 transition"
-            onClick={() => {
-              console.log("Cancel button clicked"); // Debugging
-              navigate("/"); // Navigate to the home page
-            }}
+            onClick={() => navigate("/")}
           >
             Cancel
           </button>
           <button
             type="button"
-            onClick={(e) => handleSubmit(e)} // Call handleSubmit manually
+            onClick={handleSubmit}
             className={`bg-red-600 px-4 py-2 rounded text-white hover:bg-red-700 transition ${
               loading ? "opacity-50" : ""
             }`}

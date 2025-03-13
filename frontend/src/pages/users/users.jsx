@@ -8,11 +8,10 @@ import { FaEdit, FaRegTrashAlt } from "react-icons/fa";
 import Pagination from "../../ui/pagination";
 import Search from "../../components/search";
 import { useSelector } from "react-redux";
-export default function Users() {
-  const columns = ["PROFILE", "NAME", "EMAIL", "ROLE", "ACTION"];
 
-  const user1 = useSelector((state) => state.auth.user);
-  const companyId = user1?.company?._id;
+// const columns = ["NAME", "EMAIL", "STATUS", "ACTION"];
+export default function Users({ role }) {
+  const columns = ["PROFILE", "NAME", "EMAIL", "ROLE", "ACTION"];
 
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -30,12 +29,9 @@ export default function Users() {
     const fetchUsers = async () => {
       setLoading(true);
       try {
-        const res = await axiosInstance.get(
-          `/companies/company-users/${companyId}?`,
-          {
-            params: { page, limit, q: query }, // Pass page, limit, and search query
-          }
-        );
+        const res = await axiosInstance.get(`/users/?`, {
+          params: { page, limit, q: query }, // Pass page, limit, and search query
+        });
         setUsers(res.data.users);
         setTotalPages(res.data.totalPages); // Assuming API returns total pages
         setLoading(false);
@@ -44,11 +40,8 @@ export default function Users() {
         setLoading(false);
       }
     };
-
-    if (companyId) {
-      fetchUsers();
-    }
-  }, [page, companyId, query, limit]);
+    fetchUsers();
+  }, [page, query, limit]);
 
   const handleDelete = async () => {
     if (confirmDelete) {
@@ -73,12 +66,9 @@ export default function Users() {
   };
 
   const handleUpdate = async () => {
-    const res = await axiosInstance.get(
-      `/companies/company-users/${companyId}`,
-      {
-        params: { page, limit, q: query },
-      }
-    );
+    const res = await axiosInstance.get(`/users`, {
+      params: { page, limit, q: query },
+    });
     setUsers(res.data.users);
   };
 
@@ -97,7 +87,7 @@ export default function Users() {
           />
         </div>
       ),
-      NAME: <div className="min-w-max">{user.name}</div>,
+      NAME: user.name,
       EMAIL: user.email,
       ROLE: user.role,
       ACTION: (
@@ -116,6 +106,7 @@ export default function Users() {
   const handleCreate = () => {
     setIsCreating(true);
   };
+  const user = useSelector((state) => state.auth.user);
   return (
     <div className="w-full">
       <div className="flex gap-2 items-center mb-4 justify-between">
@@ -146,7 +137,6 @@ export default function Users() {
         onClose={handleCloseModal}
       >
         <UserForm
-          companyId={companyId}
           mode={isCreating ? "create" : "edit"}
           userId={selectedUserId}
           onClose={handleCloseModal}
@@ -155,10 +145,11 @@ export default function Users() {
       </Modal>
 
       <Modal isOpen={confirmDelete !== null} onClose={handleCloseModal}>
-        <div className=" p-8 rounded bg-white dark:bg-darkCard">
+        <div className=" p-8 dark:bg-darkCard rounded bg-white">
           <p>Are you sure you want to delete this member?</p>
-          <div className="flex justify-end space-x-4 mt-4 -lg">
+          <div className="flex justify-end space-x-4  mt-4 -lg">
             <button
+              disabled={user?._id === confirmDelete}
               onClick={handleDelete}
               className="bg-red-600 text-white px-4 py-2 rounded"
             >
@@ -166,7 +157,7 @@ export default function Users() {
             </button>
             <button
               onClick={handleCloseModal}
-              className="bg-gray-300 dark:bg-gray-200 text-black px-4 py-2 rounded"
+              className="bg-gray-300 text-black px-4 py-2 rounded"
             >
               Cancel
             </button>
@@ -178,6 +169,7 @@ export default function Users() {
 }
 
 const Action = ({ userId, onDelete, onEdit }) => {
+  const user = useSelector((state) => state.auth.user);
   return (
     <div>
       <div className="flex items-center gap-3 justify-center mx-auto ">

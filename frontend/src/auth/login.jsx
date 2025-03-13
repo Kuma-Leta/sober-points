@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
+import GoogleSignInButton from "./with social/google";
 
 const Login = () => {
   const { login, error } = useAuth();
@@ -39,13 +40,13 @@ const Login = () => {
             />
           </div>
           <div className="text-right my-2">
-              <Link
-                to="/auth/forgot-password"
-                className="text-sm text-primary hover:underline"
-              >
-                Forgot Password?
-              </Link>
-            </div>
+            <Link
+              to="/auth/forgot-password"
+              className="text-sm text-primary hover:underline"
+            >
+              Forgot Password?
+            </Link>
+          </div>
           <button
             className="w-full py-3 mb-4 text-lg font-semibold bg-primary text-black hover:bg-opacity-85"
             type="submit"
@@ -58,6 +59,10 @@ const Login = () => {
             <Link className=" text-primary" to={"/auth/register"}>
               Register now
             </Link>
+          </div>
+          <div className="mt-4 mx-auto flex flex-col items-center justify-center w-full">
+            <GoogleSignInButton />
+            {/*     <FacebookLoginButton />*/}
           </div>
         </form>
       </div>

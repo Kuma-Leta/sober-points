@@ -17,6 +17,8 @@ router.post("/auth/forgot-password", authController.forgotPassword);
 router.post("/auth/reset-password/:token", authController.resetPassword);
 router.post("/auth/resend-email", authController.resendEmail);
 // router.post('/auth/verify-email', authenticate, authController.resendEmail);
+router.post("/auth/google", authController.googleLogin);
+router.post("/auth/google/register", authController.googleRegister);
 router.get("/me", authenticate, authController.me);
 
 // User routes
@@ -60,8 +62,6 @@ router.delete(
   userController.deleteUser
 );
 
-//companies
-router.use("/companies", require("./company"));
 router.use("/venues", venueRoutes); // <-- Add this line
 router.use("/ratings", ratingRoutes);
 

@@ -6,13 +6,11 @@ export default function UserForm({
   userId,
   onClose,
   onUpdate,
-  companyId,
 }) {
   const [userData, setUserData] = useState({
     name: "",
     email: "",
     role: "",
-    companyId: companyId,
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -126,7 +124,6 @@ export default function UserForm({
             <option value="">Select role</option>
             <option value="admin">Admin</option>
             <option value="customer">Customer</option>
-            <option value="vendor">Vendor</option>
           </select>
         </div>
         <div className="flex justify-end">

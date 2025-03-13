@@ -25,7 +25,7 @@ const generateDefaultPassword = () => {
 
 exports.createUser = async (req, res) => {
   try {
-    const { email, name, companyId, role, password } = req.body;
+    const { email, name, role, password } = req.body;
     const baseUsername = getUsernameFromEmail(email);
     if (role === "super-user" && req.user.role !== "super-user") {
       return res
@@ -42,7 +42,6 @@ exports.createUser = async (req, res) => {
     const user = new User({
       ...req.body,
       password: hashedPassword,
-      company: companyId,
       username,
     });
 
@@ -113,20 +112,11 @@ exports.createAdmin = async (req, res) => {
 // Get all users
 exports.getUsers = async (req, res) => {
   try {
-    const { role, company } = req.user; // Assuming req.user contains authenticated user details
+    const { role } = req.user; // Assuming req.user contains authenticated user details
 
     let query;
-    if (role === "super-user") {
-      query = User.find()
-        .select("-__v")
-        .populate("company", "name")
-        .sort({ createdAt: 1 });
-    } else {
-      query = User.find({ company })
-        .select("-__v")
-        .populate("company", "name")
-        .sort({ createdAt: 1 });
-    }
+
+    query = User.find().select("-__v");
 
     const features = new APIfeatures(query, req.query)
       .multfilter(["username", "name", "email", "address"])
@@ -159,48 +149,6 @@ exports.getUsers = async (req, res) => {
   }
 };
 
-// Get all users of company
-exports.getAllCompanyUsers = async (req, res) => {
-  try {
-    const { companyId } = req.params;
-    // Create a query for User with pagination, filtering, and sorting
-    let query = User.find({ company: companyId }).select("-__v");
-
-    // Apply APIfeatures for filtering, sorting, limiting, and pagination
-    const features = new APIfeatures(query, req.query)
-      .multfilter()
-      .filter()
-      .sort()
-      .limiting()
-      .paginatinating();
-
-    // Fetch the total number of records for pagination
-    const totalRecords = await User.countDocuments(
-      await features.query.getQuery()
-    );
-
-    // Fetch the paginated and filtered users
-    const users = await features.query;
-
-    if (users.length === 0) {
-      return res.status(404).json({ message: "No users found" });
-    }
-
-    // Calculate total pages based on total records and limit
-    const limit = req.query.limit * 1 || 10; // Default to 10 if no limit provided
-    const totalPages = Math.ceil(totalRecords / limit);
-
-    // Send the response with users and pagination details
-    return res.status(200).json({
-      totalPages,
-      totalRecords,
-      users,
-    });
-  } catch (error) {
-    console.log(error);
-    return res.status(500).json({ message: error.message });
-  }
-};
 // Get a user by ID
 exports.getUserById = async (req, res) => {
   try {

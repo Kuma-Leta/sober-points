@@ -27,7 +27,7 @@ const useAuth = () => {
         const res = await axiosInstance.get("/me");
         dispatch(loginSuccess(token, res.data));
       } catch (err) {
-        dispatch(loginFailure("an authorized"));
+        dispatch(loginFailure(null));
       }
     }
 
@@ -80,19 +80,20 @@ const useAuth = () => {
       });
 
       const data = response.data;
-      if (response.status === 201) {
+      if (response.status === 200) {
         setSuccessMessage(
           "Registration successful! Please check your email to verify your account."
         );
         toast.success(
           "Registration successful! Please check your email to verify your account."
         );
+        console.log(data.data.user);
         dispatch(loginSuccess(data.token, data.data.user));
         window.location.href = redirectPath || "/";
       } else {
-        dispatch(loginFailure(data.error.message || "Registration failed"));
-        setError(data.error.message || "Registration failed");
-        toast.error(data.error.message || "Registration failed");
+        dispatch(loginFailure(data?.error?.message || "Registration failed"));
+        setError(data?.error?.message || "Registration failed");
+        toast.error(data?.error?.message || "Registration failed");
       }
       setLoading(false);
     } catch (error) {
@@ -173,8 +174,9 @@ const useAuth = () => {
   const logoutUser = async () => {
     dispatch(logout());
     dispatch(loginSuccess("", {}));
-    await axios.get("/logout");
-    navigate("/landing");
+    console.log("clicked");
+    await axiosInstance.get("/logout");
+    window.location.href = "/";
   };
 
   const isLoggedIn = () => {
