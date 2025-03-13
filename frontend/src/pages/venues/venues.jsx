@@ -30,15 +30,15 @@ export default function Venues() {
   const [query, setQuery] = useState(""); // Search query
   const [totalPages, setTotalPages] = useState(1); // Total pages
   const [selectedVenueDetails, setSelectedVenueDetails] = useState(null); // For detail modal
-  // const [isFormOpen, setIsFormOpen] = useState(false);
+  const [filterCriteria, setFilterCriteria] = useState(""); // Filter criteria state
 
-  // Fetch venues with pagination and search query
+  // Fetch venues with pagination, search query, and filter criteria
   useEffect(() => {
     const fetchVenues = async () => {
       setLoading(true);
       try {
         const res = await axiosInstance.get(`/venues`, {
-          params: { page, limit, q: query }, // Pass page, limit, and search query
+          params: { page, limit, q: query, filter: filterCriteria }, // Pass page, limit, search query, and filter criteria
         });
         setVenues(res.data.venues);
         setTotalPages(res.data.totalPages); // Assuming API returns total pages
@@ -49,7 +49,7 @@ export default function Venues() {
       }
     };
     fetchVenues();
-  }, [page, query, limit]);
+  }, [page, query, limit, filterCriteria]);
 
   const handleDelete = async () => {
     if (confirmDelete) {
@@ -64,19 +64,20 @@ export default function Venues() {
   };
 
   const handleEdit = (venueId) => {
+    setIsCreating(false);
     setSelectedVenueId(venueId);
   };
 
   const handleCloseModal = () => {
-    setSelectedVenueId(null);
-    setIsCreating(false);
-    setConfirmDelete(null);
+    setSelectedVenueId(null); // Reset selectedVenueId
+    setIsCreating(false); // Reset isCreating
+    setConfirmDelete(null); // Reset confirmDelete
     setSelectedVenueDetails(null); // Close detail modal
   };
 
   const handleUpdate = async () => {
     const res = await axiosInstance.get(`/venues`, {
-      params: { page, limit, q: query },
+      params: { page, limit, q: query, filter: filterCriteria },
     });
     setVenues(res.data.venues);
   };
@@ -139,7 +140,13 @@ export default function Venues() {
   }, [venues]);
 
   const handleCreate = () => {
+    setSelectedVenueId(null);
     setIsCreating(true);
+  };
+
+  const handleFilterChange = (e) => {
+    setFilterCriteria(e.target.value);
+    setPage(1); // Reset to first page on new filter
   };
 
   const user = useSelector((state) => state.auth.user);
@@ -147,7 +154,16 @@ export default function Venues() {
   return (
     <div className="w-full">
       <div className="flex gap-2 items-center mb-4 justify-between">
-        <Search setQuery={handleSearchChange} />{" "}
+        <Search setQuery={handleSearchChange} />
+        <select
+          onChange={handleFilterChange}
+          value={filterCriteria}
+          className="bg-white border border-gray-300 rounded px-4 py-2"
+        >
+          <option value="">All</option>
+          <option value="verified">Verified</option>
+          <option value="unverified">Unverified</option>
+        </select>
         <button
           onClick={handleCreate}
           className="bg-ternary h-min text-white px-4 py-2 rounded"
@@ -179,7 +195,6 @@ export default function Venues() {
             venueId={selectedVenueId}
             onClose={handleCloseModal}
             onUpdate={handleUpdate}
-            // onCloses={() => setIsFormOpen(false)}
           />
         </div>
       </Modal>

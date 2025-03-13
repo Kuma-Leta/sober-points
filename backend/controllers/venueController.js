@@ -103,6 +103,13 @@ exports.getAllVenues = async (req, res) => {
   try {
     let query = Venue.find().select("-__v");
 
+    // Handle the `filter` query parameter for `isVerified` status
+    if (req.query.filter === "verified") {
+      query = query.where({ isVerified: true });
+    } else if (req.query.filter === "unverified") {
+      query = query.where({ isVerified: false });
+    }
+
     // Apply APIfeatures for filtering, sorting, limiting, and pagination
     const features = new APIfeatures(query, req.query)
       .multfilter(["name", "address", "description"]) // Specify searchable fields
@@ -137,7 +144,6 @@ exports.getAllVenues = async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 };
-
 // 📌 Get Venue by ID
 exports.getVenueById = async (req, res) => {
   try {
@@ -209,8 +215,6 @@ exports.updateVenue = async (req, res) => {
       if (removedImages.length > 0) {
         imageUrls = imageUrls.filter((image) => !removedImages.includes(image));
       }
-
-      console.log("Removed Images:", removedImages);
 
       // Update venue fields
       venue.name = name;
