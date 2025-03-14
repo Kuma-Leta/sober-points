@@ -25,9 +25,7 @@ export default function MapSearch({
   const [suggestions, setSuggestions] = useState([]);
 
   // Debugging: Log search query changes
-  useEffect(() => {
-    console.log("Search query updated:", searchQuery);
-  }, [searchQuery]);
+  useEffect(() => {}, [searchQuery]);
 
   // Handle location search
   const handleSearch = async (e) => {
