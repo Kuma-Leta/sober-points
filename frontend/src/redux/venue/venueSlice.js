@@ -37,7 +37,7 @@ export const fetchNearbyVenues = createAsyncThunk(
 // Search venues by query
 export const searchVenues = createAsyncThunk(
   "venues/search",
-  async (query, thunkAPI) => {
+  async (query , thunkAPI) => {
     try {
       const response = await axiosInstance.get(
         `http://localhost:5000/api/venues/search?query=${query}`

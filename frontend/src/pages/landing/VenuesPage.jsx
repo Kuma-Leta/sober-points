@@ -80,6 +80,7 @@ const VenuesPage = () => {
                   ? nearbyVenues
                   : venues
               }
+              isSideBySide={true}
             />
           )}
         </div>

@@ -43,7 +43,10 @@ const VenueList = () => {
               {/* Venue Image */}
               {venue.images.length > 0 && (
                 <img
-                  src={venue.images[0]}
+                  src={`http://localhost:5000/${venue.images[0].replace(
+                    /\\/g,
+                    "/"
+                  )}`}
                   alt={venue.name}
                   loading="lazy"
                   className="w-full h-48 sm:h-64 object-cover rounded-lg transition-transform duration-100 group-hover:scale-105"

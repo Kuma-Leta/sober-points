@@ -12,7 +12,7 @@ const Header = () => {
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
   const user = useSelector((state) => state.auth.user);
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false); // State for sidebar
   const dropdownRef = useRef(null);
 
   useEffect(() => {
@@ -26,16 +26,9 @@ const Header = () => {
   }, []);
 
   return (
-    <header className="bg-white dark:bg-darkCard dark:text-darkText w-[100%] shadow-sm flex items-center justify-between px-2 sm:px-6 py-1 z-10">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between w-full">
-        {/* Mobile Menu Button */}
-        <button
-          className="text-grayColor dark:text-darkText sm:hidden"
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-        >
-          {mobileMenuOpen ? <FaTimes size={20} /> : <FaBars size={20} />}
-        </button>
-
+    <header className="bg-white dark:bg-darkCard dark:text-darkText w-full shadow-sm fixed top-0 z-50">
+      {/* Full-width container for smaller screens */}
+      <div className="w-full sm:container mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between py-2">
         {/* Logo */}
         <div className="flex items-center space-x-3">
           <Link to="/">
@@ -47,7 +40,15 @@ const Header = () => {
           </Link>
         </div>
 
-        {/* Navigation Links */}
+        {/* Mobile Menu Button */}
+        <button
+          className="text-grayColor dark:text-darkText sm:hidden "
+          onClick={() => setSidebarOpen(!sidebarOpen)}
+        >
+          {sidebarOpen ? <FaTimes size={20} /> : <FaBars size={20} />}
+        </button>
+
+        {/* Navigation Links (Desktop) */}
         <nav className="hidden sm:flex space-x-4 text-grayColor dark:text-darkText text-sm font-medium">
           <Link to="/" className="hover:text-primary transition">
             Home
@@ -75,7 +76,7 @@ const Header = () => {
                 className="hidden sm:flex bg-primary hover:bg-primaryLight text-white px-3 py-1 rounded-md items-center space-x-1 text-sm transition"
               >
                 <FaPlus />
-                {/* <span>Post Venue</span> */}
+                <span>Post Venue</span>
               </Link>
 
               {/* User Dropdown */}
@@ -89,13 +90,13 @@ const Header = () => {
                   alt="User"
                 />
                 <span className="text-sm text-grayColor dark:text-darkText">
-                  {user?.name.user?.username}
+                  {user?.name || user?.username}
                 </span>
               </button>
               {dropdownOpen && (
                 <div
                   ref={dropdownRef}
-                  className="absolute left-0 top-7 mt-2 w-40 bg-white dark:bg-darkCard shadow-md rounded-md z-50 text-sm"
+                  className="absolute right-0 top-10 mt-2 w-40 bg-white dark:bg-darkCard shadow-md rounded-md z-50 text-sm"
                 >
                   <Link
                     onClick={() => setDropdownOpen(false)}
@@ -126,36 +127,103 @@ const Header = () => {
         </div>
       </div>
 
-      {/* Mobile Menu */}
-      {mobileMenuOpen && (
-        <div className="sm:hidden bg-white dark:bg-darkCard shadow-md p-4">
-          <nav className="flex flex-col space-y-2 text-center">
-            <Link
-              to="/"
-              className="text-grayColor dark:text-darkText hover:text-primary transition"
-            >
-              Home
-            </Link>
-            <Link
-              to="#features"
-              className="text-grayColor dark:text-darkText hover:text-primary transition"
-            >
-              Features
-            </Link>
-            <Link
-              to="#services"
-              className="text-grayColor dark:text-darkText hover:text-primary transition"
-            >
-              Services
-            </Link>
-            <Link
-              to="#contact"
-              className="text-grayColor dark:text-darkText hover:text-primary transition"
-            >
-              Contact
-            </Link>
-          </nav>
-        </div>
+      {/* Sidebar for Mobile */}
+      {sidebarOpen && (
+        <>
+          {/* Overlay */}
+          <div
+            className="fixed inset-0 bg-black bg-opacity-50 z-40 sm:hidden"
+            onClick={() => setSidebarOpen(false)}
+          ></div>
+
+          {/* Sidebar */}
+          <div className="fixed inset-y-0 left-0 w-1/2 bg-white dark:bg-darkCard shadow-lg z-50 sm:hidden">
+            <div className="p-4">
+              {/* Close Button */}
+              <button
+                className="text-grayColor dark:text-darkText mb-4"
+                onClick={() => setSidebarOpen(false)}
+              >
+                <FaTimes size={20} />
+              </button>
+
+              {/* Navigation Links */}
+              <nav className="flex flex-col space-y-3">
+                <Link
+                  to="/"
+                  className="text-grayColor dark:text-darkText hover:text-primary transition"
+                  onClick={() => setSidebarOpen(false)}
+                >
+                  Home
+                </Link>
+                <Link
+                  to="#features"
+                  className="text-grayColor dark:text-darkText hover:text-primary transition"
+                  onClick={() => setSidebarOpen(false)}
+                >
+                  Features
+                </Link>
+                <Link
+                  to="#services"
+                  className="text-grayColor dark:text-darkText hover:text-primary transition"
+                  onClick={() => setSidebarOpen(false)}
+                >
+                  Services
+                </Link>
+                <Link
+                  to="#contact"
+                  className="text-grayColor dark:text-darkText hover:text-primary transition"
+                  onClick={() => setSidebarOpen(false)}
+                >
+                  Contact
+                </Link>
+                {isAuthenticated && (
+                  <Link
+                    to="/venue/form"
+                    className="text-grayColor dark:text-darkText hover:text-primary transition"
+                    onClick={() => setSidebarOpen(false)}
+                  >
+                    Post Venue
+                  </Link>
+                )}
+              </nav>
+
+              {/* User Dropdown (Mobile) */}
+              {isAuthenticated && (
+                <div className="mt-6">
+                  <div className="flex items-center space-x-2">
+                    <img
+                      className="w-8 h-8 rounded-full object-cover border border-grayColor dark:border-darkText"
+                      src={user?.profilePicture || defaultUserProfile}
+                      alt="User"
+                    />
+                    <span className="text-sm text-grayColor dark:text-darkText">
+                      {user?.name || user?.username}
+                    </span>
+                  </div>
+                  <div className="mt-4">
+                    <Link
+                      to="/users/profile"
+                      className="block px-4 py-2 text-grayColor dark:text-darkText hover:bg-gray-100 dark:hover:bg-gray-800"
+                      onClick={() => setSidebarOpen(false)}
+                    >
+                      <FaUser className="inline mr-2" /> Profile
+                    </Link>
+                    <button
+                      onClick={() => {
+                        logout();
+                        setSidebarOpen(false);
+                      }}
+                      className="block w-full text-left px-4 py-2 text-grayColor dark:text-darkText hover:bg-gray-100 dark:hover:bg-gray-800"
+                    >
+                      Logout
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </>
       )}
     </header>
   );

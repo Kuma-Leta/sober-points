@@ -165,7 +165,7 @@ const Routing = () => {
 
             {/* Main Content */}
             <main
-              className={`flex-1 p-4 dark:bg-darkBg ${
+              className={`flex-1 p-2 dark:bg-darkBg ${
                 isMobile ? "relative" : ""
               }`}
             >

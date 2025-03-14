@@ -1,11 +1,10 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { motion } from "framer-motion";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { fetchNearbyVenues } from "../../redux/venue/venueSlice";
 import RatingStars from "./RatingStars"; // Import the RatingStars component
 
-const VenueLists = () => {
+const VenueLists = ({ isSideBySide = false }) => {
   const { venues, loading, error } = useSelector((state) => state.venues);
 
   if (!Array.isArray(venues) || venues.length === 0) {
@@ -13,7 +12,13 @@ const VenueLists = () => {
   }
 
   return (
-    <div className="mt-4  gap-4 sm:gap-3">
+    <div
+      className={`mt-4 grid ${
+        isSideBySide
+          ? "grid-cols-1 sm:grid-cols-1 md:grid-cols-2" // Side-by-side layout
+          : "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3" // Default layout
+      } gap-4 sm:gap-6`}
+    >
       {venues.map((venue, index) => (
         <motion.div
           key={venue._id}
@@ -32,18 +37,18 @@ const VenueLists = () => {
                 )}`}
                 alt={venue.name}
                 loading="lazy"
-                className="w-full h-40 sm:h-48 object-cover rounded-t-2xl transition-transform duration-300 group-hover:scale-105"
+                className="w-full h-48 sm:h-56 object-cover rounded-t-2xl transition-transform duration-300 group-hover:scale-105"
               />
             )}
             <div className="p-4 sm:p-5">
               <h3 className="text-lg sm:text-xl font-semibold text-gray-800 dark:text-white">
                 {venue.name}
               </h3>
-              <p className="text-sm text-gray-600 dark:text-gray-300">
+              <p className="text-sm text-gray-600 dark:text-gray-300 mt-2">
                 📍 {venue.address}
               </p>
               {/* Use the RatingStars component */}
-              <div className="flex items-center">
+              <div className="flex items-center mt-2">
                 <RatingStars rating={venue.rating || 0} />
                 <span className="ml-2 text-sm text-gray-600 dark:text-gray-300">
                   ({venue.rating || 0})
