@@ -7,8 +7,15 @@ import ToastNotifications, {
   showSuccess,
   showError,
 } from "./ToastNotifications";
+import VenueInputs from "./VenueInputs"; // Import the new component
+import ContactInfo from "./PhoneWebsite";
 
-export default function VenueForm({ mode = "create", venueId }) {
+export default function VenueForm({
+  mode = "create",
+  venueId,
+  onClose,
+  onUpdate,
+}) {
   const [formData, setFormData] = useState({
     name: "",
     address: "",
@@ -27,10 +34,38 @@ export default function VenueForm({ mode = "create", venueId }) {
   const formRef = useRef(null);
   const [removedImages, setRemovedImages] = useState([]); // Track removed images
 
+  // State for search query
+  const [searchQuery, setSearchQuery] = useState("");
+
+  // Debugging: Log mode and venueId changes
+  useEffect(() => {
+    console.log("Mode changed:", mode);
+    console.log("Venue ID:", venueId);
+  }, [mode, venueId]);
+
+  // Reset form when switching from "edit" to "create" mode
+  useEffect(() => {
+    if (mode === "create") {
+      console.log("Resetting form for create mode");
+      setFormData({
+        name: "",
+        address: "",
+        phone: "",
+        latitude: null,
+        longitude: null,
+        description: "",
+        menu: "",
+        website: "",
+        images: [],
+      });
+      setRemovedImages([]);
+    }
+  }, [mode]);
+
   // Fetch venue data if in edit mode
   useEffect(() => {
     if (mode === "edit" && venueId) {
-      console.log("Venue ID:", venueId); // Log the venueId
+      console.log("Fetching venue data for edit mode");
       const fetchVenueData = async () => {
         setLoading(true);
         try {
@@ -116,7 +151,6 @@ export default function VenueForm({ mode = "create", venueId }) {
     formDataToSend.append("location[coordinates][1]", formData.latitude);
 
     // Append removed images
-    // Append removed images
     if (removedImages.length > 0) {
       formDataToSend.append("removedImages", JSON.stringify(removedImages));
     }
@@ -147,10 +181,22 @@ export default function VenueForm({ mode = "create", venueId }) {
         );
       }
 
+      // Show success toast message
       showSuccess(
         `Venue ${mode === "create" ? "created" : "updated"} successfully!`
       );
-      handleFormReset();
+
+      // Wait for 4 seconds before closing the form
+      setTimeout(() => {
+        handleFormReset();
+        setSearchQuery(""); // Reset the search query
+        if (typeof onUpdate === "function") {
+          onUpdate(); // Trigger update in parent component (if provided)
+        }
+        if (typeof onClose === "function") {
+          onClose(); // Close the modal (if provided)
+        }
+      }, 4000); // 4000 ms = 4 seconds
     } catch (error) {
       console.error(
         "Error saving venue:",
@@ -181,7 +227,7 @@ export default function VenueForm({ mode = "create", venueId }) {
   };
 
   return (
-    <div className="p-4 w-full max-w-6xl mx-auto bg-white dark:bg-darkCard rounded-md mt-10">
+    <div className="p-4 w-full max-w-6xl mx-auto bg-white dark:bg-darkCard rounded-md mt-6">
       <ToastNotifications />
       <div className="flex flex-col gap-4">
         <div className="flex flex-col md:flex-row gap-4">
@@ -192,39 +238,8 @@ export default function VenueForm({ mode = "create", venueId }) {
             </h2>
             {error && <div className="text-red-500 mb-4">{error}</div>}
             <form ref={formRef} onSubmit={handleSubmit} className="space-y-4">
-              <input
-                type="text"
-                name="name"
-                placeholder="Venue Name"
-                onChange={handleChange}
-                value={formData.name}
-                required
-                className="w-full px-3 py-2 border dark:bg-darkBg rounded-lg"
-              />
-              <input
-                type="text"
-                name="address"
-                placeholder="Address"
-                onChange={handleChange}
-                value={formData.address}
-                required
-                className="w-full px-3 py-2 border dark:bg-darkBg rounded-lg"
-              />
-
-              <textarea
-                name="description"
-                placeholder="Description"
-                onChange={handleChange}
-                value={formData.description}
-                className="w-full px-3 py-2 border dark:bg-darkBg rounded-lg"
-              ></textarea>
-              <textarea
-                name="menu"
-                placeholder="Menu Details"
-                onChange={handleChange}
-                value={formData.menu}
-                className="w-full px-3 py-2 border dark:bg-darkBg rounded-lg"
-              ></textarea>
+              {/* Render the VenueInputs component */}
+              <VenueInputs formData={formData} handleChange={handleChange} />
 
               <ImageUploader
                 formData={formData}
@@ -237,23 +252,7 @@ export default function VenueForm({ mode = "create", venueId }) {
 
           {/* Right Section */}
           <div className="w-full pt-12 md:w-1/2">
-            <input
-              type="text"
-              name="phone"
-              placeholder="Phone Number (e.g., +1234567890)"
-              onChange={handleChange}
-              value={formData.phone}
-              required
-              className="w-full px-3 py-2 mb-3 border dark:bg-darkBg rounded-lg"
-            />
-            <input
-              type="text"
-              name="website"
-              placeholder="Website Link (optional)"
-              onChange={handleChange}
-              value={formData.website}
-              className="w-full px-3 py-2 mb-3 border dark:bg-darkBg rounded-lg"
-            />
+            <ContactInfo formData={formData} handleChange={handleChange} />
             <p className="text-left dark:bg-darkBg font-medium text-base mb-1 p-1">
               Select Venue Location from Map
             </p>
@@ -262,6 +261,8 @@ export default function VenueForm({ mode = "create", venueId }) {
                 setFormData={setFormData}
                 initialLatitude={formData.latitude}
                 initialLongitude={formData.longitude}
+                searchQuery={searchQuery} // Pass searchQuery
+                setSearchQuery={setSearchQuery} // Pass setSearchQuery
               />
             </div>
           </div>
@@ -272,7 +273,7 @@ export default function VenueForm({ mode = "create", venueId }) {
           <button
             type="button"
             className="bg-gray-400 px-4 py-2 mr-2 rounded text-white hover:bg-gray-500 transition"
-            onClick={() => navigate("/")}
+            onClick={onClose} // Use onClose from props
           >
             Cancel
           </button>

@@ -21,9 +21,10 @@ class APIfeatures {
 
   filter() {
     const queryObj = { ...this.queryString };
-    const excludedFields = ["page", "limit", "sort", "fields", "q"];
+    const excludedFields = ["page", "limit", "sort", "fields", "q", "filter"];
     excludedFields.forEach((el) => delete queryObj[el]);
 
+    // Handle other filters (e.g., gte, gt, lte, lt, eq)
     const filterKeys = Object.keys(queryObj);
     filterKeys.forEach((key) => {
       if (typeof queryObj[key] === "string") {
@@ -39,7 +40,6 @@ class APIfeatures {
     this.query = this.query.find(queryObj);
     return this;
   }
-
   sort() {
     if (this.queryString.sort) {
       const sortBy = this.queryString.sort.split(",").join(" ");
