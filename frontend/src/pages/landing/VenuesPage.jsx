@@ -59,7 +59,7 @@ const VenuesPage = () => {
 
   return (
     <div className="flex flex-col min-h-screen bg-white dark:bg-darkBg">
-      <Header />
+      {/* <Header /> */}
       <div className="flex flex-col md:flex-row flex-1 pt-20">
         <div
           className={`w-full ${

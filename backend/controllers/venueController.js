@@ -241,6 +241,60 @@ exports.updateVenue = async (req, res) => {
   });
 };
 // 📌 Delete Venue
+
+exports.searchVenues = async (req, res) => {
+  try {
+    const { query, page = 1, limit = 10, lat, lng } = req.query;
+
+    // Pagination settings
+    const pageNumber = parseInt(page, 10);
+    const pageSize = parseInt(limit, 10);
+    const skip = (pageNumber - 1) * pageSize;
+
+    // Search filter (case-insensitive)
+    let filter = {};
+    if (query) {
+      filter.name = { $regex: query, $options: "i" };
+    }
+
+    let venues;
+    let totalVenues;
+
+    // Check if latitude and longitude are provided for sorting by distance
+    if (lat && lng) {
+      venues = await Venue.find(filter)
+        .near({
+          center: {
+            type: "Point",
+            coordinates: [parseFloat(lng), parseFloat(lat)],
+          },
+          maxDistance: 10000, // 10km radius (adjust as needed)
+          spherical: true,
+        })
+        .skip(skip)
+        .limit(pageSize);
+
+      totalVenues = await Venue.countDocuments(filter);
+    } else {
+      // If no location provided, just apply pagination and search filter
+      venues = await Venue.find(filter).skip(skip).limit(pageSize);
+
+      totalVenues = await Venue.countDocuments(filter);
+    }
+
+    res.status(200).json({
+      totalVenues,
+      totalPages: Math.ceil(totalVenues / pageSize),
+      currentPage: pageNumber,
+      venues,
+    });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Failed to search venues", error: error.message });
+  }
+};
+
 exports.deleteVenue = async (req, res) => {
   try {
     const venue = await Venue.findById(req.params.id);

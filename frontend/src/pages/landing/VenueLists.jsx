@@ -13,7 +13,7 @@ const VenueLists = () => {
   }
 
   return (
-    <div className="mt-4 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-3">
+    <div className="mt-4  gap-4 sm:gap-3">
       {venues.map((venue, index) => (
         <motion.div
           key={venue._id}
@@ -26,7 +26,10 @@ const VenueLists = () => {
           <Link to={`/venues/${venue._id}`}>
             {venue.images.length > 0 && (
               <img
-                src={`http://localhost:5000/uploads/${venue.images[0].replace(/\\/g, "/")}`}
+                src={`http://localhost:5000/${venue.images[0].replace(
+                  /\\/g,
+                  "/"
+                )}`}
                 alt={venue.name}
                 loading="lazy"
                 className="w-full h-40 sm:h-48 object-cover rounded-t-2xl transition-transform duration-300 group-hover:scale-105"
