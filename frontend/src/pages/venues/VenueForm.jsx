@@ -8,7 +8,12 @@ import ToastNotifications, {
   showError,
 } from "./ToastNotifications";
 
-export default function VenueForm({ mode = "create", venueId }) {
+export default function VenueForm({
+  mode = "create",
+  venueId,
+  onClose,
+  onUpdate,
+}) {
   const [formData, setFormData] = useState({
     name: "",
     address: "",
@@ -27,10 +32,35 @@ export default function VenueForm({ mode = "create", venueId }) {
   const formRef = useRef(null);
   const [removedImages, setRemovedImages] = useState([]); // Track removed images
 
+  // Debugging: Log mode and venueId changes
+  useEffect(() => {
+    console.log("Mode changed:", mode);
+    console.log("Venue ID:", venueId);
+  }, [mode, venueId]);
+
+  // Reset form when switching from "edit" to "create" mode
+  useEffect(() => {
+    if (mode === "create") {
+      console.log("Resetting form for create mode");
+      setFormData({
+        name: "",
+        address: "",
+        phone: "",
+        latitude: null,
+        longitude: null,
+        description: "",
+        menu: "",
+        website: "",
+        images: [],
+      });
+      setRemovedImages([]);
+    }
+  }, [mode]);
+
   // Fetch venue data if in edit mode
   useEffect(() => {
     if (mode === "edit" && venueId) {
-      console.log("Venue ID:", venueId); // Log the venueId
+      console.log("Fetching venue data for edit mode");
       const fetchVenueData = async () => {
         setLoading(true);
         try {
@@ -116,7 +146,6 @@ export default function VenueForm({ mode = "create", venueId }) {
     formDataToSend.append("location[coordinates][1]", formData.latitude);
 
     // Append removed images
-    // Append removed images
     if (removedImages.length > 0) {
       formDataToSend.append("removedImages", JSON.stringify(removedImages));
     }
@@ -147,10 +176,21 @@ export default function VenueForm({ mode = "create", venueId }) {
         );
       }
 
+      // Show success toast message
       showSuccess(
         `Venue ${mode === "create" ? "created" : "updated"} successfully!`
       );
-      handleFormReset();
+
+      // Wait for 4 seconds before closing the form
+      setTimeout(() => {
+        handleFormReset();
+        if (typeof onUpdate === "function") {
+          onUpdate(); // Trigger update in parent component (if provided)
+        }
+        if (typeof onClose === "function") {
+          onClose(); // Close the modal (if provided)
+        }
+      }, 5000); // 4000 ms = 4 seconds
     } catch (error) {
       console.error(
         "Error saving venue:",
@@ -272,7 +312,7 @@ export default function VenueForm({ mode = "create", venueId }) {
           <button
             type="button"
             className="bg-gray-400 px-4 py-2 mr-2 rounded text-white hover:bg-gray-500 transition"
-            onClick={() => navigate("/")}
+            onClick={onClose} // Use onClose from props
           >
             Cancel
           </button>

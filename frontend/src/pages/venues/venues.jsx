@@ -140,8 +140,8 @@ export default function Venues() {
   }, [venues]);
 
   const handleCreate = () => {
-    setSelectedVenueId(null);
-    setIsCreating(true);
+    setSelectedVenueId(null); // Reset selectedVenueId
+    setIsCreating(true); // Set isCreating to true
   };
 
   const handleFilterChange = (e) => {
@@ -158,7 +158,7 @@ export default function Venues() {
         <select
           onChange={handleFilterChange}
           value={filterCriteria}
-          className="bg-white border border-gray-300 rounded px-4 py-2"
+          className="bg-white border border-gray-300 dark:bg-darkCard rounded px-4 py-2"
         >
           <option value="">All</option>
           <option value="verified">Verified</option>
