@@ -56,7 +56,8 @@ export const addVenueRating = createAsyncThunk(
   "venues/addRating",
   async ({ venueId, rating, review }, thunkAPI) => {
     try {
-      const response = await axios.post(
+      console.log("Rating:", rating, "Review:", review);
+      const response = await axiosInstance.post(
         `http://localhost:5000/api/ratings/addRatings`,
         { rating, review,venueId }
       );

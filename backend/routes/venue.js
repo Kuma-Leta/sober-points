@@ -15,6 +15,7 @@ const {
 } = require("../controllers/venueController");
 
 // 📌 Add Rating
+router.post("/create", authenticate, authorize(["admin", "customer"]), createVenue);
 router.post("/add-rating", authenticate, addRating);
 
 // 📌 Get Nearby Venues
@@ -24,7 +25,6 @@ router.get("/nearby", getNearbyVenues);
 router.get("/search", searchVenues);
 
 // 📌 Create Venue
-router.post("/create-venue", authenticate, authorize(["admin", "customer"]), createVenue);
 
 // 📌 Verify Venue
 router.patch("/:id/verify", authenticate, authorize(["admin"]), verifyVenue);

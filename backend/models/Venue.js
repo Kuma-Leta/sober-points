@@ -83,7 +83,7 @@ const VenueSchema = new mongoose.Schema(
     },
     rating: {
       type: Number,
-      min: 1,
+      // min: 1,
       max: 5,
       default: 0, // Default rating (will be updated dynamically)
     },

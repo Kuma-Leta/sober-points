@@ -19,6 +19,7 @@ import Features from "./pages/landing/Services";
 import VenueForm from "./pages/venues/VenueForm";
 import VenuesPage from "./pages/landing/VenuesPage";
 import VenueDetail from "./pages/landing/VenueDetail";
+import Venues from "./pages/venues/venues";
 
 function Pages() {
   const user = useSelector((state) => state.auth.user);
@@ -61,14 +62,14 @@ function Pages() {
             </ProtectedRoute>
           }
         />
-        {/* <Route
+        <Route
           path="/venues"
           element={
             <ProtectedRoute>
               <Venues />
             </ProtectedRoute>
           }
-        /> */}
+        />
 
         <Route path="/ld" element={<LandingPage />} />
         {/* <Route path="/users" element={<Users />} /> */}

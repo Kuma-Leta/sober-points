@@ -164,7 +164,7 @@ export default function VenueForm({
     try {
       let response;
       if (mode === "create") {
-        response = await axiosInstance.post("/venues", formDataToSend, {
+        response = await axiosInstance.post("/venues/create", formDataToSend, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
