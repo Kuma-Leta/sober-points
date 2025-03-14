@@ -36,6 +36,8 @@ export default function MapComponent({
   setFormData,
   initialLatitude,
   initialLongitude,
+  searchQuery,
+  setSearchQuery,
 }) {
   const [markerPosition, setMarkerPosition] = useState(
     initialLatitude && initialLongitude
@@ -43,6 +45,11 @@ export default function MapComponent({
       : [9.145, 40.489] // Default: Ethiopia
   );
   const [showLocationCard, setShowLocationCard] = useState(false);
+
+  // Debugging: Log searchQuery and setSearchQuery
+  useEffect(() => {
+    console.log("searchQuery in MapComponent:", searchQuery);
+  }, [searchQuery]);
 
   // Get the user's current location when the component mounts (only if no initial coordinates are provided)
   useEffect(() => {
@@ -124,6 +131,8 @@ export default function MapComponent({
       <MapSearch
         setMarkerPosition={setMarkerPosition}
         setFormData={setFormData}
+        searchQuery={searchQuery} // Pass searchQuery
+        setSearchQuery={setSearchQuery} // Pass setSearchQuery
       />
       <div className="relative w-full h-80 z-0">
         <MapContainer

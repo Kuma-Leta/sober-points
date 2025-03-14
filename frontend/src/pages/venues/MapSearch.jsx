@@ -16,9 +16,18 @@ const geocodeLocation = async (query) => {
   }));
 };
 
-export default function MapSearch({ setMarkerPosition, setFormData }) {
-  const [searchQuery, setSearchQuery] = useState("");
+export default function MapSearch({
+  setMarkerPosition,
+  setFormData,
+  searchQuery,
+  setSearchQuery,
+}) {
   const [suggestions, setSuggestions] = useState([]);
+
+  // Debugging: Log search query changes
+  useEffect(() => {
+    console.log("Search query updated:", searchQuery);
+  }, [searchQuery]);
 
   // Handle location search
   const handleSearch = async (e) => {
