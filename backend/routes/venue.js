@@ -33,7 +33,7 @@ router.patch("/:id/verify", authenticate, authorize(["admin"]), verifyVenue);
 router.get("/", getAllVenues);
 
 // 📌 Get Venue by ID
-router.get("/:id", authenticate, getVenueById);
+router.get("/:id", getVenueById);
 
 // 📌 Update Venue
 router.put("/:venueId", authenticate, authorize(["admin", "Customer"]), updateVenue);

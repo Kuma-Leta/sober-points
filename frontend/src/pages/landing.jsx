@@ -19,7 +19,6 @@ const LandingPage = () => {
       <HeroSection setQuery={setQuery} onSearch={handleSearch} />
       <VenueList />
       <Features />
-      {/* <Footer /> */}
     </div>
   );
 };
