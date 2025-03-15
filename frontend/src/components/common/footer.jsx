@@ -7,13 +7,13 @@ export default function Footer() {
     <footer className="bg-gray-100 dark:bg-darkCard py-6 px-4 sm:px-6">
       <div className="max-w-6xl mx-auto">
         {/* Company & Support & Newsletter */}
-        <div className="flex flex-col space-y-6 md:flex-row md:justify-between md:space-y-0">
+        <div className="flex flex-col space-y-6 md:flex-row md:justify-between md:space-y-0 sm">
           {/* Company & Support */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="flex flex-col space-y-6 sm:flex-row sm:space-x-12 sm:space-y-0"
+            className="grid grid-cols-2 justify-center items-center  space-y-6 sm:flex-row sm:space-x-12 sm:space-y-0"
           >
             <div>
               <h3 className="text-lg font-bold text-grayColor dark:text-darkText">
