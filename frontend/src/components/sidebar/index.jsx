@@ -99,8 +99,8 @@ const Sidebar = () => {
         <div
           className={`relative h-full transition-all duration-300 ${
             isSidebarOpen
-              ? "w-72 p-4 bg-indigo-900 text-white"
-              : "w-16 px-3 bg-indigo-900 py-4"
+              ? "w-72 p-4 bg-gray-700 text-white"
+              : "w-16 px-3 bg-gray-700 py-4"
           }`}
         >
           {/* Mobile Toggle Button */}
@@ -148,8 +148,8 @@ const Sidebar = () => {
                     className={({ isActive }) =>
                       `flex items-center space-x-4 p-3 rounded-lg transition-all duration-200 ${
                         isActive
-                          ? "bg-indigo-800 text-white"
-                          : "text-gray-300 hover:bg-indigo-800/50"
+                          ? "bg-gray-800 text-white"
+                          : "text-gray-300 hover:bg-gray-800/50"
                       }`
                     }
                   >

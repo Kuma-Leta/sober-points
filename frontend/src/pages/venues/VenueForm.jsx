@@ -38,15 +38,11 @@ export default function VenueForm({
   const [searchQuery, setSearchQuery] = useState("");
 
   // Debugging: Log mode and venueId changes
-  useEffect(() => {
-    console.log("Mode changed:", mode);
-    console.log("Venue ID:", venueId);
-  }, [mode, venueId]);
+  useEffect(() => {}, [mode, venueId]);
 
   // Reset form when switching from "edit" to "create" mode
   useEffect(() => {
     if (mode === "create") {
-      console.log("Resetting form for create mode");
       setFormData({
         name: "",
         address: "",
@@ -65,7 +61,6 @@ export default function VenueForm({
   // Fetch venue data if in edit mode
   useEffect(() => {
     if (mode === "edit" && venueId) {
-      console.log("Fetching venue data for edit mode");
       const fetchVenueData = async () => {
         setLoading(true);
         try {
@@ -83,7 +78,6 @@ export default function VenueForm({
             images: venueData.images || [],
           });
         } catch (error) {
-          console.error("Error fetching venue data:", error);
           setError("Failed to fetch venue data. Please try again.");
           showError("Failed to fetch venue data. Please try again.");
         } finally {

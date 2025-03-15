@@ -105,7 +105,7 @@ export default function MapComponent({
 
   // Handle confirmation to save location
   const handleConfirmLocation = () => {
-    console.log("Marker Position:", markerPosition); // Debugging
+    
     if (isNaN(markerPosition[0]) || isNaN(markerPosition[1])) {
       console.error("Invalid latitude or longitude values.");
       return;

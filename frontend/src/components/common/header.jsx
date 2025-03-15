@@ -71,13 +71,15 @@ const Header = () => {
           {isAuthenticated ? (
             <div className="relative flex items-center space-x-2">
               {/* Post Venue Button */}
-              <Link
-                to="/venue/form"
-                className="hidden sm:flex bg-primary hover:bg-primaryLight text-white px-3 py-1 rounded-md items-center space-x-1 text-sm transition"
-              >
-                <FaPlus />
-                <span>Post Venue</span>
-              </Link>
+              {user?.role !== "admin" && (
+                <Link
+                  to="/venue/form"
+                  className="hidden sm:flex bg-primary hover:bg-primaryLight text-white px-3 py-1 rounded-md items-center space-x-1 text-sm transition"
+                >
+                  <FaPlus />
+                  {/* <span>Post Venue</span> */}
+                </Link>
+              )}
 
               {/* User Dropdown */}
               <button
