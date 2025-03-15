@@ -1,6 +1,6 @@
 import HeroSection from "./landing/HeroSection";
 import Features from "./landing/Services";
-import VenueList from "./landing/VenueList";
+import VenueLists from "./landing/VenueLists";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 const LandingPage = () => {
@@ -17,7 +17,7 @@ const LandingPage = () => {
   return (
     <div className="min-h-screen bg-white dark:bg-darkBg text-gray-900 dark:text-darkText">
       <HeroSection setQuery={setQuery} onSearch={handleSearch} />
-      <VenueList />
+      <VenueLists />
       <Features />
     </div>
   );
