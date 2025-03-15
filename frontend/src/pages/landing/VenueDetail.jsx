@@ -19,6 +19,8 @@ import GetDirections from "./GetDirections";
 import axios from "axios";
 import RatingStars from "./RatingStars";
 import axiosInstance from "../../api/api";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 // Custom icon for the venue marker
 const venueIcon = new L.Icon({
@@ -28,26 +30,6 @@ const venueIcon = new L.Icon({
   iconAnchor: [12, 41],
   popupAnchor: [1, -34],
 });
-
-// Toast notification component
-const Toast = ({ message, type, onClose }) => {
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      onClose();
-    }, 3000); // Auto-close after 3 seconds
-    return () => clearTimeout(timer);
-  }, [onClose]);
-
-  return (
-    <div
-      className={`fixed top-4 right-4 p-4 rounded-md shadow-lg text-white ${
-        type === "success" ? "bg-green-500" : "bg-red-500"
-      }`}
-    >
-      {message}
-    </div>
-  );
-};
 
 const VenueDetail = () => {
   const { id } = useParams();
@@ -60,7 +42,6 @@ const VenueDetail = () => {
   const [ratings, setRatings] = useState([]);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [isImagePopupOpen, setIsImagePopupOpen] = useState(false);
-  const [toast, setToast] = useState({ show: false, message: "", type: "" });
   const [loading, setLoading] = useState(true); // Loading state for venue details
   const [error, setError] = useState(null); // Error state for venue details
 
@@ -123,29 +104,45 @@ const VenueDetail = () => {
         setReview("");
         setRatingService(0);
         setRatingLocation(0);
-        setToast({
-          show: true,
-          message: "Rating submitted successfully!",
-          type: "success",
+        toast.success("Rating submitted successfully!", {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
         });
+        setWantRate(false);
       } catch (error) {
-        setToast({
-          show: true,
-          message: "Failed to submit rating. Please try again.",
-          type: "error",
+        toast.error("Failed to submit rating. Please try again.", {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
         });
       }
     } else {
-      setToast({
-        show: true,
-        message: "Please rate both service and location and provide a review.",
-        type: "error",
-      });
+      toast.error(
+        "Please rate both service and location and provide a review.",
+        {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+        }
+      );
     }
   };
+
   const renderRatings = () => {
     if (ratings.length === 0) {
-      return <p className="text-gray-600">No ratings yet.</p>;
+      return (
+        <p className="text-gray-600 dark:text-gray-400">No ratings yet.</p>
+      );
     }
 
     return (
@@ -153,7 +150,7 @@ const VenueDetail = () => {
         {ratings.map((rating, index) => (
           <div
             key={index}
-            className="bg-white p-4 rounded-lg shadow-sm border border-gray-200"
+            className="bg-white dark:bg-darkCard p-4 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700"
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center">
@@ -164,27 +161,30 @@ const VenueDetail = () => {
                   </span>
                 </div>
                 <div>
-                  <span className="font-semibold text-gray-800">
+                  <span className="font-semibold text-gray-800 dark:text-gray-200">
                     {rating.user.name}
                   </span>
-                  <span className="text-sm text-gray-500 ml-2">
+                  <span className="text-sm text-gray-500 dark:text-gray-400 ml-2">
                     {getTimeSince(rating.createdAt)}
                   </span>
                 </div>
               </div>
               <div className="flex items-center">
                 <RatingStars rating={rating.rating} />
-                <span className="ml-2 text-sm text-gray-600">
+                <span className="ml-2 text-sm text-gray-600 dark:text-gray-400">
                   ({rating.rating})
                 </span>
               </div>
             </div>
-            <p className="text-gray-600 mt-2">{rating.review}</p>
+            <p className="text-gray-600 dark:text-gray-400 mt-2">
+              {rating.review}
+            </p>
           </div>
         ))}
       </div>
     );
   };
+
   const getTimeSince = (date) => {
     const now = new Date();
     const reviewDate = new Date(date);
@@ -229,44 +229,44 @@ const VenueDetail = () => {
 
   if (loading) {
     return (
-      <p className="text-gray-600 mt-4 text-center animate-pulse">
+      <p className="text-gray-600 dark:text-gray-400 mt-4 text-center animate-pulse">
         Loading venue details...
       </p>
     );
   }
 
   if (error) {
-    return <p className="text-red-500 mt-4 text-center">{error}</p>;
+    return (
+      <p className="text-red-500 dark:text-red-400 mt-4 text-center">{error}</p>
+    );
   }
 
   if (!venue) {
-    return <p className="text-gray-600 mt-4 text-center">Venue not found.</p>;
+    return (
+      <p className="text-gray-600 dark:text-gray-400 mt-4 text-center">
+        Venue not found.
+      </p>
+    );
   }
 
   const [longitude, latitude] = venue.location.coordinates;
 
   return (
-    <div className="p-4 sm:p-1 sm:mt-2 md:p-5 bg-gray-50 min-h-screen">
-      {/* Toast Notification */}
-      {toast.show && (
-        <Toast
-          message={toast.message}
-          type={toast.type}
-          onClose={() => setToast({ ...toast, show: false })}
-        />
-      )}
+    <div className="pt-20 p-4 sm:p-1 sm:mt-2 md:p-5 bg-gray-50 dark:bg-darkBg min-h-screen">
+      {/* Toast Container */}
+      <ToastContainer />
 
       {/* Venue Header */}
-      <div className="max-w-4xl mx-auto bg-white p-4 sm:p-1 rounded-lg shadow-md">
-        <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800">
+      <div className="max-w-4xl mx-auto bg-white dark:bg-darkCard p-4 sm:p-1 rounded-lg shadow-md">
+        <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 dark:text-gray-200">
           {venue.name}
         </h1>
-        <p className="text-sm sm:text-lg text-gray-600 mt-1 sm:mt-2">
+        <p className="text-sm sm:text-lg text-gray-600 dark:text-gray-400 mt-1 sm:mt-2">
           📍 {venue.address}
         </p>
         <div className="flex items-center mt-1">
           <RatingStars rating={venue.rating || 0} />
-          <span className="ml-2 text-sm text-gray-600">
+          <span className="ml-2 text-sm text-gray-600 dark:text-gray-400">
             ({venue.rating || 0})
           </span>
         </div>
@@ -288,10 +288,10 @@ const VenueDetail = () => {
             ))}
             {venue.images.length > 3 && (
               <div
-                className="w-full h-32 flex items-center justify-center bg-gray-200 rounded-lg cursor-pointer hover:bg-gray-300 transition-colors"
+                className="w-full h-32 flex items-center justify-center bg-gray-200 dark:bg-gray-700 rounded-lg cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
                 onClick={() => handleImageClick(3)}
               >
-                <span className="text-gray-600">
+                <span className="text-gray-600 dark:text-gray-400">
                   +{venue.images.length - 3}
                 </span>
               </div>
@@ -302,9 +302,9 @@ const VenueDetail = () => {
         {/* Image Popup */}
         {isImagePopupOpen && (
           <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
-            <div className="relative bg-white p-4 rounded-lg max-w-4xl w-full">
+            <div className="relative bg-white dark:bg-darkCard p-4 rounded-lg max-w-4xl w-full">
               <button
-                className="absolute top-2 right-2 text-gray-600 hover:text-gray-900"
+                className="absolute top-2 right-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200"
                 onClick={closeImagePopup}
               >
                 &times;
@@ -318,13 +318,13 @@ const VenueDetail = () => {
               />
               <div className="flex justify-between mt-4">
                 <button
-                  className="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300"
+                  className="px-4 py-2 bg-gray-200 dark:bg-gray-700 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600"
                   onClick={handlePreviousImage}
                 >
                   Previous
                 </button>
                 <button
-                  className="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300"
+                  className="px-4 py-2 bg-gray-200 dark:bg-gray-700 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600"
                   onClick={handleNextImage}
                 >
                   Next
@@ -366,7 +366,7 @@ const VenueDetail = () => {
             </div>
           </div>
         ) : (
-          <p className="text-gray-500 mt-2 sm:mt-4">
+          <p className="text-gray-500 dark:text-gray-400 mt-2 sm:mt-4">
             Location data not available.
           </p>
         )}
@@ -381,14 +381,16 @@ const VenueDetail = () => {
           </button>
 
           {wantRate && (
-            <div className="mt-4 bg-gray-50 p-4 sm:p-6 rounded-lg shadow-inner">
-              <h3 className="text-xl sm:text-2xl font-semibold text-gray-800">
+            <div className="mt-4 bg-gray-50 dark:bg-gray-800 p-4 sm:p-6 rounded-lg shadow-inner">
+              <h3 className="text-xl sm:text-2xl font-semibold text-gray-800 dark:text-gray-200">
                 Rate this Venue:
               </h3>
 
               {/* Service Rating */}
               <div className="mt-3 sm:mt-4">
-                <span className="text-gray-700">Service: </span>
+                <span className="text-gray-700 dark:text-gray-300">
+                  Service:{" "}
+                </span>
                 <div className="flex space-x-1 sm:space-x-2 mt-1">
                   {[1, 2, 3, 4, 5].map((star) => (
                     <span
@@ -396,7 +398,7 @@ const VenueDetail = () => {
                       className={`cursor-pointer text-xl sm:text-2xl ${
                         star <= ratingService
                           ? "text-yellow-500"
-                          : "text-gray-300"
+                          : "text-gray-300 dark:text-gray-500"
                       } hover:text-yellow-400 transition duration-200`}
                       onClick={() => handleRatingChange("service", star)}
                     >
@@ -408,7 +410,9 @@ const VenueDetail = () => {
 
               {/* Location Rating */}
               <div className="mt-3 sm:mt-4">
-                <span className="text-gray-700">Location: </span>
+                <span className="text-gray-700 dark:text-gray-300">
+                  Location:{" "}
+                </span>
                 <div className="flex space-x-1 sm:space-x-2 mt-1">
                   {[1, 2, 3, 4, 5].map((star) => (
                     <span
@@ -416,7 +420,7 @@ const VenueDetail = () => {
                       className={`cursor-pointer text-xl sm:text-2xl ${
                         star <= ratingLocation
                           ? "text-yellow-500"
-                          : "text-gray-300"
+                          : "text-gray-300 dark:text-gray-500"
                       } hover:text-yellow-400 transition duration-200`}
                       onClick={() => handleRatingChange("location", star)}
                     >
@@ -431,7 +435,7 @@ const VenueDetail = () => {
                 value={review}
                 onChange={(e) => setReview(e.target.value)}
                 placeholder="Write a review..."
-                className="mt-3 sm:mt-4 p-2 sm:p-3 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
+                className="mt-3 sm:mt-4 p-2 sm:p-3 w-full border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base dark:bg-gray-700 dark:text-gray-200"
                 rows="3"
               ></textarea>
 
@@ -447,7 +451,7 @@ const VenueDetail = () => {
 
         {/* Reviews Display */}
         <div className="mt-6 sm:mt-8">
-          <h3 className="text-xl sm:text-2xl font-semibold text-gray-800">
+          <h3 className="text-xl sm:text-2xl font-semibold text-gray-800 dark:text-gray-200">
             Reviews:
           </h3>
           {renderRatings()}
@@ -455,7 +459,7 @@ const VenueDetail = () => {
 
         {/* Nearby Venues */}
         <div className="mt-6 sm:mt-8">
-          <h2 className="text-xl sm:text-2xl font-semibold text-gray-800">
+          <h2 className="text-xl sm:text-2xl font-semibold text-gray-800 dark:text-gray-200">
             Nearby Venues
           </h2>
           <VenueLists />

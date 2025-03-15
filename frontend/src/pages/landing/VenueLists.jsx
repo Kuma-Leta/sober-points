@@ -26,7 +26,7 @@ const VenueLists = ({ isSideBySide = false }) => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 * index, duration: 0.5 }}
           whileHover={{ scale: 1.05 }}
-          className="relative group overflow-hidden rounded-2xl shadow-lg bg-white dark:bg-darkCard transition-all duration-300"
+          className="relative group overflow-hidden rounded-2xl  shadow-lg bg-white dark:bg-darkCard transition-all duration-300"
         >
           <Link to={`/venues/${venue._id}`}>
             {venue.images.length > 0 && (
