@@ -28,7 +28,7 @@ const Header = () => {
   return (
     <header className="bg-white dark:bg-darkCard dark:text-darkText w-full shadow-sm fixed top-0 z-50">
       {/* Full-width container for smaller screens */}
-      <div className="w-full sm:container mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between py-2">
+      <div className="w-full px-4 sm:px-6 lg:px-8 flex items-center justify-between py-2">
         {/* Logo */}
         <div className="flex items-center space-x-3">
           <Link to="/">

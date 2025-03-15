@@ -20,10 +20,10 @@ export const fetchVenues = createAsyncThunk(
 // Fetch nearby venues
 export const fetchNearbyVenues = createAsyncThunk(
   "venues/fetchNearby",
-  async ({ lat, lng }, thunkAPI) => {
+  async ({ lat, lng ,query=""}, thunkAPI) => {
     try {
       const response = await axios.get(
-        `http://localhost:5000/api/venues/nearby?lat=${lat}&lng=${lng}`
+        `http://localhost:5000/api/venues/nearby?lat=${lat}&lng=${lng}&query=${query}`
       );
       return response.data;
     } catch (error) {

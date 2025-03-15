@@ -13,29 +13,39 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchNearbyVenues } from "../../redux/venue/venueSlice";
 import logoMarker from "../../assets/images/logo.png";
 
+// Custom venue icon
 const venueIcon = new L.Icon({
   iconUrl: logoMarker,
-  iconSize: [40, 40],
+  iconSize: [40, 40], // Default size
   iconAnchor: [20, 40],
   popupAnchor: [0, -40],
 });
 
+// Smaller venue icon for mobile
+const venueIconSmall = new L.Icon({
+  iconUrl: logoMarker,
+  iconSize: [30, 30], // Smaller size for mobile
+  iconAnchor: [15, 30],
+  popupAnchor: [0, -30],
+});
+
+// Default user icon
 const userIcon = new L.Icon.Default();
 
-// ✅ Preserve user zoom level when updating map center
+// Update map center while preserving zoom level
 const UpdateMapCenter = ({ center }) => {
   const map = useMap();
   useEffect(() => {
     if (center.lat && center.lng) {
-      const currentZoom = map.getZoom(); // 🔥 Get user's zoom level
-      map.setView([center.lat, center.lng], currentZoom); // 🔥 Keep zoom level
+      const currentZoom = map.getZoom();
+      map.setView([center.lat, center.lng], currentZoom);
     }
   }, [center, map]);
 
   return null;
 };
 
-// ✅ Allow users to move the map, updating the center
+// Handle map events (e.g., user moving the map)
 const MapEvents = ({ setMapCenter }) => {
   const map = useMapEvents({
     moveend: () => {
@@ -57,7 +67,9 @@ const VenueMap = () => {
     lng: -0.118092,
   });
 
-  // ✅ Get user's location on mount
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+
+  // Get user's location on mount
   useEffect(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
@@ -71,14 +83,14 @@ const VenueMap = () => {
     }
   }, []);
 
-  // ✅ Fetch nearby venues when map center changes
+  // Fetch nearby venues when map center changes
   useEffect(() => {
     if (mapCenter.lat && mapCenter.lng) {
       dispatch(fetchNearbyVenues({ lat: mapCenter.lat, lng: mapCenter.lng }));
     }
   }, [dispatch, mapCenter]);
 
-  // ✅ Update map center if search results change
+  // Update map center if search results change
   useEffect(() => {
     if (searchResults.length > 0) {
       const firstVenue = searchResults[0];
@@ -89,12 +101,23 @@ const VenueMap = () => {
     }
   }, [searchResults]);
 
+  // Handle window resize for mobile detection
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   return (
     <MapContainer
       center={[mapCenter.lat, mapCenter.lng]}
       zoom={13}
-      className="h-full w-full rounded-md"
-      style={{ height: "500px" }}
+      className="h-[70vh] w-full rounded-md" // Responsive height
+      touchZoom={true} // Enable touch zoom
+      doubleClickZoom={false} // Disable double-click zoom for better touch interaction
+      zoomControl={!isMobile} // Hide zoom control on mobile for cleaner UI
     >
       <TileLayer
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -104,6 +127,7 @@ const VenueMap = () => {
       <UpdateMapCenter center={mapCenter} />
       <MapEvents setMapCenter={setMapCenter} />
 
+      {/* User Location Marker */}
       {userLocation && (
         <Marker position={[userLocation.lat, userLocation.lng]} icon={userIcon}>
           <Popup>
@@ -112,6 +136,7 @@ const VenueMap = () => {
         </Marker>
       )}
 
+      {/* Venue Markers */}
       {venues.map((venue) => {
         if (!venue.location || !venue.location.coordinates) {
           return null;
@@ -120,7 +145,11 @@ const VenueMap = () => {
         const [lng, lat] = venue.location.coordinates;
 
         return (
-          <Marker key={venue._id} position={[lat, lng]} icon={venueIcon}>
+          <Marker
+            key={venue._id}
+            position={[lat, lng]}
+            icon={isMobile ? venueIconSmall : venueIcon} // Use smaller icon on mobile
+          >
             <Popup>
               <strong>{venue.name}</strong>
               <p>{venue.address}</p>

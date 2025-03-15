@@ -51,11 +51,16 @@ const SearchBar = ({ setQuery, onSearch }) => {
   };
 
   const handleSuggestionClick = (selectedPlace) => {
+    console.log(selectedPlace);
     setSearchTerm(selectedPlace.name);
-    dispatch(searchVenues(selectedPlace.name));
-    // navigate(
-    //   `/venues?query=${selectedPlace.name}&lat=${selectedPlace.lat}&lng=${selectedPlace.lng}`
-    // );
+    dispatch(
+      fetchNearbyVenues(
+        selectedPlace.Lat,
+        selectedPlace.Lng,
+        selectedPlace.name
+      )
+    );
+    navigate(`/venues/nearby`);
     setSuggestions([]);
   };
 
