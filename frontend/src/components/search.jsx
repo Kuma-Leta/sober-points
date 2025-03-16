@@ -51,7 +51,6 @@ const SearchBar = ({ setQuery, onSearch }) => {
   };
 
   const handleSuggestionClick = (selectedPlace) => {
-    console.log(selectedPlace);
     setSearchTerm(selectedPlace.name);
     dispatch(
       fetchNearbyVenues(
@@ -86,7 +85,7 @@ const SearchBar = ({ setQuery, onSearch }) => {
   };
 
   return (
-    <motion.div className="relative w-full max-w-md">
+    <motion.div id="explore" className="relative w-full max-w-md">
       <div className="relative">
         <input
           type="text"

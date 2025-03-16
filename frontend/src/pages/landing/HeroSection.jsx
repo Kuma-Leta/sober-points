@@ -9,7 +9,7 @@ const HeroSection = () => {
 
   const handleSearch = (e) => {
     if (e.key === "Enter" && query.trim()) {
-      navigate(`/venues?query=${query}&fromLanding=true`);
+      navigate(`/venues/nearby`);
     }
   };
 

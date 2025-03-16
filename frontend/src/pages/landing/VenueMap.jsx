@@ -12,6 +12,7 @@ import "leaflet/dist/leaflet.css";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchNearbyVenues } from "../../redux/venue/venueSlice";
 import logoMarker from "../../assets/images/logo.png";
+import RatingStars from "./RatingStars"; // Import the RatingStars component
 
 // Custom venue icon
 const venueIcon = new L.Icon({
@@ -88,7 +89,7 @@ const VenueMap = () => {
     if (mapCenter.lat && mapCenter.lng) {
       dispatch(fetchNearbyVenues({ lat: mapCenter.lat, lng: mapCenter.lng }));
     }
-  }, [dispatch, mapCenter]);
+  }, [dispatch, mapCenter.lat, mapCenter.lng]); // Add specific dependencies
 
   // Update map center if search results change
   useEffect(() => {
@@ -151,8 +152,40 @@ const VenueMap = () => {
             icon={isMobile ? venueIconSmall : venueIcon} // Use smaller icon on mobile
           >
             <Popup>
-              <strong>{venue.name}</strong>
-              <p>{venue.address}</p>
+              <div className="max-w-[200px]">
+                {/* Venue Image */}
+                {venue.images.length > 0 && (
+                  <img
+                    src={`http://localhost:5000/${venue.images[0].replace(
+                      /\\/g,
+                      "/"
+                    )}`}
+                    alt={venue.name}
+                    className="w-full h-24 object-cover rounded-lg mb-2"
+                  />
+                )}
+
+                {/* Venue Name */}
+                <h3 className="text-lg font-semibold text-gray-800">
+                  {venue.name}
+                </h3>
+
+                {/* Venue Address */}
+                <p className="text-sm text-gray-600 mb-2">{venue.address}</p>
+
+                {/* Venue Rating */}
+                <div className="flex items-center mb-2">
+                  <RatingStars rating={venue.rating || 0} />
+                  <span className="ml-2 text-sm text-gray-600">
+                    ({venue.rating || 0})
+                  </span>
+                </div>
+
+                {/* Venue Description */}
+                {venue.description && (
+                  <p className="text-sm text-gray-600">{venue.description}</p>
+                )}
+              </div>
             </Popup>
           </Marker>
         );
