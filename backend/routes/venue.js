@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-
+const { addRating } = require('../controllers/ratingController');
 const { authenticate, authorize } = require("../middleware/authMiddleware");
 const {
   createVenue,
@@ -9,43 +9,39 @@ const {
   updateVenue,
   deleteVenue,
   getNearbyVenues,
+  searchVenues,
   deleteAllVenues,
   verifyVenue,
 } = require("../controllers/venueController");
 
+// 📌 Add Rating
+router.post("/create", authenticate, authorize(["admin", "customer"]), createVenue);
+router.post("/add-rating", authenticate, addRating);
+
+// 📌 Get Nearby Venues
 router.get("/nearby", getNearbyVenues);
+
+// 📌 Search Venues
+router.get("/search", searchVenues);
+
 // 📌 Create Venue
-router.post("/", authenticate, authorize(["admin", "customer"]), createVenue);
 
 // 📌 Verify Venue
-
 router.patch("/:id/verify", authenticate, authorize(["admin"]), verifyVenue);
+
 // 📌 Get All Venues
-router.get("/", authenticate, getAllVenues);
+router.get("/", getAllVenues);
 
 // 📌 Get Venue by ID
-router.get("/:id", authenticate, getVenueById);
+router.get("/:id", getVenueById);
 
 // 📌 Update Venue
-router.put(
-  "/:venueId",
-  authenticate,
-  authorize(["admin", "Customer"]),
-  updateVenue
-);
+router.put("/:venueId", authenticate, authorize(["admin", "Customer"]), updateVenue);
 
 // 📌 Delete one Venue
-router.delete(
-  "/:id",
-  authenticate,
-  authorize(["admin", "customer"]),
-  deleteVenue
-);
-router.delete(
-  "/",
-  authenticate,
-  authorize(["admin", "customer"]),
-  deleteAllVenues
-);
+router.delete("/:id", authenticate, authorize(["admin", "customer"]), deleteVenue);
+
+// 📌 Delete All Venues
+router.delete("/", authenticate, authorize(["admin", "customer"]), deleteAllVenues);
 
 module.exports = router;

@@ -12,7 +12,7 @@ const Header = () => {
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
   const user = useSelector((state) => state.auth.user);
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false); // State for sidebar
   const dropdownRef = useRef(null);
 
   useEffect(() => {
@@ -26,16 +26,9 @@ const Header = () => {
   }, []);
 
   return (
-    <header className="bg-white dark:bg-darkCard dark:text-darkText w-[100%] h-20 shadow-sm flex items-center justify-between px-2 sm:px-6 py-1 z-10">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between w-full">
-        {/* Mobile Menu Button */}
-        <button
-          className="text-grayColor dark:text-darkText sm:hidden"
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-        >
-          {mobileMenuOpen ? <FaTimes size={20} /> : <FaBars size={20} />}
-        </button>
-
+    <header className="bg-white dark:bg-darkCard dark:text-darkText w-full shadow-sm fixed top-0 z-50">
+      {/* Full-width container for smaller screens */}
+      <div className="w-full px-4 sm:px-6 lg:px-8 flex items-center justify-between py-2">
         {/* Logo */}
 
         <div className="flex items-center space-x-3">
@@ -99,11 +92,10 @@ const Header = () => {
                   {user?.name || user?.username}
                 </span>
               </button>
-
               {dropdownOpen && (
                 <div
                   ref={dropdownRef}
-                  className="absolute left-0 top-7 mt-2 w-40 bg-white dark:bg-darkCard shadow-md rounded-md z-50 text-sm"
+                  className="absolute right-0 top-10 mt-2 w-40 bg-white dark:bg-darkCard shadow-md rounded-md z-50 text-sm"
                 >
                   <Link
                     onClick={() => setDropdownOpen(false)}

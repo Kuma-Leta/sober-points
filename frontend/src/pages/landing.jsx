@@ -1,16 +1,23 @@
-import React from "react";
 import HeroSection from "./landing/HeroSection";
 import Features from "./landing/Services";
-import VenueList from "./landing/VenueList";
-import Pagination from "../ui/pagination";
-import ListOfVenueLinks from "./landing/listOfVenuLinks";
-
+import VenueLists from "./landing/VenueLists";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 const LandingPage = () => {
+  const [query, setQuery] = useState("");
+  const navigate = useNavigate();
+
+  const handleSearch = (e) => {
+    if (e.key === "Enter" && query.trim()) {
+      // ✅ Append `fromLanding=true` to the URL
+      navigate(`/venues/nearby/?query=${query}&fromLanding=true`);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-white dark:bg-darkBg text-gray-900 dark:text-darkText">
-      <HeroSection />
-
-      <VenueList />
+      <HeroSection setQuery={setQuery} onSearch={handleSearch} />
+      <VenueLists />
       <Features />
     </div>
   );

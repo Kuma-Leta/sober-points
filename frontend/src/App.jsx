@@ -18,6 +18,7 @@ import { API_URL } from "./constants/url";
 import Features from "./pages/landing/Services";
 import VenueForm from "./pages/venues/VenueForm";
 import VenuesPage from "./pages/landing/VenuesPage";
+import VenueDetail from "./pages/landing/VenueDetail";
 import Venues from "./pages/venues/venues";
 
 function Pages() {
@@ -43,6 +44,8 @@ function Pages() {
     <Routes>
       <>
         <Route path="/" element={<LandingPage />} />
+        <Route path="/venues/:id" element={<VenueDetail />} />
+
         <Route
           path="/users"
           element={
@@ -162,7 +165,7 @@ const Routing = () => {
 
             {/* Main Content */}
             <main
-              className={`flex-1 p-4 dark:bg-darkBg ${
+              className={`flex-1 p-2 dark:bg-darkBg ${
                 isMobile ? "relative" : ""
               }`}
             >

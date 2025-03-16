@@ -4,6 +4,7 @@ import { loginFailure, loginSuccess, logout } from "../redux/actions";
 import { useEffect, useState } from "react";
 import axiosInstance from "../api/api";
 import { toast } from "react-toastify";
+import axios from "axios";
 
 const TOKEN_KEY = "_auth_token";
 
