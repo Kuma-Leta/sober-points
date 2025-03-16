@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 import { useSelector } from "react-redux";
 import logo from "../../assets/images/logo.png";
-import { FaUser, FaBars, FaTimes, FaPlus } from "react-icons/fa";
+import { FaUser, FaBars, FaTimes, FaPlus, FaHome } from "react-icons/fa"; // Added FaHome for the venue icon
 import { FiSun, FiMoon } from "react-icons/fi";
 import defaultUserProfile from "../../assets/images/user.png";
 
@@ -26,7 +26,7 @@ const Header = () => {
   }, []);
 
   return (
-    <header className="bg-white dark:bg-darkCard dark:text-darkText w-[100%] shadow-sm flex items-center justify-between px-2 sm:px-6 py-1 z-10">
+    <header className="bg-white dark:bg-darkCard dark:text-darkText w-[100%] h-20 shadow-sm flex items-center justify-between px-2 sm:px-6 py-1 z-10">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between w-full">
         {/* Mobile Menu Button */}
         <button
@@ -37,31 +37,36 @@ const Header = () => {
         </button>
 
         {/* Logo */}
+
         <div className="flex items-center space-x-3">
-          <Link to="/">
-            <img
-              src={logo}
-              alt="Sober Points Logo"
-              className="w-16 sm:w-20 h-auto object-contain"
-            />
-          </Link>
+          {user?.role !== "admin" && (
+            <Link to="/">
+              <img
+                src={logo}
+                alt="Sober Points Logo"
+                className="w-16 sm:w-20 h-auto object-contain"
+              />
+            </Link>
+          )}
         </div>
 
-        {/* Navigation Links */}
-        <nav className="hidden sm:flex space-x-4 text-grayColor dark:text-darkText text-sm font-medium">
-          <Link to="/" className="hover:text-primary transition">
-            Home
-          </Link>
-          <Link to="#features" className="hover:text-primary transition">
-            Features
-          </Link>
-          <Link to="#services" className="hover:text-primary transition">
-            Services
-          </Link>
-          <Link to="#contact" className="hover:text-primary transition">
-            Contact
-          </Link>
-        </nav>
+        {/* Navigation Links - Conditionally Render */}
+        {user?.role !== "admin" && (
+          <nav className="hidden sm:flex space-x-4 text-grayColor dark:text-darkText text-sm font-medium">
+            <Link to="/" className="hover:text-primary transition">
+              Home
+            </Link>
+            <Link to="#features" className="hover:text-primary transition">
+              Features
+            </Link>
+            <Link to="#services" className="hover:text-primary transition">
+              Services
+            </Link>
+            <Link to="#contact" className="hover:text-primary transition">
+              Contact
+            </Link>
+          </nav>
+        )}
 
         {/* Auth & Dark Mode Toggle */}
         <div className="flex items-center space-x-3">
@@ -107,6 +112,15 @@ const Header = () => {
                   >
                     <FaUser className="inline mr-2" /> Profile
                   </Link>
+                  {user?.role !== "admin" && (
+                    <Link
+                      onClick={() => setDropdownOpen(false)}
+                      to="/my-venue" // Update the link to your venue page
+                      className="block px-4 py-2 text-grayColor dark:text-darkText hover:bg-gray-100 dark:hover:bg-gray-800"
+                    >
+                      <FaHome className="inline mr-2" /> My Venue
+                    </Link>
+                  )}
                   <button
                     onClick={logout}
                     className="block w-full text-left px-4 py-2 text-grayColor dark:text-darkText hover:bg-gray-100 dark:hover:bg-gray-800"
@@ -129,8 +143,8 @@ const Header = () => {
         </div>
       </div>
 
-      {/* Mobile Menu */}
-      {mobileMenuOpen && (
+      {/* Mobile Menu - Conditionally Render */}
+      {mobileMenuOpen && user?.role !== "admin" && (
         <div className="sm:hidden bg-white dark:bg-darkCard shadow-md p-4">
           <nav className="flex flex-col space-y-2 text-center">
             <Link

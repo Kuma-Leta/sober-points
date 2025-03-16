@@ -1,4 +1,4 @@
-import React, { useRef } from "react"; // Add useRef here
+import React, { useRef } from "react";
 import { FaTimes, FaUpload } from "react-icons/fa";
 
 export default function ImageUploader({
@@ -7,7 +7,7 @@ export default function ImageUploader({
   removedImages,
   setRemovedImages,
 }) {
-  const fileInputRef = useRef(null); // Now useRef is defined
+  const fileInputRef = useRef(null); // Ref for the file input
 
   // Base URL for backend images
   const backendBaseUrl = "http://localhost:5000";
@@ -69,6 +69,7 @@ export default function ImageUploader({
         className="border-2 border-dashed border-gray-400 rounded-lg p-4 flex flex-wrap items-center justify-center text-gray-500 cursor-pointer hover:bg-gray-100 min-h-[100px]"
         onDragOver={handleDragOver}
         onDrop={handleDrop}
+        onClick={() => fileInputRef.current.click()} // Make the entire area clickable
       >
         {formData.images.length > 0 ? (
           <div className="flex flex-wrap gap-2">
@@ -87,7 +88,10 @@ export default function ImageUploader({
                 {/* Remove icon */}
                 <button
                   type="button"
-                  onClick={() => handleRemoveImage(index)}
+                  onClick={(e) => {
+                    e.stopPropagation(); // Prevent triggering the file input click
+                    handleRemoveImage(index);
+                  }}
                   className="absolute top-0 right-0 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 transition"
                 >
                   <FaTimes className="w-4 h-4" />
@@ -96,7 +100,7 @@ export default function ImageUploader({
             ))}
           </div>
         ) : (
-          <p>Drag & Drop images here</p>
+          <p>Drag & Drop images here or click to upload</p>
         )}
       </div>
       <div className="flex items-center my-2">
@@ -119,7 +123,10 @@ export default function ImageUploader({
       <button
         type="button"
         className="flex items-center justify-center bg-gray-400 px-4 py-2 mr-2 rounded text-white hover:bg-gray-500 transition"
-        onClick={() => fileInputRef.current.click()}
+        onClick={(e) => {
+          e.stopPropagation(); // Prevent triggering the parent div's click event
+          fileInputRef.current.click();
+        }}
       >
         <FaUpload className="mr-2" /> Upload Images
       </button>
