@@ -99,7 +99,14 @@ export default function VenueForm({
       /^\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}$/;
     return phoneRegex.test(phone);
   };
-
+  // Handle cancel button click
+  const handleCancel = () => {
+    if (typeof onClose === "function") {
+      onClose(); // Call onClose if provided
+    } else {
+      navigate(-1); // Navigate back one step if onClose is not provided
+    }
+  };
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
@@ -279,7 +286,7 @@ export default function VenueForm({
           <button
             type="button"
             className="bg-gray-400 px-4 py-2 mr-2 rounded text-white hover:bg-gray-500 transition"
-            onClick={onClose} // Use onClose from props
+            onClick={handleCancel} // Handle cancel button click // Use onClose from props
           >
             Cancel
           </button>
