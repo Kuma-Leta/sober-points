@@ -312,10 +312,30 @@ exports.getNearbyVenues = async (req, res) => {
   try {
     const { lat, lng, query } = req.query;
     console.log(lat, lng, query);
+
+    // Validate latitude and longitude
     if (!lat || !lng) {
       return res
         .status(400)
         .json({ message: "Latitude and longitude are required." });
+    }
+
+    const latitude = parseFloat(lat);
+    const longitude = parseFloat(lng);
+
+    // Check if latitude and longitude are within valid ranges
+    if (isNaN(latitude) ){
+      return res.status(400).json({ message: "Invalid latitude value." });
+    }
+    if (isNaN(longitude)) {
+      return res.status(400).json({ message: "Invalid longitude value." });
+    }
+
+    if (latitude < -90 || latitude > 90) {
+      return res.status(400).json({ message: "Latitude must be between -90 and 90." });
+    }
+    if (longitude < -180 || longitude > 180) {
+      return res.status(400).json({ message: "Longitude must be between -180 and 180." });
     }
 
     // MongoDB Geospatial Query
@@ -324,9 +344,9 @@ exports.getNearbyVenues = async (req, res) => {
         $near: {
           $geometry: {
             type: "Point",
-            coordinates: [parseFloat(lng), parseFloat(lat)],
+            coordinates: [longitude, latitude], // Note: MongoDB expects [longitude, latitude]
           },
-          // $maxDistance: 5000, // 5km radius
+          // $maxDistance: 5000, // 5km radius (optional)
         },
       },
     };
