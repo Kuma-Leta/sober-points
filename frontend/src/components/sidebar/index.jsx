@@ -46,7 +46,8 @@ const Sidebar = () => {
     {
       icon: <TfiBarChart className="text-lg" />,
       label: "Dashboard",
-      path: `/${user?.role}s/${user?.username}`,
+      // path: `/${user?.role}s/${user?.username}`,
+      path: "/admin-analytics",
     },
 
     ...(user?.role === "admin"

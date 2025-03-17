@@ -33,7 +33,7 @@ export default function VenueForm({
   const navigate = useNavigate();
   const formRef = useRef(null);
   const [removedImages, setRemovedImages] = useState([]); // Track removed images
-
+  const userRole = localStorage.getItem("userRole"); // Fetch user role from local storage
   // State for search query
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -175,7 +175,8 @@ export default function VenueForm({
         );
       }
 
-      // Show success toast message
+      console.log("API Response main:", response.data); // Debuggin
+
       showSuccess(
         `Venue ${mode === "create" ? "created" : "updated"} successfully!`
       );
@@ -185,10 +186,21 @@ export default function VenueForm({
         handleFormReset();
         setSearchQuery(""); // Reset the search query
         if (typeof onUpdate === "function") {
-          onUpdate(); // Trigger update in parent component (if provided)
+          console.log(
+            "Passing updated venue data to onUpdate:",
+            response.data.venue
+          );
+          // onUpdate(); // Trigger update in parent component (if provided)
+          onUpdate(response.data.venue);
+
+          console.log("prop:", response.data.venue);
         }
         if (typeof onClose === "function") {
           onClose(); // Close the modal (if provided)
+        }
+
+        if (mode === "create" && userRole !== "admin") {
+          navigate(`/venues/my-venue/${response.data.venue._id}`); // Navigate to the detail page for non-admin users
         }
       }, 4000); // 4000 ms = 4 seconds
     } catch (error) {
@@ -221,7 +233,7 @@ export default function VenueForm({
   };
 
   return (
-    <div className="p-4 w-full max-w-6xl mx-auto bg-white dark:bg-darkCard rounded-md mt-6">
+    <div className="p-4 w-full max-w-6xl mx-auto bg-white dark:bg-darkCard rounded-md ">
       <ToastNotifications />
       <div className="flex flex-col gap-4">
         <div className="flex flex-col md:flex-row gap-4">

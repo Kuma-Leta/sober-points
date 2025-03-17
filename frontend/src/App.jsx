@@ -20,6 +20,9 @@ import VenueForm from "./pages/venues/VenueForm";
 import VenuesPage from "./pages/landing/VenuesPage";
 import VenueDetail from "./pages/landing/VenueDetail";
 import Venues from "./pages/venues/venues";
+import MyVenues from "./pages/venues/myVenues";
+import MyVenueDetail from "./pages/venues/myVenueDetail";
+import AdminAnalytics from "./pages/venues/AdminAnalytics";
 
 function Pages() {
   const user = useSelector((state) => state.auth.user);
@@ -71,10 +74,21 @@ function Pages() {
           }
         />
 
+        <Route
+          path="/admin-analytics"
+          element={
+            <ProtectedRoute>
+              <AdminAnalytics />
+            </ProtectedRoute>
+          }
+        />
+
         <Route path="/ld" element={<LandingPage />} />
         {/* <Route path="/users" element={<Users />} /> */}
         <Route path="/venue/form" element={<VenueForm />} />
       </>
+      <Route path="/my-venue" element={<MyVenues />} />
+      <Route path="/venues/my-venue/:venueId" element={<MyVenueDetail />} />
       <Route path="/auth/register" element={<Register />} />
       <Route path="/check-in" element={<ProtectedRoute></ProtectedRoute>} />
       <Route path="/auth/login" element={<Login />} />
@@ -165,7 +179,7 @@ const Routing = () => {
 
             {/* Main Content */}
             <main
-              className={`flex-1 p-2 dark:bg-darkBg ${
+              className={`flex-1 p-2 pt-20 dark:bg-darkBg ${
                 isMobile ? "relative" : ""
               }`}
             >

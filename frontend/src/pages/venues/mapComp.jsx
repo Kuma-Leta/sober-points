@@ -28,7 +28,10 @@ export default function MapComponent({ coordinates, isStatic }) {
   }, [coordinates, center]);
 
   return (
-    <div className="h-full w-full rounded-lg overflow-hidden shadow-md border border-gray-200 dark:border-gray-700">
+    <div
+      className="h-full w-full rounded-lg overflow-hidden shadow-md border border-gray-200 dark:border-gray-700"
+      style={{ zIndex: 0 }} // Set z-index to 0 (lower than modals)
+    >
       <MapContainer
         center={center}
         zoom={15}
@@ -41,6 +44,7 @@ export default function MapComponent({ coordinates, isStatic }) {
           height: "100%",
           width: "100%",
           pointerEvents: isStatic ? "none" : "auto",
+          zIndex: 0, // Set z-index to 0 (lower than modals)
         }}
         ref={mapRef} // Attach the ref to the MapContainer
       >

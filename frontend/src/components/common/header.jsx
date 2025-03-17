@@ -13,6 +13,7 @@ const Header = () => {
   const user = useSelector((state) => state.auth.user);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false); // State for sidebar
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false); // State for mobile menu
   const dropdownRef = useRef(null);
 
   useEffect(() => {
@@ -30,7 +31,6 @@ const Header = () => {
       {/* Full-width container for smaller screens */}
       <div className="w-full px-4 sm:px-6 lg:px-8 flex items-center justify-between py-2">
         {/* Logo */}
-
         <div className="flex items-center space-x-3">
           {user?.role !== "admin" && (
             <Link to="/">
@@ -132,6 +132,14 @@ const Header = () => {
               </Link>
             </div>
           )}
+
+          {/* Mobile Menu Toggle Button */}
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="sm:hidden p-2 text-grayColor dark:text-darkText"
+          >
+            {mobileMenuOpen ? <FaTimes size={20} /> : <FaBars size={20} />}
+          </button>
         </div>
       </div>
 
@@ -142,24 +150,28 @@ const Header = () => {
             <Link
               to="/"
               className="text-grayColor dark:text-darkText hover:text-primary transition"
+              onClick={() => setMobileMenuOpen(false)} // Close menu on click
             >
               Home
             </Link>
             <Link
               to="#features"
               className="text-grayColor dark:text-darkText hover:text-primary transition"
+              onClick={() => setMobileMenuOpen(false)} // Close menu on click
             >
               Features
             </Link>
             <Link
               to="#services"
               className="text-grayColor dark:text-darkText hover:text-primary transition"
+              onClick={() => setMobileMenuOpen(false)} // Close menu on click
             >
               Services
             </Link>
             <Link
               to="#contact"
               className="text-grayColor dark:text-darkText hover:text-primary transition"
+              onClick={() => setMobileMenuOpen(false)} // Close menu on click
             >
               Contact
             </Link>
