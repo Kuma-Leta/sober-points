@@ -282,7 +282,7 @@ const VenueDetail = () => {
   const [longitude, latitude] = venue.location.coordinates;
 
   return (
-    <div className="pt-20 p-4 sm:p-1 sm:mt-2 md:p-5 bg-whiteBlue min-h-screen">
+    <div className="pt-20 p-4  sm:p-1 sm:mt-6 md:p-5 md:mt-10 bg-whiteBlue min-h-screen">
       {/* Toast Container */}
       <ToastContainer />
 

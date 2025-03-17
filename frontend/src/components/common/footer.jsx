@@ -48,7 +48,7 @@ export default function Footer() {
           <h3 className="text-xl sm:text-2xl font-bold tracking-wide">
             SOBER POINTS
           </h3>
-          <ul className="mt-4 space-y-2 text-sm sm:text-base text-gray-600">
+          <ul className="mt-4 text-sm grid grid-cols-2 gap-2 md:grid-cols-1 sm:text-base text-gray-600">
             <li>
               <a href="#" className="hover:text-black transition">
                 About Us
