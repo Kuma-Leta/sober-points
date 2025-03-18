@@ -58,7 +58,7 @@ const AdminDashboard = () => {
   const COLORS = ["#10B981", "#3B82F6", "#EF4444"]; // Green, Blue, Red
 
   return (
-    <div className="p-2 bg-gray-100 dark:bg-darkBg min-h-screen">
+    <div className="p-4 mt-14 bg-gray-100 dark:bg-darkBg min-h-screen">
       {/* Key Metrics Cards */}
       <div className="grid grid-cols-1 dark:bg-darkBg sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         {/* Total Venues */}

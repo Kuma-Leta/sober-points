@@ -37,7 +37,7 @@ const MyVenues = () => {
   if (error) return <p className="text-center mt-20 text-red-500">{error}</p>; // Show error message
 
   return (
-    <div className="p-4 mt-4 max-w-7xl mx-auto">
+    <div className="p-4 mt-4 pt-20 max-w-7xl mx-auto">
       <h1 className="text-2xl font-bold mb-6 text-center sm:text-left">
         My Venues
       </h1>

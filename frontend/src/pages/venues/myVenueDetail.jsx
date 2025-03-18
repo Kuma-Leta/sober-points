@@ -105,7 +105,7 @@ const MyVenueDetail = () => {
     : null;
 
   return (
-    <div className="p-4 mt-4 max-w-7xl mx-auto">
+    <div className="p-4 mt-4 pt-20 max-w-7xl mx-auto">
       {/* Header with Update and Delete Icons */}
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">{venue.name}</h1>
@@ -119,7 +119,7 @@ const MyVenueDetail = () => {
             onClick={() => navigate(-1)}
             className="text-gray-600 hover:text-gray-800 transition-colors duration-200"
           >
-            <FaArrowLeft className="w-6 h-6" />
+            <FaArrowLeft className="w-6 h-6 font-thin" />
           </button>
 
           {/* Update & Delete Icons */}
@@ -303,8 +303,8 @@ const MyVenueDetail = () => {
         contentLabel="Update Venue"
         className="fixed inset-0 flex items-center dark:bg-darkBg justify-center p-4 bg-black bg-opacity-50"
       >
-        <div className="bg-white dark:bg-darkBg p-6 rounded-lg shadow-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto relative">
-          <h2 className="text-2xl font-semibold mb-4">Update Venue</h2>
+        <div className="bg-white dark:bg-darkBg p-6 rounded-lg shadow-lg max-w-6xl w-full max-h-[95vh] overflow-y-auto relative">
+          {/* <h2 className="text-2xl font-semibold ">Update Venue</h2> */}
           <VenueForm
             mode={isCreating ? "create" : "edit"}
             venueId={venueId}

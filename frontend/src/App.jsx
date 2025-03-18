@@ -179,7 +179,7 @@ const Routing = () => {
 
             {/* Main Content */}
             <main
-              className={`flex-1 p-2 pt-20 dark:bg-darkBg ${
+              className={`flex-1 p-2  dark:bg-darkBg ${
                 isMobile ? "relative" : ""
               }`}
             >
