@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 import { useSelector } from "react-redux";
 import logo from "../../assets/images/logo.png";
-import { FaUser, FaBars, FaTimes, FaPlus } from "react-icons/fa";
+import { FaUser, FaBars, FaTimes, FaPlus, FaHome } from "react-icons/fa"; // Added FaHome for the venue icon
 import { FiSun, FiMoon } from "react-icons/fi";
 import defaultUserProfile from "../../assets/images/user.png";
 
@@ -13,6 +13,7 @@ const Header = () => {
   const user = useSelector((state) => state.auth.user);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false); // State for sidebar
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false); // State for mobile menu
   const dropdownRef = useRef(null);
 
   useEffect(() => {
@@ -107,6 +108,15 @@ const Header = () => {
                   >
                     <FaUser className="inline mr-2" /> Profile
                   </Link>
+                  {user?.role !== "admin" && (
+                    <Link
+                      onClick={() => setDropdownOpen(false)}
+                      to="/my-venue" // Update the link to your venue page
+                      className="block px-4 py-2 text-grayColor dark:text-darkText hover:bg-gray-100 dark:hover:bg-gray-800"
+                    >
+                      <FaHome className="inline mr-2" /> My Venue
+                    </Link>
+                  )}
                   <button
                     onClick={logout}
                     className="block w-full text-left px-4 py-2 text-grayColor dark:text-darkText hover:bg-gray-100 dark:hover:bg-gray-800"
@@ -132,6 +142,14 @@ const Header = () => {
               </Link>
             </div>
           )}
+
+          {/* Mobile Menu Toggle Button */}
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="sm:hidden p-2 text-grayColor dark:text-darkText"
+          >
+            {mobileMenuOpen ? <FaTimes size={20} /> : <FaBars size={20} />}
+          </button>
         </div>
       </div>
 

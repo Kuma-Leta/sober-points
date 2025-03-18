@@ -33,7 +33,7 @@ export default function VenueForm({
   const navigate = useNavigate();
   const formRef = useRef(null);
   const [removedImages, setRemovedImages] = useState([]); // Track removed images
-
+  const userRole = localStorage.getItem("userRole"); // Fetch user role from local storage
   // State for search query
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -99,7 +99,14 @@ export default function VenueForm({
       /^\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}$/;
     return phoneRegex.test(phone);
   };
-
+  // Handle cancel button click
+  const handleCancel = () => {
+    if (typeof onClose === "function") {
+      onClose(); // Call onClose if provided
+    } else {
+      navigate(-1); // Navigate back one step if onClose is not provided
+    }
+  };
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
@@ -175,7 +182,8 @@ export default function VenueForm({
         );
       }
 
-      // Show success toast message
+      console.log("API Response main:", response.data); // Debuggin
+
       showSuccess(
         `Venue ${mode === "create" ? "created" : "updated"} successfully!`
       );
@@ -185,10 +193,21 @@ export default function VenueForm({
         handleFormReset();
         setSearchQuery(""); // Reset the search query
         if (typeof onUpdate === "function") {
-          onUpdate(); // Trigger update in parent component (if provided)
+          console.log(
+            "Passing updated venue data to onUpdate:",
+            response.data.venue
+          );
+          // onUpdate(); // Trigger update in parent component (if provided)
+          onUpdate(response.data.venue);
+
+          console.log("prop:", response.data.venue);
         }
         if (typeof onClose === "function") {
           onClose(); // Close the modal (if provided)
+        }
+
+        if (mode === "create" && userRole !== "admin") {
+          navigate(`/venues/my-venue/${response.data.venue._id}`); // Navigate to the detail page for non-admin users
         }
       }, 4000); // 4000 ms = 4 seconds
     } catch (error) {
@@ -221,7 +240,7 @@ export default function VenueForm({
   };
 
   return (
-    <div className="p-4 w-full max-w-6xl mx-auto bg-white dark:bg-darkCard rounded-md mt-6">
+    <div className="p-4 w-full max-w-6xl mx-auto bg-white dark:bg-darkCard rounded-md ">
       <ToastNotifications />
       <div className="flex flex-col gap-4">
         <div className="flex flex-col md:flex-row gap-4">
@@ -267,7 +286,7 @@ export default function VenueForm({
           <button
             type="button"
             className="bg-gray-400 px-4 py-2 mr-2 rounded text-white hover:bg-gray-500 transition"
-            onClick={onClose} // Use onClose from props
+            onClick={handleCancel} // Handle cancel button click // Use onClose from props
           >
             Cancel
           </button>

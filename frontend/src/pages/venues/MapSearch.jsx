@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { FaSearch, FaTimes } from "react-icons/fa";
 
 // Geocoding function to search for locations
@@ -23,22 +23,23 @@ export default function MapSearch({
   setSearchQuery,
 }) {
   const [suggestions, setSuggestions] = useState([]);
-
-  // Debugging: Log search query changes
-  useEffect(() => {}, [searchQuery]);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
 
   // Handle location search
   const handleSearch = async (e) => {
     e.preventDefault();
     const locations = await geocodeLocation(searchQuery);
     setSuggestions(locations);
+    setIsDropdownOpen(true); // Open dropdown after search
   };
 
   // Handle suggestion selection
   const handleSuggestionClick = (location) => {
     setMarkerPosition([location.lat, location.lng]);
-    setSearchQuery(location.name);
-    setSuggestions([]); // Clear suggestions
+    setSearchQuery(location.name); // Set the clicked suggestion in the search bar
+    setSuggestions([]); // Clear all suggestions
+    setIsDropdownOpen(false); // Close the dropdown
     setFormData((prev) => ({
       ...prev,
       latitude: location.lat,
@@ -50,6 +51,7 @@ export default function MapSearch({
   const handleClearSearch = () => {
     setSearchQuery("");
     setSuggestions([]); // Clear suggestions
+    setIsDropdownOpen(false); // Close dropdown
   };
 
   // Automatically fetch suggestions as the user types
@@ -58,15 +60,31 @@ export default function MapSearch({
       const fetchSuggestions = async () => {
         const locations = await geocodeLocation(searchQuery);
         setSuggestions(locations);
+        setIsDropdownOpen(true); // Open dropdown when suggestions are fetched
       };
       fetchSuggestions();
     } else {
       setSuggestions([]);
+      setIsDropdownOpen(false); // Close dropdown if search query is empty
     }
   }, [searchQuery]);
 
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   return (
-    <div className="w-full  dark:bg-darkBg">
+    <div className="w-full dark:bg-darkBg">
       <form onSubmit={handleSearch} className="w-full">
         <div className="relative pb-1">
           <input
@@ -96,8 +114,11 @@ export default function MapSearch({
         </div>
       </form>
       {/* Dropdown Suggestions */}
-      {suggestions.length > 0 && (
-        <div className="absolute z-50 w-full bg-white dark:bg-darkBg border border-gray-300 rounded-lg shadow-lg mt-1">
+      {isDropdownOpen && suggestions.length > 0 && (
+        <div
+          ref={dropdownRef}
+          className="absolute z-50 w-full bg-white dark:bg-darkBg border border-gray-300 rounded-lg shadow-lg mt-1"
+        >
           {suggestions.map((location, index) => (
             <div
               key={index}
