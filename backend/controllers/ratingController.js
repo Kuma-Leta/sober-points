@@ -55,36 +55,33 @@ console.log(venueId)
   }
 };
 
-// ✅ Update a user's rating (only the user who posted it can update)
+// ✅ Update a user's rating (only the user who posted it can update)// Update a rating
 exports.updateRating = async (req, res) => {
   try {
-    const { rating, review } = req.body;
     const { ratingId } = req.params;
-    const userId = req.user.id;
-
-    const existingRating = await Rating.findOne({
-      _id: ratingId,
-      user: userId,
-    });
+    const { rating, review } = req.body;
+console.log("here is the raing body",req.body)
+    // Find the rating by ID
+    const existingRating = await Rating.findById(ratingId);
     if (!existingRating) {
-      return res
-        .status(404)
-        .json({ message: "Review not found or unauthorized" });
+      return res.status(404).json({ message: "Rating not found" });
     }
 
-    existingRating.rating = rating || existingRating.rating;
-    existingRating.review = review || existingRating.review;
+    // Update the rating
+    existingRating.rating = rating;
+    existingRating.review = review;
     await existingRating.save();
 
-    // Recalculate venue rating
-    const venue = await Venue.findById(existingRating.venueId);
-    if (venue) await venue.calculateAverageRating();
+    // Populate the updated rating with user details
+    const updatedRating = await Rating.findById(ratingId).populate(
+      "user",
+      "name"
+    );
 
-    res
-      .status(200)
-      .json({ message: "Review updated successfully", existingRating });
+    res.status(200).json(updatedRating);
   } catch (error) {
-    res.status(500).json({ message: "Server error", error: error.message });
+    console.error("Error updating rating:", error);
+    res.status(500).json({ message: "Error updating rating" });
   }
 };
 

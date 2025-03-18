@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import {
   MapContainer,
   TileLayer,
@@ -12,11 +12,12 @@ import "leaflet/dist/leaflet.css";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchNearbyVenues } from "../../redux/venue/venueSlice";
 import logoMarker from "../../assets/images/logo.png";
+import RatingStars from "./RatingStars";
 
 // Custom venue icon
 const venueIcon = new L.Icon({
   iconUrl: logoMarker,
-  iconSize: [40, 40], // Default size
+  iconSize: [40, 40],
   iconAnchor: [20, 40],
   popupAnchor: [0, -40],
 });
@@ -24,7 +25,7 @@ const venueIcon = new L.Icon({
 // Smaller venue icon for mobile
 const venueIconSmall = new L.Icon({
   iconUrl: logoMarker,
-  iconSize: [30, 30], // Smaller size for mobile
+  iconSize: [30, 30],
   iconAnchor: [15, 30],
   popupAnchor: [0, -30],
 });
@@ -47,13 +48,12 @@ const UpdateMapCenter = ({ center }) => {
 
 // Handle map events (e.g., user moving the map)
 const MapEvents = ({ setMapCenter }) => {
-  const map = useMapEvents({
-    moveend: () => {
-      const center = map.getCenter();
+  useMapEvents({
+    moveend: (e) => {
+      const center = e.target.getCenter();
       setMapCenter({ lat: center.lat, lng: center.lng });
     },
   });
-
   return null;
 };
 
@@ -66,8 +66,10 @@ const VenueMap = () => {
     lat: 51.509865, // Default: London
     lng: -0.118092,
   });
-
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+
+  // useRef to store the previous map center
+  const prevCenterRef = useRef(mapCenter);
 
   // Get user's location on mount
   useEffect(() => {
@@ -75,18 +77,25 @@ const VenueMap = () => {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const { latitude, longitude } = position.coords;
-          setUserLocation({ lat: latitude, lng: longitude });
-          setMapCenter({ lat: latitude, lng: longitude });
+          const newCenter = { lat: latitude, lng: longitude };
+          setUserLocation(newCenter);
+          setMapCenter(newCenter);
+          prevCenterRef.current = newCenter;
         },
         (error) => console.warn("Geolocation error:", error.message)
       );
     }
   }, []);
 
-  // Fetch nearby venues when map center changes
+  // Fetch nearby venues only when map center changes
   useEffect(() => {
-    if (mapCenter.lat && mapCenter.lng) {
+    // Compare new center with previous center to avoid unnecessary dispatches.
+    if (
+      mapCenter.lat !== prevCenterRef.current.lat ||
+      mapCenter.lng !== prevCenterRef.current.lng
+    ) {
       dispatch(fetchNearbyVenues({ lat: mapCenter.lat, lng: mapCenter.lng }));
+      prevCenterRef.current = mapCenter;
     }
   }, [dispatch, mapCenter]);
 
@@ -96,10 +105,17 @@ const VenueMap = () => {
       const firstVenue = searchResults[0];
       if (firstVenue.location && firstVenue.location.coordinates) {
         const [lng, lat] = firstVenue.location.coordinates;
-        setMapCenter({ lat, lng });
+        const newCenter = { lat, lng };
+        // Only update if the center has really changed
+        if (
+          newCenter.lat !== mapCenter.lat ||
+          newCenter.lng !== mapCenter.lng
+        ) {
+          setMapCenter(newCenter);
+        }
       }
     }
-  }, [searchResults]);
+  }, [searchResults, mapCenter]);
 
   // Handle window resize for mobile detection
   useEffect(() => {
@@ -114,10 +130,10 @@ const VenueMap = () => {
     <MapContainer
       center={[mapCenter.lat, mapCenter.lng]}
       zoom={13}
-      className="h-[70vh] w-full rounded-md" // Responsive height
-      touchZoom={true} // Enable touch zoom
-      doubleClickZoom={false} // Disable double-click zoom for better touch interaction
-      zoomControl={!isMobile} // Hide zoom control on mobile for cleaner UI
+      className="h-[70vh] w-full rounded-md"
+      touchZoom={true}
+      doubleClickZoom={false}
+      zoomControl={!isMobile}
     >
       <TileLayer
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -148,11 +164,34 @@ const VenueMap = () => {
           <Marker
             key={venue._id}
             position={[lat, lng]}
-            icon={isMobile ? venueIconSmall : venueIcon} // Use smaller icon on mobile
+            icon={isMobile ? venueIconSmall : venueIcon}
           >
             <Popup>
-              <strong>{venue.name}</strong>
-              <p>{venue.address}</p>
+              <div className="max-w-[200px]">
+                {venue.images.length > 0 && (
+                  <img
+                    src={`http://localhost:5000/${venue.images[0].replace(
+                      /\\/g,
+                      "/"
+                    )}`}
+                    alt={venue.name}
+                    className="w-full h-24 object-cover rounded-lg mb-2"
+                  />
+                )}
+                <h3 className="text-lg font-semibold text-gray-800">
+                  {venue.name}
+                </h3>
+                <p className="text-sm text-gray-600 mb-2">{venue.address}</p>
+                <div className="flex items-center mb-2">
+                  <RatingStars rating={venue.rating || 0} />
+                  <span className="ml-2 text-sm text-gray-600">
+                    ({venue.rating || 0})
+                  </span>
+                </div>
+                {venue.description && (
+                  <p className="text-sm text-gray-600">{venue.description}</p>
+                )}
+              </div>
             </Popup>
           </Marker>
         );
