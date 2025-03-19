@@ -68,9 +68,6 @@ exports.updateProfilePicture = async (req, res) => {
     }
 
     try {
-      console.log("Request body:", req.body); // Log the request body
-      console.log("Uploaded file:", req.file); // Log the uploaded file
-
       const userId = req.params.userId; // Assuming userId is passed as a route parameter
       const user = await User.findById(userId);
 
@@ -267,7 +264,7 @@ exports.getUsers = async (req, res) => {
 };
 
 // Update user's name
-exports.updateUserName = async (req, res) =>{
+exports.updateUserName = async (req, res) => {
   try {
     const userId = req.user._id; // Assuming you have user info in req.user from authentication middleware
     const { name } = req.body;
