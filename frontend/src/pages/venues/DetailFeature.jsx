@@ -207,7 +207,7 @@ const DetailFeature = ({
                 </div>
               ) : (
                 <div
-                  className={`grid gap-4 ${
+                  className={`grid gap-0.4 ${
                     venue.images.length === 1
                       ? "grid-cols-1" // 1 image: full width
                       : venue.images.length === 2
@@ -221,7 +221,7 @@ const DetailFeature = ({
                       src={`http://localhost:5000/${image.replace(/\\/g, "/")}`}
                       alt={`Venue Image ${index + 1}`}
                       loading="lazy"
-                      className="w-full h-48 object-cover rounded-lg shadow-md"
+                      className="w-full h-48 object-cover  shadow-md"
                     />
                   ))}
                 </div>
