@@ -3,6 +3,10 @@ const bcrypt = require("bcryptjs");
 const APIfeatures = require("../utils/APIfeatures");
 const { v4: uuidv4 } = require("uuid");
 const { sendEmail } = require("../utils/email");
+const multer = require("multer");
+const fs = require("fs");
+const path = require("path");
+
 // Create a new user
 const generateUniqueUsername = async (baseUsername) => {
   let username = baseUsername;
@@ -23,6 +27,85 @@ const generateDefaultPassword = () => {
   return uuidv4().replace(/-/g, "").substring(0, 8);
 };
 
+// Multer configuration for file uploads
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    const uploadDir = path.join(__dirname, "../uploads/profile-pictures");
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir, { recursive: true }); // Create the directory if it doesn't exist
+    }
+    cb(null, uploadDir);
+  },
+  filename: function (req, file, cb) {
+    // Generate a unique filename with the desired format: uploads\\timestamp-originalname
+    const uniqueFilename = `${Date.now()}-${file.originalname}`;
+    cb(null, uniqueFilename); // Unique filename
+  },
+});
+
+const upload = multer({
+  storage: storage,
+  limits: { fileSize: 5 * 1024 * 1024 }, // Limit file size to 5MB
+  fileFilter: function (req, file, cb) {
+    // Accept only image files
+    if (file.mimetype.startsWith("image/")) {
+      cb(null, true);
+    } else {
+      cb(new Error("Only image files are allowed!"), false);
+    }
+  },
+}).single("profilePicture"); // Allow only one file with the field name "profilePicture"
+
+// Controller to handle profile picture upload and update
+exports.updateProfilePicture = async (req, res) => {
+  // Handle file uploads using Multer
+  upload(req, res, async (err) => {
+    if (err) {
+      // Handle Multer errors
+      console.error("Multer error:", err.message); // Log the Multer error
+      return res.status(400).json({ error: err.message });
+    }
+
+    try {
+      console.log("Request body:", req.body); // Log the request body
+      console.log("Uploaded file:", req.file); // Log the uploaded file
+
+      const userId = req.params.userId; // Assuming userId is passed as a route parameter
+      const user = await User.findById(userId);
+
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      // Check if a file was uploaded
+      if (!req.file) {
+        return res.status(400).json({ message: "No file uploaded" });
+      }
+
+      // If the user already has a profile picture, delete the old file
+      if (user.profilePicture) {
+        const oldFilePath = path.join(__dirname, "../", user.profilePicture);
+        if (fs.existsSync(oldFilePath)) {
+          fs.unlinkSync(oldFilePath); // Delete the old file
+        }
+      }
+
+      // Save the new file path to the user's profilePicture field
+      const relativePath = `uploads/profile-pictures/${req.file.filename}`;
+      user.profilePicture = relativePath;
+      await user.save();
+
+      res.status(200).json({
+        message: "Profile picture updated successfully",
+        profilePicture: user.profilePicture,
+      });
+    } catch (error) {
+      console.error("Error updating profile picture:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+};
 exports.createUser = async (req, res) => {
   try {
     const { email, name, role, password } = req.body;
@@ -65,6 +148,40 @@ exports.createUser = async (req, res) => {
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: error.message });
+  }
+};
+
+exports.getProfilePicture = async (req, res) => {
+  try {
+    const userId = req.params.userId; // Assuming userId is passed as a route parameter
+
+    // Find the user by ID
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Check if the user has a profile picture
+    if (!user.profilePicture) {
+      return res.status(404).json({ message: "Profile picture not found" });
+    }
+
+    // Construct the absolute file path
+    const filePath = path.join(__dirname, "../", user.profilePicture);
+
+    // Check if the file exists
+    if (!fs.existsSync(filePath)) {
+      return res
+        .status(404)
+        .json({ message: "Profile picture file not found" });
+    }
+
+    // Serve the file
+    res.sendFile(filePath);
+  } catch (error) {
+    console.error("Error fetching profile picture:", error);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -149,6 +266,35 @@ exports.getUsers = async (req, res) => {
   }
 };
 
+// Update user's name
+exports.updateUserName = async (req, res) =>{
+  try {
+    const userId = req.user._id; // Assuming you have user info in req.user from authentication middleware
+    const { name } = req.body;
+
+    if (!name) {
+      return res.status(400).json({ message: "Name is required" });
+    }
+
+    const user = await User.findByIdAndUpdate(
+      userId,
+      { name: name },
+      { new: true }
+    );
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.status(200).json({
+      message: "Name updated successfully",
+      name: user.name,
+    });
+  } catch (error) {
+    console.error("Error updating user name:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
 // Get a user by ID
 exports.getUserById = async (req, res) => {
   try {

@@ -24,7 +24,7 @@ import MyVenues from "./pages/venues/myVenues";
 import MyVenueDetail from "./pages/venues/myVenueDetail";
 import AdminAnalytics from "./pages/venues/AdminAnalytics";
 import BottomNavBar from "./pages/venues/BottomNavBar"; // Import the BottomNavBar
-
+import Profile from "./pages/users/profile";
 function Pages() {
   const user = useSelector((state) => state.auth.user);
 
@@ -57,6 +57,14 @@ function Pages() {
         }
       />
       <Route
+        path="/users/profile"
+        element={
+          <ProtectedRoute>
+            <Profile />
+          </ProtectedRoute>
+        }
+      />
+      <Route
         path="/venues/nearby"
         element={
           <ProtectedRoute>
@@ -73,14 +81,14 @@ function Pages() {
         }
       />
 
-        <Route
-          path="/admin-analytics"
-          element={
-            <ProtectedRoute>
-              <AdminAnalytics />
-            </ProtectedRoute>
-          }
-        />
+      <Route
+        path="/admin-analytics"
+        element={
+          <ProtectedRoute>
+            <AdminAnalytics />
+          </ProtectedRoute>
+        }
+      />
       <Route path="/ld" element={<LandingPage />} />
       <Route path="/venue/form" element={<VenueForm />} />
       <Route path="/my-venue" element={<MyVenues />} />

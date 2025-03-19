@@ -285,7 +285,7 @@ export default function VenueForm({
         <div className="w-full flex justify-center mt-6">
           <button
             type="button"
-            className="bg-gray-400 px-4 py-2 mr-2 rounded text-white hover:bg-gray-500 transition"
+            className="bg-gray-400 px-4 py-2 mr-2 rounded text-white hover:bg-gray-500 transition "
             onClick={handleCancel} // Handle cancel button click // Use onClose from props
           >
             Cancel
