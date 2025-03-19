@@ -10,14 +10,14 @@ const LandingPage = () => {
   const handleSearch = (e) => {
     if (e.key === "Enter" && query.trim()) {
       // ✅ Append `fromLanding=true` to the URL
-      navigate(`/venues/nearby/?query=${query}&fromLanding=true`);
+      navigate(`/venues/nearby`);
     }
   };
 
   return (
     <div className="min-h-screen bg-white dark:bg-darkBg text-gray-900 dark:text-darkText">
       <HeroSection setQuery={setQuery} onSearch={handleSearch} />
-      <VenueLists />
+
       <Features />
     </div>
   );

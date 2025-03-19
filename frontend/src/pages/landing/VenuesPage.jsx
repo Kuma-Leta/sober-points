@@ -10,6 +10,7 @@ import VenueLists from "./VenueLists";
 import VenueMap from "./VenueMap";
 import SearchBar from "../../components/search";
 import Header from "../../components/common/header";
+import { FaBars, FaMap, FaToggleOff, FaToggleOn } from "react-icons/fa"; // Import icons for toggle button
 
 const VenuesPage = () => {
   const dispatch = useDispatch();
@@ -18,17 +19,20 @@ const VenuesPage = () => {
     (state) => state.venues
   );
 
-  // ✅ Track user's location
+  // Track user's location
   const [userLocation, setUserLocation] = useState(null);
   const [mapCenter, setMapCenter] = useState({
     lat: 51.509865, // Default to London
     lng: -0.118092,
   });
 
-  // ✅ Check if the user came from the LandingPage
+  // Track map visibility
+  const [showMap, setShowMap] = useState(true);
+
+  // Check if the user came from the LandingPage
   const fromLanding = searchParams.get("fromLanding") === "true";
 
-  // ✅ Fetch user's location
+  // Fetch user's location
   useEffect(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
@@ -61,12 +65,25 @@ const VenuesPage = () => {
     <div className="flex flex-col min-h-screen bg-white dark:bg-darkBg">
       {/* <Header /> */}
       <div className="flex flex-col md:flex-row flex-1 pt-20">
+        {/* Venue List Section */}
         <div
           className={`w-full ${
-            fromLanding ? "md:w-full" : "md:w-1/2"
+            showMap ? "md:w-1/2" : "md:w-full"
           } p-6 bg-white dark:bg-darkCard overflow-y-auto h-screen`}
         >
-          <SearchBar />
+          <div className="flex justify-between items-center mb-4">
+            <SearchBar />
+            {/* Toggle Map Button */}
+            <button
+              onClick={() => {
+                setShowMap(!showMap);
+              }}
+              title="Toggle Map"
+              className="p-2 bg-black text-white rounded-md  transition duration-300"
+            >
+              {showMap ? <FaToggleOff size={20} /> : <FaToggleOn size={20} />}
+            </button>
+          </div>
           {loading ? (
             <p className="text-gray-500">Loading venues...</p>
           ) : error ? (
@@ -80,13 +97,13 @@ const VenuesPage = () => {
                   ? nearbyVenues
                   : venues
               }
-              isSideBySide={true}
+              isSideBySide={showMap}
             />
           )}
         </div>
 
-        {/* Conditionally render the map */}
-        {!fromLanding && (
+        {/* Map Section */}
+        {!fromLanding && showMap && (
           <div className="w-full md:w-1/2 h-screen sticky top-0 z-0">
             <VenueMap
               venues={

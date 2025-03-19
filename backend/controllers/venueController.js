@@ -324,56 +324,41 @@ exports.updateVenue = async (req, res) => {
 
 exports.searchVenues = async (req, res) => {
   try {
-    const { query, page = 1, limit = 10, lat, lng } = req.query;
+    const { query } = req.query;
 
-    // Pagination settings
-    const pageNumber = parseInt(page, 10);
-    const pageSize = parseInt(limit, 10);
-    const skip = (pageNumber - 1) * pageSize;
-
-    // Search filter (case-insensitive)
-    let filter = {};
-    if (query) {
-      filter.name = { $regex: query, $options: "i" };
+    if (!query) {
+      return res.status(400).json({ error: "Search query is required" });
     }
 
-    let venues;
-    let totalVenues;
+    // Case-insensitive search across multiple fields using regex
+    const searchQuery = {
+      $or: [
+        { name: { $regex: query, $options: "i" } },
+        { address: { $regex: query, $options: "i" } },
+        { description: { $regex: query, $options: "i" } },
+        { phone: { $regex: query, $options: "i" } },
+        { menu: { $regex: query, $options: "i" } },
+        { website: { $regex: query, $options: "i" } },
+      ],
+    };
 
-    // Check if latitude and longitude are provided for sorting by distance
-    if (lat && lng) {
-      venues = await Venue.find(filter)
-        .near({
-          center: {
-            type: "Point",
-            coordinates: [parseFloat(lng), parseFloat(lat)],
-          },
-          maxDistance: 10000, // 10km radius (adjust as needed)
-          spherical: true,
-        })
-        .skip(skip)
-        .limit(pageSize);
+    // Fetch matching venues
+    const venues = await Venue.find(searchQuery).populate(
+      "createdBy",
+      "name email"
+    );
 
-      totalVenues = await Venue.countDocuments(filter);
-    } else {
-      // If no location provided, just apply pagination and search filter
-      venues = await Venue.find(filter).skip(skip).limit(pageSize);
-
-      totalVenues = await Venue.countDocuments(filter);
+    if (venues.length === 0) {
+      return res.status(404).json({ message: "No matching venues found" });
     }
 
-    res.status(200).json({
-      totalVenues,
-      totalPages: Math.ceil(totalVenues / pageSize),
-      currentPage: pageNumber,
-      venues,
-    });
+    res.status(200).json({ success: true, results: venues.length, venues });
   } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Failed to search venues", error: error.message });
+    console.error("Error searching venues:", error);
+    res.status(500).json({ error: error.message });
   }
 };
+
 
 exports.deleteVenue = async (req, res) => {
   try {
@@ -399,15 +384,34 @@ exports.deleteVenue = async (req, res) => {
   }
 };
 
-// 📌 Get Nearby Venues
 exports.getNearbyVenues = async (req, res) => {
   try {
     const { lat, lng, query } = req.query;
     console.log(lat, lng, query);
+
+    // Validate latitude and longitude
     if (!lat || !lng) {
       return res
         .status(400)
         .json({ message: "Latitude and longitude are required." });
+    }
+
+    const latitude = parseFloat(lat);
+    const longitude = parseFloat(lng);
+
+    // Check if latitude and longitude are within valid ranges
+    if (isNaN(latitude) ){
+      return res.status(400).json({ message: "Invalid latitude value." });
+    }
+    if (isNaN(longitude)) {
+      return res.status(400).json({ message: "Invalid longitude value." });
+    }
+
+    if (latitude < -90 || latitude > 90) {
+      return res.status(400).json({ message: "Latitude must be between -90 and 90." });
+    }
+    if (longitude < -180 || longitude > 180) {
+      return res.status(400).json({ message: "Longitude must be between -180 and 180." });
     }
 
     // MongoDB Geospatial Query
@@ -416,9 +420,9 @@ exports.getNearbyVenues = async (req, res) => {
         $near: {
           $geometry: {
             type: "Point",
-            coordinates: [parseFloat(lng), parseFloat(lat)],
+            coordinates: [longitude, latitude], // Note: MongoDB expects [longitude, latitude]
           },
-          // $maxDistance: 5000, // 5km radius
+          // $maxDistance: 5000, // 5km radius (optional)
         },
       },
     };
@@ -439,7 +443,6 @@ exports.getNearbyVenues = async (req, res) => {
     res.status(500).json({ message: "Error retrieving venues" });
   }
 };
-
 exports.deleteAllVenues = async (req, res) => {
   try {
     // Delete all documents in the Venue collection

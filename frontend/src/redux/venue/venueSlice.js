@@ -20,10 +20,10 @@ export const fetchVenues = createAsyncThunk(
 // Fetch nearby venues
 export const fetchNearbyVenues = createAsyncThunk(
   "venues/fetchNearby",
-  async ({ lat, lng ,query=""}, thunkAPI) => {
+  async ({ lat, lng ,query,page=1}, thunkAPI) => {
     try {
       const response = await axios.get(
-        `http://localhost:5000/api/venues/nearby?lat=${lat}&lng=${lng}&query=${query}`
+        `http://localhost:5000/api/venues/nearby?lat=${lat}&lng=${lng}query=${query}&page=${page}`
       );
       return response.data;
     } catch (error) {
@@ -42,6 +42,7 @@ export const searchVenues = createAsyncThunk(
       const response = await axiosInstance.get(
         `http://localhost:5000/api/venues/search?query=${query}`
       );
+      console.log("here is the venues",response.data);
       return response.data.venues;
     } catch (error) {
       return thunkAPI.rejectWithValue(
@@ -50,6 +51,24 @@ export const searchVenues = createAsyncThunk(
     }
   }
 ); 
+
+// Update rating for a venue
+export const updateVenueRating = createAsyncThunk(
+  "venues/updateRating",
+  async ({ ratingId, rating, review }, thunkAPI) => {
+    try {
+      const response = await axiosInstance.put(
+        `http://localhost:5000/api/ratings/${ratingId}`,
+        { rating, review }
+      );
+      return response.data; // Should return the updated venue data
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.message || "Failed to update rating"
+      );
+    }
+  }
+);
 
 // Add rating to a venue
 export const addVenueRating = createAsyncThunk(
@@ -97,7 +116,7 @@ const venueSlice = createSlice({
       })
       .addCase(fetchNearbyVenues.fulfilled, (state, action) => {
         state.nearbyVenues = action.payload;
-        state.venues=action.payload
+        state.venues = action.payload;
       })
       .addCase(searchVenues.fulfilled, (state, action) => {
         state.searchResults = action.payload;
@@ -108,7 +127,14 @@ const venueSlice = createSlice({
         state.venues = state.venues.map((venue) =>
           venue._id === updatedVenue._id ? updatedVenue : venue
         );
+      })
+      .addCase(updateVenueRating.fulfilled, (state, action) => {
+        const updatedVenue = action.payload;
+        state.venues = state.venues.map((venue) =>
+          venue._id === updatedVenue._id ? updatedVenue : venue
+        );
       });
+
   },
 });
 

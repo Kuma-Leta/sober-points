@@ -23,6 +23,7 @@ import Venues from "./pages/venues/venues";
 import MyVenues from "./pages/venues/myVenues";
 import MyVenueDetail from "./pages/venues/myVenueDetail";
 import AdminAnalytics from "./pages/venues/AdminAnalytics";
+import BottomNavBar from "./pages/venues/BottomNavBar"; // Import the BottomNavBar
 
 function Pages() {
   const user = useSelector((state) => state.auth.user);
@@ -38,41 +39,39 @@ function Pages() {
       document.head.appendChild(link);
     };
 
-    // Example usage
     if (user?.company?.logo) {
       updateFavicon(`${API_URL}/${user?.company?.logo}`);
     }
   }, [user]);
+
   return (
     <Routes>
-      <>
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/venues/:id" element={<VenueDetail />} />
-
-        <Route
-          path="/users"
-          element={
-            <ProtectedRoute>
-              <Users />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/venues/nearby"
-          element={
-            <ProtectedRoute>
-              <VenuesPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/venues"
-          element={
-            <ProtectedRoute>
-              <Venues />
-            </ProtectedRoute>
-          }
-        />
+      <Route path="/" element={<LandingPage />} />
+      <Route path="/venues/:id" element={<VenueDetail />} />
+      <Route
+        path="/users"
+        element={
+          <ProtectedRoute>
+            <Users />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/venues/nearby"
+        element={
+          <ProtectedRoute>
+            <VenuesPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/venues"
+        element={
+          <ProtectedRoute>
+            <Venues />
+          </ProtectedRoute>
+        }
+      />
 
         <Route
           path="/admin-analytics"
@@ -82,11 +81,8 @@ function Pages() {
             </ProtectedRoute>
           }
         />
-
-        <Route path="/ld" element={<LandingPage />} />
-        {/* <Route path="/users" element={<Users />} /> */}
-        <Route path="/venue/form" element={<VenueForm />} />
-      </>
+      <Route path="/ld" element={<LandingPage />} />
+      <Route path="/venue/form" element={<VenueForm />} />
       <Route path="/my-venue" element={<MyVenues />} />
       <Route path="/venues/my-venue/:venueId" element={<MyVenueDetail />} />
       <Route path="/auth/register" element={<Register />} />
@@ -129,7 +125,7 @@ const Routing = () => {
 
   if (location.pathname === "/auth/login") {
     return (
-      <div className=" bg-whiteBlue max-w-[120rem] dark:bg-darkBg ">
+      <div className="bg-whiteBlue max-w-[120rem] dark:bg-darkBg">
         <Login />
         <Footer />
       </div>
@@ -138,7 +134,7 @@ const Routing = () => {
 
   if (location.pathname === "/auth/register") {
     return (
-      <div className=" bg-whiteBlue max-w-[120rem] dark:bg-darkBg ">
+      <div className="bg-whiteBlue max-w-[120rem] dark:bg-darkBg">
         <Register />
         <Footer />
       </div>
@@ -163,15 +159,13 @@ const Routing = () => {
           {/* Main Content Container */}
           <div className={`flex-1 flex flex-col ${isMobile ? "z-50" : ""}`}>
             {/* Header */}
-            <div
-              className={`sticky top-0 z-[15] bg-white dark:bg-darkCard w-full`}
-            >
+            <div className="sticky top-0 z-[15] bg-white dark:bg-darkCard w-full">
               <div
-                className={`${
-                  shouldShowSidebar && user && hideSideBar && isMobile
-                    ? "pl-[2.5rem]"
-                    : ""
-                }`}
+              // className={`${
+              //   shouldShowSidebar && user && hideSideBar && isMobile
+              //     ? "pl-[2.5rem]"
+              //     : ""
+              // }`}
               >
                 <Header />
               </div>
@@ -190,6 +184,9 @@ const Routing = () => {
 
         {/* Footer */}
         <Footer />
+
+        {/* Bottom Navigation Bar for Authenticated Users */}
+        {user && isMobile && <BottomNavBar />}
       </div>
     </div>
   );

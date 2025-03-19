@@ -1,114 +1,130 @@
 import React from "react";
-import { motion } from "framer-motion";
-import { FaFacebookF, FaTwitter, FaInstagram } from "react-icons/fa";
 
 export default function Footer() {
   return (
-    <footer className="bg-gray-100 dark:bg-darkCard py-6 px-4 sm:px-6">
-      <div className="max-w-6xl mx-auto">
-        {/* Company & Support & Newsletter */}
-        <div className="flex flex-col space-y-6 md:flex-row md:justify-between md:space-y-0 sm">
-          {/* Company & Support */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="grid grid-cols-2 justify-center items-center  space-y-6 sm:flex-row sm:space-x-12 sm:space-y-0"
-          >
-            <div>
-              <h3 className="text-lg font-bold text-grayColor dark:text-darkText">
-                Company
-              </h3>
-              <ul className="mt-2 space-y-1 text-grayColor dark:text-darkText">
-                <li className="hover:text-primary transition">
-                  <a href="#">About Us</a>
-                </li>
-                <li className="hover:text-primary transition">
-                  <a href="#">Contact Us</a>
-                </li>
-                <li className="hover:text-primary transition">
-                  <a href="#">Careers</a>
-                </li>
-              </ul>
-            </div>
-
-            <div>
-              <h3 className="text-lg font-bold text-grayColor dark:text-darkText">
-                Support
-              </h3>
-              <ul className="mt-2 space-y-1 text-grayColor dark:text-darkText">
-                <li className="hover:text-primary transition">
-                  <a href="#">Help & Support</a>
-                </li>
-                <li className="hover:text-primary transition">
-                  <a href="#">Privacy Policy</a>
-                </li>
-                <li className="hover:text-primary transition">
-                  <a href="#">Terms & Conditions</a>
-                </li>
-              </ul>
-            </div>
-          </motion.div>
-
-          {/* Newsletter Subscription */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3, duration: 0.6 }}
-            className="w-full md:w-auto"
-          >
-            <h3 className="text-lg font-bold text-grayColor dark:text-darkText">
-              Subscribe to Our Newsletter
-            </h3>
-            <form className="mt-2 flex flex-col space-y-2 sm:flex-row sm:space-y-0 sm:space-x-2">
-              <input
-                type="email"
-                placeholder="Enter your email"
-                className="w-full p-2 rounded-md bg-white dark:bg-darkBg dark:text-darkText border border-grayColor dark:border-darkText focus:border-primary outline-none"
-              />
-              <button className="bg-primary hover:bg-primaryLight text-white px-4 py-2 rounded-md transition">
-                Subscribe
-              </button>
-            </form>
-          </motion.div>
-        </div>
-
-        {/* Divider */}
-        <hr className="my-4 border-grayColor dark:border-darkText" />
-
-        {/* Bottom Section */}
-        <div className="flex flex-col space-y-2 md:flex-row md:justify-between md:items-center md:space-y-0">
-          <p className="text-sm text-grayColor dark:text-darkText text-center md:text-left">
-            &copy; {new Date().getFullYear()} Sober Points. All rights reserved.
+    <footer className="bg-white text-black font-sans">
+      {/* Newsletter Section */}
+      <div className="bg-black text-white py-12 sm:py-16 px-4 sm:px-6 text-center">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold leading-tight">
+            Stay Updated with Our Newsletter
+          </h2>
+          <p className="mt-3 text-sm sm:text-base text-gray-300 max-w-xl mx-auto leading-relaxed">
+            Subscribe for the latest updates and exclusive insights on
+            alcohol-free offerings near you.
           </p>
 
-          {/* Social Media Links */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5, duration: 0.6 }}
-            className="flex space-x-4 justify-center md:justify-start"
-          >
-            <a
-              href="#"
-              className="text-grayColor dark:text-darkText hover:text-primary transition text-lg"
+          {/* Subscription Form */}
+          <form className="mt-6 flex flex-col sm:flex-row items-center gap-3 max-w-md mx-auto">
+            <input
+              type="email"
+              placeholder="Your Email Here"
+              className="w-full p-3 rounded-lg border border-gray-500 text-black 
+                         focus:outline-none text-sm sm:text-base"
+            />
+            <button
+              type="submit"
+              className="bg-white text-black font-semibold px-4 sm:px-2 py-2 sm:py-2 
+                         rounded-lg hover:bg-gray-200 transition text-sm sm:text-base"
             >
-              <FaFacebookF />
+              Join Now
+            </button>
+          </form>
+
+          <p className="text-xs sm:text-sm text-gray-400 mt-2">
+            By clicking Join Now, you agree to our{" "}
+            <a href="#" className="underline hover:text-gray-200 transition">
+              Terms and Conditions
             </a>
-            <a
-              href="#"
-              className="text-grayColor dark:text-darkText hover:text-primary transition text-lg"
-            >
-              <FaTwitter />
-            </a>
-            <a
-              href="#"
-              className="text-grayColor dark:text-darkText hover:text-primary transition text-lg"
-            >
-              <FaInstagram />
-            </a>
-          </motion.div>
+            .
+          </p>
         </div>
+      </div>
+
+      {/* Main Footer Links */}
+      <div className="max-w-6xl mx-auto py-10 px-4 sm:px-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+        {/* Left Column: Logo & Links */}
+        <div>
+          <h3 className="text-xl sm:text-2xl font-bold tracking-wide">
+            SOBER POINTS
+          </h3>
+          <ul className="mt-4 text-sm grid grid-cols-2 gap-2 md:grid-cols-1 sm:text-base text-gray-600">
+            <li>
+              <a href="#" className="hover:text-black transition">
+                About Us
+              </a>
+            </li>
+            <li>
+              <a href="#" className="hover:text-black transition">
+                Contact Us
+              </a>
+            </li>
+            <li>
+              <a href="#" className="hover:text-black transition">
+                Our Blog
+              </a>
+            </li>
+            <li>
+              <a href="#" className="hover:text-black transition">
+                FAQs
+              </a>
+            </li>
+            <li>
+              <a href="#" className="hover:text-black transition">
+                Get Started
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        {/* Right Columns: Subscription Form */}
+        <div className="sm:col-span-2">
+          <h3 className="text-lg sm:text-xl font-semibold">
+            Join Our Community
+          </h3>
+          <form className="mt-4 flex border border-gray-500 rounded-lg overflow-hidden max-w-md">
+            <input
+              type="email"
+              placeholder="Enter your email"
+              className="p-3 w-full outline-none text-black text-sm sm:text-base"
+            />
+            <button
+              type="submit"
+              className="bg-black text-white px-4 sm:px-5 hover:bg-gray-800 transition text-sm sm:text-base"
+            >
+              Subscribe
+            </button>
+          </form>
+          <p className="text-xs sm:text-sm text-gray-600 mt-2">
+            By subscribing, you agree to our{" "}
+            <a href="#" className="underline hover:text-black transition">
+              Privacy Policy
+            </a>
+            .
+          </p>
+        </div>
+      </div>
+
+      {/* Bottom Bar */}
+      <hr className="border-gray-300" />
+      <div
+        className="max-w-6xl mx-auto py-4 px-4 sm:px-6 flex flex-col sm:flex-row 
+                      justify-between items-start sm:items-center text-xs sm:text-sm text-gray-600"
+      >
+        <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4">
+          <a href="#" className="hover:text-black transition">
+            Privacy Policy
+          </a>
+          <a href="#" className="hover:text-black transition">
+            Terms of Service
+          </a>
+          <a href="#" className="hover:text-black transition">
+            Cookies Settings
+          </a>
+        </div>
+        <p className="mt-2 sm:mt-0 text-gray-600">
+          &copy; 2025 Relume. All rights reserved.
+        </p>
       </div>
     </footer>
   );

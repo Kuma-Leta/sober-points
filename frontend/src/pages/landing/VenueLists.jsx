@@ -3,10 +3,17 @@ import { motion } from "framer-motion";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import RatingStars from "./RatingStars"; // Import the RatingStars component
-
+import { fetchVenues } from "../../redux/venue/venueSlice";
+import { useDispatch } from "react-redux";
+import { useEffect } from "react";
 const VenueLists = ({ isSideBySide = false }) => {
+  const dispatch = useDispatch();
   const { venues, loading, error } = useSelector((state) => state.venues);
+  console.log(venues);
 
+  if (loading) {
+    return <p className="text-center text-grayColor">Loading venues...</p>;
+  }
   if (!Array.isArray(venues) || venues.length === 0) {
     return <p className="text-grayColor mt-2 text-center">No venues found.</p>;
   }
@@ -26,7 +33,7 @@ const VenueLists = ({ isSideBySide = false }) => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 * index, duration: 0.5 }}
           whileHover={{ scale: 1.05 }}
-          className="relative group overflow-hidden rounded-2xl  shadow-lg bg-white dark:bg-darkCard transition-all duration-300"
+          className="relative group overflow-hidden rounded-2xl shadow-lg bg-white dark:bg-darkCard transition-all duration-300"
         >
           <Link to={`/venues/${venue._id}`}>
             {venue.images.length > 0 && (
