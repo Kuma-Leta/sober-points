@@ -21,7 +21,7 @@ import VenuesPage from "./pages/landing/VenuesPage";
 import VenueDetail from "./pages/landing/VenueDetail";
 import Venues from "./pages/venues/venues";
 import BottomNavBar from "./pages/venues/BottomNavBar"; // Import the BottomNavBar
-
+import VenueList from "./pages/landing/VenueList";
 function Pages() {
   const user = useSelector((state) => state.auth.user);
 
@@ -44,7 +44,7 @@ function Pages() {
   return (
     <Routes>
       <Route path="/" element={<LandingPage />} />
-      <Route path="/venues/:id" element={<VenueDetail />} />
+      <Route path="/venue/:id" element={<VenueDetail />} />
       <Route
         path="/users"
         element={
@@ -69,6 +69,15 @@ function Pages() {
           </ProtectedRoute>
         }
       />
+      <Route
+        path="/favorites"
+        element={
+          <ProtectedRoute>
+            <VenueList />
+          </ProtectedRoute>
+        }
+      />
+
       <Route path="/ld" element={<LandingPage />} />
       <Route path="/venue/form" element={<VenueForm />} />
       <Route path="/auth/register" element={<Register />} />
@@ -108,7 +117,15 @@ const Routing = () => {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
-
+  if (location.pathname === "/favorites") {
+    return (
+      <>
+        <Header />
+        <VenueList />
+        <Footer />
+      </>
+    );
+  }
   if (location.pathname === "/auth/login") {
     return (
       <div className="bg-whiteBlue max-w-[120rem] dark:bg-darkBg">
@@ -126,7 +143,7 @@ const Routing = () => {
       </div>
     );
   }
-
+  // if(location.pathname ===)
   return (
     <div className="max-w-[120rem] bg-whiteBlue dark:text-darkText dark:bg-darkBg mx-auto min-h-screen">
       <ToastContainer />
@@ -159,9 +176,7 @@ const Routing = () => {
 
             {/* Main Content */}
             <main
-              className={`flex-1 p-2 dark:bg-darkBg ${
-                isMobile ? "relative" : ""
-              }`}
+              className={`flex-1  dark:bg-darkBg ${isMobile ? "relative" : ""}`}
             >
               <Pages />
             </main>
