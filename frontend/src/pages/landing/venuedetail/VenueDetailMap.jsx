@@ -7,7 +7,7 @@ import {
   useMap,
 } from "react-leaflet";
 import L from "leaflet";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 // Custom Leaflet Icon
 const venueIcon = new L.Icon({
@@ -23,17 +23,15 @@ function GetDirectionsControl({ destination }) {
   const map = useMap();
 
   useEffect(() => {
-    // Create control only if it doesn't already exist
     const controlDiv = L.control({ position: "topleft" });
 
-    // Define the control to add
     controlDiv.onAdd = function () {
       const div = L.DomUtil.create(
         "div",
         "leaflet-bar leaflet-control leaflet-custom-button"
       );
       div.innerHTML = `
-        <button class="bg-primary text-white px-3 py-2 rounded-md shadow-md hover:primaryLight transition">
+        <button class="bg-primary text-white px-3 py-2 rounded-md shadow-md hover:bg-primaryLight transition">
           Get Directions
         </button>
       `;
@@ -46,49 +44,76 @@ function GetDirectionsControl({ destination }) {
       return div;
     };
 
-    // Add control to map
     controlDiv.addTo(map);
 
-    // Cleanup function: remove the button when component unmounts or if destination changes
     return () => {
       map.removeControl(controlDiv);
     };
-  }, [map, destination]); // The effect depends on the map and destination props
+  }, [map, destination]);
 
   return null;
 }
 
+// Dynamic Map Height Hook
+const useDynamicHeight = () => {
+  const [height, setHeight] = useState("400px");
+
+  useEffect(() => {
+    const updateHeight = () => {
+      if (window.innerWidth < 640) {
+        setHeight("300px"); // Mobile View
+      } else if (window.innerWidth < 1024) {
+        setHeight("400px"); // Tablet View
+      } else {
+        setHeight("500px"); // Desktop View
+      }
+    };
+
+    updateHeight();
+    window.addEventListener("resize", updateHeight);
+
+    return () => window.removeEventListener("resize", updateHeight);
+  }, []);
+
+  return height;
+};
+
 function VenueDetailMap({ venue }) {
   const [longitude, latitude] = venue.location.coordinates;
+  const mapHeight = useDynamicHeight();
 
   return (
-    <div className="mt-6 w-full pl-6 lg:w-3/5 h-[400px] lg:h-[450px] bg-white shadow-lg rounded-xl">
-      <MapContainer
-        center={[latitude, longitude]}
-        zoom={15}
-        style={{
-          height: "100%",
-          width: "100%",
-          borderRadius: "12px",
-          zIndex: "0",
-        }}
-        zoomControl={false}
-      >
-        <TileLayer
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        />
-        <Marker position={[latitude, longitude]} icon={venueIcon}>
-          <Popup>
-            {venue.name} <br /> {venue.address}
-          </Popup>
-        </Marker>
+    <div className="mt-6 w-full px-4 sm:px-6 lg:px-8">
+      <div className="w-full h-full bg-white shadow-lg rounded-xl overflow-hidden">
+        <MapContainer
+          center={[latitude, longitude]}
+          zoom={15}
+          style={{
+            height: mapHeight,
+            width: "100%",
+            borderRadius: "12px",
+            zIndex: "0",
+          }}
+          zoomControl={false}
+        >
+          <TileLayer
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          />
+          <Marker position={[latitude, longitude]} icon={venueIcon}>
+            <Popup>
+              {venue.name} <br /> {venue.address}
+            </Popup>
+          </Marker>
 
-        {/* Custom Get Directions Button Inside the Map */}
-        <GetDirectionsControl destination={{ lat: latitude, lng: longitude }} />
+          {/* Custom Get Directions Button Inside the Map */}
+          <GetDirectionsControl
+            destination={{ lat: latitude, lng: longitude }}
+          />
 
-        <ZoomControl position="topright" />
-      </MapContainer>
+          <ZoomControl position="topright" />
+        </MapContainer>
+      </div>
     </div>
   );
 }

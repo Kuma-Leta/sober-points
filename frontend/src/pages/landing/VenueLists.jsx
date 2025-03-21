@@ -1,7 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import { FaHeart, FaRegHeart, FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import {
+  FaHeart,
+  FaRegHeart,
+  FaChevronLeft,
+  FaChevronRight,
+} from "react-icons/fa";
 import RatingStars from "./venuedetail/RatingStars";
 import {
   addFavorite,
@@ -65,11 +70,11 @@ const VenueLists = ({ isSideBySide = false, error }) => {
         {[1, 2, 3, 4].map((skeleton) => (
           <div
             key={skeleton}
-            className="animate-pulse p-4 border rounded-lg shadow-md"
+            className="animate-pulse p-4 border rounded-lg shadow-md bg-gray-300 dark:bg-gray-700"
           >
-            <div className="h-32 bg-gray-300 rounded-md"></div>
-            <div className="mt-2 h-4 bg-gray-300 w-3/4 rounded"></div>
-            <div className="mt-2 h-3 bg-gray-300 w-1/2 rounded"></div>
+            <div className="h-32 bg-gray-400 dark:bg-gray-600 rounded-md"></div>
+            <div className="mt-2 h-4 bg-gray-400 dark:bg-gray-600 w-3/4 rounded"></div>
+            <div className="mt-2 h-3 bg-gray-400 dark:bg-gray-600 w-1/2 rounded"></div>
           </div>
         ))}
       </div>
@@ -81,39 +86,45 @@ const VenueLists = ({ isSideBySide = false, error }) => {
   }
 
   if (!Array.isArray(venues) || venues.length === 0) {
-    return <p className="text-gray-500 text-center">No venues found.</p>;
+    return (
+      <p className="text-gray-500 dark:text-gray-300 text-center">
+        No venues found.
+      </p>
+    );
   }
 
   return (
     <div className="mt-4">
-      {/* Venue Grid */}
-          <div className="flex justify-center p-2 justify-between items-center mt-6 space-x-4">
+      {/* Pagination Controls */}
+      <div className="flex justify-center p-2 items-center mt-6 space-x-4">
         <button
           onClick={goToPrevPage}
           disabled={currentPage === 1}
-          className={`p-2 text-sm font-semibold border rounded-md ${
+          className={`p-2 text-sm font-semibold border rounded-md transition ${
             currentPage === 1
-              ? "bg-gray-200 text-gray-500 cursor-not-allowed"
-              : "bg-gray-800 text-white hover:bg-gray-700"
+              ? "bg-gray-200 dark:bg-gray-700 text-gray-500 cursor-not-allowed"
+              : "bg-gray-800 dark:bg-gray-600 text-white hover:bg-gray-700 dark:hover:bg-gray-500"
           }`}
         >
           <FaChevronLeft />
         </button>
-        <span className="text-gray-700">
+        <span className="text-gray-700 dark:text-gray-300">
           Page {currentPage} of {totalPages}
         </span>
         <button
           onClick={goToNextPage}
           disabled={currentPage === totalPages}
-          className={`p-2 text-sm font-semibold border rounded-md ${
+          className={`p-2 text-sm font-semibold border rounded-md transition ${
             currentPage === totalPages
-              ? "bg-gray-200 text-gray-500 cursor-not-allowed"
-              : "bg-gray-800 text-white hover:bg-gray-700"
+              ? "bg-gray-200 dark:bg-gray-700 text-gray-500 cursor-not-allowed"
+              : "bg-gray-800 dark:bg-gray-600 text-white hover:bg-gray-700 dark:hover:bg-gray-500"
           }`}
         >
           <FaChevronRight />
         </button>
       </div>
+
+      {/* Venue Grid */}
       <div
         className={`grid ${
           isSideBySide
@@ -125,7 +136,7 @@ const VenueLists = ({ isSideBySide = false, error }) => {
           <Link
             key={venue._id}
             to={`/venue/${venue._id}`}
-            className="block border rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300"
+            className="block border rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 bg-white dark:bg-darkCard dark:border-gray-700"
           >
             {venue.images.length > 0 && (
               <div className="relative w-full pb-[80%] rounded-t-md overflow-hidden">
@@ -140,7 +151,7 @@ const VenueLists = ({ isSideBySide = false, error }) => {
                 {/* Heart Icon */}
                 <button
                   onClick={(e) => handleFavoriteClick(venue._id, e)}
-                  className="absolute top-2 right-2 p-2 bg-white rounded-full shadow-md hover:bg-gray-100 transition-colors duration-300"
+                  className="absolute top-2 right-2 p-2 bg-white dark:bg-gray-700 rounded-full shadow-md hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors duration-300"
                   aria-label="Save as favorite"
                 >
                   {favorites?.some(
@@ -148,19 +159,21 @@ const VenueLists = ({ isSideBySide = false, error }) => {
                   ) ? (
                     <FaHeart className="text-red-500" />
                   ) : (
-                    <FaRegHeart className="text-gray-600" />
+                    <FaRegHeart className="text-gray-600 dark:text-gray-300" />
                   )}
                 </button>
               </div>
             )}
             <div className="p-3">
-              <h3 className="text-lg font-semibold text-gray-800">
+              <h3 className="text-lg font-semibold text-gray-800 dark:text-darkText">
                 {venue.name}
               </h3>
-              <p className="text-sm text-gray-600">{venue.address}</p>
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                {venue.address}
+              </p>
               <div className="flex items-center mt-2">
                 <RatingStars rating={venue.rating || 0} />
-                <span className="ml-2 text-sm text-gray-600">
+                <span className="ml-2 text-sm text-gray-600 dark:text-gray-400">
                   ({venue.rating || 0})
                 </span>
               </div>
@@ -168,9 +181,6 @@ const VenueLists = ({ isSideBySide = false, error }) => {
           </Link>
         ))}
       </div>
-
-      {/* Pagination Controls */}
-  
     </div>
   );
 };

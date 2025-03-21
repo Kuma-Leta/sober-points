@@ -2,7 +2,8 @@ import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 import { useSelector } from "react-redux";
-import logo from "../../assets/images/logo.png";
+import blackLogo from "../../assets/images/Logo-Black.png";
+import whiteLogo from "../../assets/images/Logo-White.png";
 import { FaUser, FaBars, FaTimes, FaPlus, FaRegHeart } from "react-icons/fa";
 import { FiSun, FiMoon } from "react-icons/fi";
 import defaultUserProfile from "../../assets/images/user.png";
@@ -40,13 +41,19 @@ const Header = () => {
 
         {/* Logo */}
         <div className="flex items-center space-x-3">
-          {/* <Link to="/">
+          <Link to="/">
+            {/* Black logo for light mode, white logo for dark mode */}
             <img
-              src={logo}
+              src={blackLogo}
               alt="Sober Points Logo"
-              className="w-16 sm:w-20 h-auto object-contain"
+              className="w-16 sm:w-20 h-auto object-contain dark:hidden" // Show in light mode
             />
-          </Link> */}
+            <img
+              src={whiteLogo}
+              alt="Sober Points Logo"
+              className="w-16 sm:w-20 h-auto object-contain hidden dark:block" // Show in dark mode
+            />
+          </Link>
         </div>
 
         {/* Navigation Links (Desktop) */}
@@ -253,6 +260,7 @@ const Header = () => {
 };
 
 export default Header;
+
 const LogoutConfirmationModal = ({ onConfirm, onCancel }) => {
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">

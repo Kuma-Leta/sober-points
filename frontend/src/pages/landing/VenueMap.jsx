@@ -11,7 +11,7 @@ import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchNearbyVenues } from "../../redux/venue/venueSlice";
-import logoMarker from "../../assets/images/logo.png";
+import logoMarker from "../../assets/images/Logomark-Black.png";
 import RatingStars from "./venuedetail/RatingStars"; // Import the RatingStars component
 
 // Custom venue icon

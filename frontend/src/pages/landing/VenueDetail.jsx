@@ -94,78 +94,85 @@ const VenueDetail = () => {
 
   if (loading) {
     return (
-      <p className="text-grayColor mt-4 text-center">
+      <p className="text-grayColor dark:text-darkText mt-4 text-center">
         Loading venue details...
       </p>
     );
   }
 
   if (error) {
-    return <p className="text-primary mt-4 text-center">{error}</p>;
+    return (
+      <p className="text-primary dark:text-primaryLight mt-4 text-center">
+        {error}
+      </p>
+    );
   }
 
   if (!venue) {
-    return <p className="text-grayColor mt-4 text-center">Venue not found.</p>;
+    return (
+      <p className="text-grayColor dark:text-darkText mt-4 text-center">
+        Venue not found.
+      </p>
+    );
   }
 
   const [longitude, latitude] = venue.location.coordinates;
 
   return (
-    <div className="mt-16 sm:p-1 sm:mt-6 md:mt-16 bg-white min-h-screen">
+    <div className="mt-16 sm:p-1 sm:mt-6 md:mt-16 bg-white dark:bg-darkBg min-h-screen">
       <ToastContainer />
       <div className="pl-6 sm:pl-8 lg:pl-12 py-4">
         <SearchBar />
       </div>
 
- {/* Responsive Image Row */}
-{venue.images.length > 0 && (
-  <div className="flex gap-4  overflow-hidden">
-    {venue.images.slice(0, 3).map((image, index) => (
-      <div
-        key={index}
-        className="relative flex-shrink-0 w-full sm:w-1/2 lg:w-1/3 aspect-square overflow-hidden rounded-lg cursor-pointer"
-        onClick={() => handleImageClick(index)}
-      >
-        <img
-          src={`http://localhost:5000/${image.replace(/\\/g, "/")}`}
-          alt={`Venue ${index + 1}`}
-          className="w-full h-full object-cover"
-        />
-      </div>
-    ))}
-  </div>
-)}
-
+      {/* Responsive Image Row */}
+      {venue.images.length > 0 && (
+        <div className="flex gap-4 overflow-hidden">
+          {venue.images.slice(0, 3).map((image, index) => (
+            <div
+              key={index}
+              className="relative flex-shrink-0 w-full sm:w-1/2 lg:w-1/3 aspect-square overflow-hidden rounded-lg cursor-pointer"
+              onClick={() => handleImageClick(index)}
+            >
+              <img
+                src={`http://localhost:5000/${image.replace(/\\/g, "/")}`}
+                alt={`Venue ${index + 1}`}
+                className="w-full h-full object-cover"
+              />
+            </div>
+          ))}
+        </div>
+      )}
 
       {/* Venue Details */}
-      <div className="w-full mx-auto bg-white p-6 sm:p-8 rounded-2xl border border-gray-200">
-        <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 leading-tight">
+      <div className="w-full mx-auto bg-white dark:bg-darkCard p-6 sm:p-8 rounded-2xl border border-gray-200 dark:border-gray-700">
+        <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-darkText leading-tight">
           {venue.name}
         </h1>
 
-        <p className="text-lg text-gray-600 mt-2 flex items-center">
+        <p className="text-lg text-gray-600 dark:text-gray-400 mt-2 flex items-center">
           📍 <span className="ml-1">{venue.address}</span>
         </p>
 
-        <p className="text-gray-700 mt-4 leading-relaxed">
+        <p className="text-gray-700 dark:text-gray-300 mt-4 leading-relaxed">
           {venue.description}
         </p>
 
         {/* Rating */}
         <div className="flex items-center mt-4">
-          {/* <RatingStars rating={venue.rating || 0} />
-          <span className="ml-2 text-gray-600 text-sm font-medium">
+          <RatingStars rating={venue.rating || 0} />
+          <span className="ml-2 text-gray-600 dark:text-gray-400 text-sm font-medium">
             ({venue.rating || 0})
-          </span> */}
+          </span>
         </div>
       </div>
 
       {/* Image Popup */}
       {isImagePopupOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
-          <div className="relative bg-white p-4 rounded-lg max-w-4xl w-full">
+          <div className="relative bg-white dark:bg-darkCard p-4 rounded-lg max-w-4xl w-full">
             <button
-              className="absolute top-2 right-2 text-grayColor hover:text-gray-800"
+              className="absolute top-2 right-2 text-grayColor dark:text-darkText hover:text-gray-800 dark:hover:text-gray-200"
               onClick={closeImagePopup}
             >
               &times;
@@ -179,13 +186,13 @@ const VenueDetail = () => {
             />
             <div className="flex justify-between mt-4">
               <button
-                className="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300"
+                className="px-4 py-2 bg-gray-200 dark:bg-gray-700 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600"
                 onClick={handlePreviousImage}
               >
                 Previous
               </button>
               <button
-                className="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300"
+                className="px-4 py-2 bg-gray-200 dark:bg-gray-700 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600"
                 onClick={handleNextImage}
               >
                 Next
@@ -200,7 +207,7 @@ const VenueDetail = () => {
         {latitude && longitude ? (
           <VenueDetailMap venue={venue} />
         ) : (
-          <p className="text-grayColor mt-2 sm:mt-4">
+          <p className="text-grayColor dark:text-darkText mt-2 sm:mt-4">
             Location data not available.
           </p>
         )}
@@ -208,7 +215,7 @@ const VenueDetail = () => {
 
       {/* Reviews Section */}
       <div className="mt-6 sm:mt-8">
-        <h3 className="text-xl sm:text-2xl font-semibold text-gray-800">
+        <h3 className="text-xl sm:text-2xl font-semibold text-gray-800 dark:text-darkText">
           Reviews:
         </h3>
         <VenueReviews venueId={id} venue={venue} />
@@ -216,7 +223,7 @@ const VenueDetail = () => {
 
       {/* Nearby Venues Section */}
       <div className="mt-6 sm:mt-8">
-        <h2 className="text-xl sm:text-2xl font-semibold text-gray-800">
+        <h2 className="text-xl sm:text-2xl font-semibold text-gray-800 dark:text-darkText">
           Nearby Venues
         </h2>
         <VenueLists />
