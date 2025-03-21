@@ -4,6 +4,8 @@ import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { searchVenues, fetchNearbyVenues } from "../redux/venue/venueSlice";
+import axiosInstance from "../api/api"; // Import your axios instance
+import axios from "axios";
 
 const SearchBar = ({ setQuery, onSearch }) => {
   const navigate = useNavigate();
@@ -13,24 +15,17 @@ const SearchBar = ({ setQuery, onSearch }) => {
   const [isInputFocused, setIsInputFocused] = useState(false);
   const [locationError, setLocationError] = useState(null);
   const inputRef = useRef(null); // Ref to handle input focus
-
   useEffect(() => {
     const fetchSuggestions = async () => {
       if (searchTerm.length > 2) {
         try {
-          const response = await fetch(
-            `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
+          const response = await axios.get(
+            `http://localhost:5000/api/venues/suggestions?query=${encodeURIComponent(
               searchTerm
             )}`
           );
-          const data = await response.json();
-          setSuggestions(
-            data.map((item) => ({
-              name: item.display_name,
-              lat: item.lat,
-              lng: item.lon,
-            }))
-          );
+          console.log("here is the suggestions", response);
+          setSuggestions(response.data.suggestions);
         } catch (error) {
           console.error("Error fetching suggestions:", error);
           setSuggestions([]);
@@ -52,10 +47,13 @@ const SearchBar = ({ setQuery, onSearch }) => {
   };
 
   const handleSuggestionClick = (selectedPlace) => {
-    console.log("Selected place:", selectedPlace.lat, selectedPlace.lng);
+    console.log("Selected place:", selectedPlace.location);
     setSearchTerm(selectedPlace.name); // Update the search term with the selected suggestion
     dispatch(
-      fetchNearbyVenues({ lat: selectedPlace.lat, lng: selectedPlace.lng })
+      fetchNearbyVenues({
+        lat: selectedPlace.location[1],
+        lng: selectedPlace.location[0],
+      })
     );
     setIsInputFocused(false); // Hide suggestions
     navigate(`/venues/nearby`);
@@ -135,7 +133,7 @@ const SearchBar = ({ setQuery, onSearch }) => {
       </div>
 
       {/* Suggestions Dropdown */}
-      {suggestions.length > 0 && isInputFocused && (
+      {suggestions?.length > 0 && isInputFocused && (
         <ul className="absolute w-full bg-white shadow-md rounded-md mt-2 z-10 max-h-60 overflow-y-auto">
           {suggestions.map((suggestion, index) => (
             <li
@@ -144,7 +142,8 @@ const SearchBar = ({ setQuery, onSearch }) => {
               onMouseDown={(e) => e.preventDefault()} // Prevent input blur on click
               onClick={() => handleSuggestionClick(suggestion)}
             >
-              {suggestion.name}
+              <div className="font-semibold">{suggestion.name}</div>
+              <div className="text-sm text-gray-600">{suggestion.address}</div>
             </li>
           ))}
         </ul>

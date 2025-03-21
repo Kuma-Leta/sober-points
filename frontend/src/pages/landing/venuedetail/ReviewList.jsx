@@ -16,6 +16,7 @@ const ReviewList = ({ venueId, updatedReview, newReview }) => {
       );
       if (response.data.ratings.length > 0) {
         setReviews(response.data.ratings);
+
         setTotalReviews(response.data.totalRatings);
       } else {
         setHasMore(false);
@@ -82,7 +83,12 @@ const ReviewList = ({ venueId, updatedReview, newReview }) => {
               </div>
 
               {/* Right Side: Rating Stars */}
-              <RatingStars rating={review.serviceRating} />
+              <RatingStars
+                rating={(
+                  (review.serviceRating + review.locationRating) /
+                  2
+                ).toFixed(1)}
+              />
             </div>
 
             {/* Review Text */}

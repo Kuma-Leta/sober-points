@@ -152,23 +152,23 @@ const mongoose = require("mongoose");
 exports.getRatingDistribution = async (req, res) => {
   try {
     const { venueId } = req.params;
-
+console.log(venueId)
     // Validate venueId format
     if (!mongoose.Types.ObjectId.isValid(venueId)) {
       return res.status(400).json({ message: "Invalid venue ID" });
     }
 
     // Fetch ratings from the database
-    const ratings = await Rating.find({ venueId });
+    const ratings = await Rating.find({  venueId }); // Ensure the field name matches your schema
     const totalRatings = ratings.length;
 
     // Initialize distribution object
     const distribution = {
-      5: { count: 0, percentage: "0%" },
-      4: { count: 0, percentage: "0%" },
-      3: { count: 0, percentage: "0%" },
-      2: { count: 0, percentage: "0%" },
-      1: { count: 0, percentage: "0%" },
+      5: { count: 0, percentage: 0 },
+      4: { count: 0, percentage: 0 },
+      3: { count: 0, percentage: 0 },
+      2: { count: 0, percentage: 0 },
+      1: { count: 0, percentage: 0 },
     };
 
     if (totalRatings === 0) {
@@ -181,24 +181,25 @@ exports.getRatingDistribution = async (req, res) => {
     ratings.forEach(({ serviceRating, locationRating }) => {
       const overallRating = (serviceRating + locationRating) / 2;
 
-      if (overallRating >= 4.5) {
+      if (overallRating === 5.0) {
         distribution[5].count++;
-      } else if (overallRating >= 3.5) {
+      } else if (overallRating >= 4.0) {
         distribution[4].count++;
-      } else if (overallRating >= 2.5) {
+      } else if (overallRating >= 3.0) {
         distribution[3].count++;
-      } else if (overallRating >= 1.5) {
+      } else if (overallRating >= 2.0) {
         distribution[2].count++;
       } else {
         distribution[1].count++;
       }
     });
 
-    // Calculate percentages
+    // Calculate percentages (as numbers, not strings)
     for (let star in distribution) {
       const count = distribution[star].count;
-      distribution[star].percentage =
-        ((count / totalRatings) * 100).toFixed(1) + "%";
+      distribution[star].percentage = parseFloat(
+        ((count / totalRatings) * 100).toFixed(1)
+      );
     }
 
     res.status(200).json({ totalRatings, distribution });

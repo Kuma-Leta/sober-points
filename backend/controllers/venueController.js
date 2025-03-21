@@ -412,3 +412,38 @@ exports.verifyVenue = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+// 📌 Controller: Fetch Venue Suggestions
+exports.getVenueSuggestions = async (req, res) => {
+  try {
+    const { query } = req.query;
+    console.log("here is suggestions query",query)
+
+    if (!query || query.length < 3) {
+      return res.status(400).json({ message: "Query must be at least 3 characters long" });
+    }
+
+    // Use MongoDB's $regex to find venues matching the query
+    const suggestions = await Venue.find({
+      $or: [
+        { name: { $regex: query, $options: "i" } }, // Case-insensitive search on name
+        { address: { $regex: query, $options: "i" } }, // Case-insensitive search on address
+      ],
+    }).limit(10); // Limit to 10 suggestions
+
+    if (suggestions.length === 0) {
+      return res.status(404).json({ message: "No matching venues found" });
+    }
+
+    // Format the suggestions
+    const formattedSuggestions = suggestions.map((venue) => ({
+      name: venue.name,
+      address: venue.address,
+      location: venue.location.coordinates, // [longitude, latitude]
+    }));
+
+    res.status(200).json({ suggestions: formattedSuggestions });
+  } catch (error) {
+    console.error("Error fetching venue suggestions:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};

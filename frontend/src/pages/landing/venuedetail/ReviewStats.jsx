@@ -17,6 +17,7 @@ const ReviewStats = ({ venueId, venue, newReview, updatedReview }) => {
       const response = await axiosInstance.get(
         `/ratings/distribution/${venueId}`
       );
+      console.log("here is the response", response);
       const { distribution, totalRatings } = response.data;
 
       if (totalRatings > 0) {
@@ -25,7 +26,9 @@ const ReviewStats = ({ venueId, venue, newReview, updatedReview }) => {
         Object.keys(distribution).forEach((rating) => {
           updatedDistribution[rating] = {
             count: distribution[rating].count,
-            percentage: ((distribution[rating].count / totalRatings) * 100).toFixed(1),
+            percentage: parseFloat(
+              ((distribution[rating].count / totalRatings) * 100).toFixed(1)
+            ), // Ensure percentage is a number
           };
         });
 
@@ -57,7 +60,9 @@ const ReviewStats = ({ venueId, venue, newReview, updatedReview }) => {
         <h3 className="text-xl font-semibold text-dark dark:text-darkText mb-4">
           Rating Distribution
         </h3>
-        <p className="text-sm text-gray-600 dark:text-gray-400">No reviews yet.</p>
+        <p className="text-sm text-gray-600 dark:text-gray-400">
+          No reviews yet.
+        </p>
       </div>
     );
   }
@@ -81,7 +86,6 @@ const ReviewStats = ({ venueId, venue, newReview, updatedReview }) => {
           </p>
         </div>
 
-        {/* Rating Distribution Bars */}
         <div className="flex-1 space-y-3">
           {[5, 4, 3, 2, 1].map((star) => (
             <div key={star} className="flex items-center">
@@ -92,12 +96,13 @@ const ReviewStats = ({ venueId, venue, newReview, updatedReview }) => {
                 <div
                   className="bg-yellow-500 h-2 rounded absolute top-0 left-0 transition-all duration-500"
                   style={{
-                    width: `${ratingDistribution[star]?.percentage || 0}%`,
+                    width: `${ratingDistribution[star]?.percentage || 0}%`, // Use percentage directly
                   }}
                 ></div>
               </div>
               <span className="w-12 text-sm text-gray-700 dark:text-gray-300 ml-2">
-                {ratingDistribution[star]?.percentage || "0"}%
+                {ratingDistribution[star]?.percentage || 0}%{" "}
+                {/* Display percentage as a number */}
               </span>
             </div>
           ))}
