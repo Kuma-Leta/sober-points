@@ -140,7 +140,6 @@ exports.getAllVenues = async (req, res) => {
       venues,
     });
   } catch (error) {
-    console.error(error);
     return res.status(500).json({ message: error.message });
   }
 };
@@ -239,7 +238,6 @@ exports.updateVenue = async (req, res) => {
         venue,
       });
     } catch (error) {
-      console.error("Error updating venue:", error); // Log the error
       res.status(400).json({ error: error.message });
     }
   });
@@ -275,7 +273,6 @@ exports.searchVenues = async (req, res) => {
 
     res.status(200).json({ success: true, results: venues.length, venues });
   } catch (error) {
-    console.error("Error searching venues:", error);
     res.status(500).json({ error: error.message });
   }
 };
@@ -308,7 +305,6 @@ exports.deleteVenue = async (req, res) => {
 exports.getNearbyVenues = async (req, res) => {
   try {
     const { lat, lng, query } = req.query;
-    console.log(lat, lng, query);
 
     // Validate latitude and longitude
     if (!lat || !lng) {
@@ -364,7 +360,6 @@ exports.getNearbyVenues = async (req, res) => {
 
     res.status(200).json(venues);
   } catch (error) {
-    console.error("Error fetching nearby venues:", error);
     res.status(500).json({ message: "Error retrieving venues" });
   }
 };
@@ -388,7 +383,6 @@ exports.deleteAllVenues = async (req, res) => {
     });
   } catch (error) {
     // Handle errors
-    console.error("Error deleting all venues:", error);
     res.status(500).json({
       success: false,
       message: "An error occurred while deleting venues.",
@@ -416,7 +410,7 @@ exports.verifyVenue = async (req, res) => {
 exports.getVenueSuggestions = async (req, res) => {
   try {
     const { query } = req.query;
-    console.log("here is suggestions query",query)
+    
 
     if (!query || query.length < 3) {
       return res.status(400).json({ message: "Query must be at least 3 characters long" });

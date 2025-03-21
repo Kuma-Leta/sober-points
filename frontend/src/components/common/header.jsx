@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 import { useSelector } from "react-redux";
 import logo from "../../assets/images/logo.png";
-import { FaUser, FaBars, FaTimes, FaPlus,FaRegHeart } from "react-icons/fa";
+import { FaUser, FaBars, FaTimes, FaPlus, FaRegHeart } from "react-icons/fa";
 import { FiSun, FiMoon } from "react-icons/fi";
 import defaultUserProfile from "../../assets/images/user.png";
 
@@ -14,6 +14,7 @@ const Header = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false); // State for sidebar
   const dropdownRef = useRef(null);
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -105,15 +106,15 @@ const Header = () => {
                   >
                     <FaUser className="inline mr-2" /> Profile
                   </Link>
-                     <Link
-                      to="/favorites"
-                      className="block px-4 py-2 text-grayColor dark:text-darkText hover:bg-gray-100 dark:hover:bg-gray-800"
-                      onClick={() => setSidebarOpen(false)}
-                    >
-                      <FaRegHeart className="inline mr-2" /> my favorites
-                    </Link>
+                  <Link
+                    to="/favorites"
+                    className="block px-4 py-2 text-grayColor dark:text-darkText hover:bg-gray-100 dark:hover:bg-gray-800"
+                    onClick={() => setSidebarOpen(false)}
+                  >
+                    <FaRegHeart className="inline mr-2" /> my favorites
+                  </Link>
                   <button
-                    onClick={logout}
+                    onClick={() => setShowLogoutConfirm(true)}
                     className="block w-full text-left px-4 py-2 text-grayColor dark:text-darkText hover:bg-gray-100 dark:hover:bg-gray-800"
                   >
                     Logout
@@ -222,11 +223,10 @@ const Header = () => {
                     >
                       <FaRegHeart className="inline mr-2" /> my favorites
                     </Link>
-                  
+
                     <button
                       onClick={() => {
-                        logout();
-                        setSidebarOpen(false);
+                        setShowLogoutConfirm(true);
                       }}
                       className="block w-full text-left px-4 py-2 text-grayColor dark:text-darkText hover:bg-gray-100 dark:hover:bg-gray-800"
                     >
@@ -239,11 +239,46 @@ const Header = () => {
           </div>
         </>
       )}
+      {showLogoutConfirm && (
+        <LogoutConfirmationModal
+          onConfirm={() => {
+            logout();
+            setShowLogoutConfirm(false);
+          }}
+          onCancel={() => setShowLogoutConfirm(false)}
+        />
+      )}
     </header>
   );
 };
 
 export default Header;
+const LogoutConfirmationModal = ({ onConfirm, onCancel }) => {
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div className="bg-white dark:bg-darkCard p-6 rounded-lg shadow-lg w-80 text-center">
+        <h3 className="text-lg font-semibold mb-4">Confirm Logout</h3>
+        <p className="text-sm text-gray-600 dark:text-gray-300">
+          Are you sure you want to log out?
+        </p>
+        <div className="flex justify-between mt-4">
+          <button
+            onClick={onCancel}
+            className="bg-gray-300 hover:bg-gray-400 text-gray-700 px-4 py-2 rounded-md"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={onConfirm}
+            className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md"
+          >
+            Logout
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 /* Dark Mode Toggle */
 const DarkModeToggle = () => {

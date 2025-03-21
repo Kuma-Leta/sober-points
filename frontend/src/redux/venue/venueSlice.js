@@ -22,7 +22,6 @@ export const fetchNearbyVenues = createAsyncThunk(
   "venues/fetchNearby",
   async ({ lat, lng, query = "", page = 1 }, thunkAPI) => {
     try {
-      console.log("lati", lat, "long", lng);
       const response = await axios.get(
         `http://localhost:5000/api/venues/nearby?lat=${lat}&lng=${lng}&query=${query}&page=${page}`
       );
@@ -40,11 +39,9 @@ export const searchVenues = createAsyncThunk(
   "venues/search",
   async (query, thunkAPI) => {
     try {
-      console.log("query", query);
       const response = await axiosInstance.get(
         `http://localhost:5000/api/venues/search?query=${query}`
       );
-      console.log("here is the venues", response.data);
       return response.data.venues;
     } catch (error) {
       return thunkAPI.rejectWithValue(
@@ -96,7 +93,6 @@ export const addFavorite = createAsyncThunk(
   async (venueId, thunkAPI) => {
     try {
       const response = await axiosInstance.post("/favorites/add", { venueId });
-      console.log(response);
       return { venueId }; // Return the venueId to update the state
     } catch (error) {
       return thunkAPI.rejectWithValue(
