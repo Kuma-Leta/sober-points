@@ -148,8 +148,8 @@ exports.getAllVenues = async (req, res) => {
 exports.getVenueById = async (req, res) => {
   try {
     const venue = await Venue.findById(req.params.id).populate(
-      "createdBy",
-      "name email"
+      "reviews",
+      "user"
     );
     if (!venue) {
       return res.status(404).json({ message: "Venue not found" });
@@ -257,12 +257,9 @@ exports.searchVenues = async (req, res) => {
     // Case-insensitive search across multiple fields using regex
     const searchQuery = {
       $or: [
-        { name: { $regex: query, $options: "i" } },
+       
         { address: { $regex: query, $options: "i" } },
-        { description: { $regex: query, $options: "i" } },
-        { phone: { $regex: query, $options: "i" } },
-        { menu: { $regex: query, $options: "i" } },
-        { website: { $regex: query, $options: "i" } },
+     
       ],
     };
 
@@ -324,7 +321,7 @@ exports.getNearbyVenues = async (req, res) => {
     const longitude = parseFloat(lng);
 
     // Check if latitude and longitude are within valid ranges
-    if (isNaN(latitude) ){
+    if (isNaN(latitude)) {
       return res.status(400).json({ message: "Invalid latitude value." });
     }
     if (isNaN(longitude)) {
@@ -332,10 +329,14 @@ exports.getNearbyVenues = async (req, res) => {
     }
 
     if (latitude < -90 || latitude > 90) {
-      return res.status(400).json({ message: "Latitude must be between -90 and 90." });
+      return res
+        .status(400)
+        .json({ message: "Latitude must be between -90 and 90." });
     }
     if (longitude < -180 || longitude > 180) {
-      return res.status(400).json({ message: "Longitude must be between -180 and 180." });
+      return res
+        .status(400)
+        .json({ message: "Longitude must be between -180 and 180." });
     }
 
     // MongoDB Geospatial Query

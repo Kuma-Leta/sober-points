@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 import { useSelector } from "react-redux";
 import logo from "../../assets/images/logo.png";
-import { FaUser, FaBars, FaTimes, FaPlus } from "react-icons/fa";
+import { FaUser, FaBars, FaTimes, FaPlus,FaRegHeart } from "react-icons/fa";
 import { FiSun, FiMoon } from "react-icons/fi";
 import defaultUserProfile from "../../assets/images/user.png";
 
@@ -105,6 +105,13 @@ const Header = () => {
                   >
                     <FaUser className="inline mr-2" /> Profile
                   </Link>
+                     <Link
+                      to="/favorites"
+                      className="block px-4 py-2 text-grayColor dark:text-darkText hover:bg-gray-100 dark:hover:bg-gray-800"
+                      onClick={() => setSidebarOpen(false)}
+                    >
+                      <FaRegHeart className="inline mr-2" /> my favorites
+                    </Link>
                   <button
                     onClick={logout}
                     className="block w-full text-left px-4 py-2 text-grayColor dark:text-darkText hover:bg-gray-100 dark:hover:bg-gray-800"
@@ -208,6 +215,14 @@ const Header = () => {
                     >
                       <FaUser className="inline mr-2" /> Profile
                     </Link>
+                    <Link
+                      to="/favorites"
+                      className="block px-4 py-2 text-grayColor dark:text-darkText hover:bg-gray-100 dark:hover:bg-gray-800"
+                      onClick={() => setSidebarOpen(false)}
+                    >
+                      <FaRegHeart className="inline mr-2" /> my favorites
+                    </Link>
+                  
                     <button
                       onClick={() => {
                         logout();

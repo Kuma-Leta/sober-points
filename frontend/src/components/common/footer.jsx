@@ -1,47 +1,11 @@
 import React from "react";
-
+import { useNavigate } from "react-router-dom";
+import useAuth from "../../hooks/useAuth";
 export default function Footer() {
+  const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
   return (
     <footer className="bg-white text-black font-sans">
-      {/* Newsletter Section */}
-      <div className="bg-black text-white py-12 sm:py-16 px-4 sm:px-6 text-center">
-        <div className="max-w-4xl mx-auto">
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold leading-tight">
-            Stay Updated with Our Newsletter
-          </h2>
-          <p className="mt-3 text-sm sm:text-base text-gray-300 max-w-xl mx-auto leading-relaxed">
-            Subscribe for the latest updates and exclusive insights on
-            alcohol-free offerings near you.
-          </p>
-
-          {/* Subscription Form */}
-          <form className="mt-6 flex flex-col sm:flex-row items-center gap-3 max-w-md mx-auto">
-            <input
-              type="email"
-              placeholder="Your Email Here"
-              className="w-full p-3 rounded-lg border border-gray-500 text-black 
-                         focus:outline-none text-sm sm:text-base"
-            />
-            <button
-              type="submit"
-              className="bg-white text-black font-semibold px-4 sm:px-2 py-2 sm:py-2 
-                         rounded-lg hover:bg-gray-200 transition text-sm sm:text-base"
-            >
-              Join Now
-            </button>
-          </form>
-
-          <p className="text-xs sm:text-sm text-gray-400 mt-2">
-            By clicking Join Now, you agree to our{" "}
-            <a href="#" className="underline hover:text-gray-200 transition">
-              Terms and Conditions
-            </a>
-            .
-          </p>
-        </div>
-      </div>
-
-      {/* Main Footer Links */}
       <div className="max-w-6xl mx-auto py-10 px-4 sm:px-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
         {/* Left Column: Logo & Links */}
         <div>
@@ -50,12 +14,12 @@ export default function Footer() {
           </h3>
           <ul className="mt-4 text-sm grid grid-cols-2 gap-2 md:grid-cols-1 sm:text-base text-gray-600">
             <li>
-              <a href="#" className="hover:text-black transition">
+              <a href="/#aboutus" className="hover:text-black transition">
                 About Us
               </a>
             </li>
             <li>
-              <a href="#" className="hover:text-black transition">
+              <a href="/#contactus" className="hover:text-black transition">
                 Contact Us
               </a>
             </li>
@@ -65,15 +29,17 @@ export default function Footer() {
               </a>
             </li>
             <li>
-              <a href="#" className="hover:text-black transition">
+              <a href="/#FAQ" className="hover:text-black transition">
                 FAQs
               </a>
             </li>
-            <li>
-              <a href="#" className="hover:text-black transition">
-                Get Started
-              </a>
-            </li>
+            {!isAuthenticated && (
+              <li>
+                <a href="/auth/login" className="hover:text-black transition">
+                  Get Started
+                </a>
+              </li>
+            )}
           </ul>
         </div>
 
@@ -112,7 +78,7 @@ export default function Footer() {
                       justify-between items-start sm:items-center text-xs sm:text-sm text-gray-600"
       >
         <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4">
-          <a href="#" className="hover:text-black transition">
+          <a href="/privacyPolicy" className="hover:text-black transition">
             Privacy Policy
           </a>
           <a href="#" className="hover:text-black transition">

@@ -2,9 +2,15 @@ const mongoose = require("mongoose");
 
 const RatingSchema = new mongoose.Schema(
   {
-    rating: {
+    serviceRating: {
       type: Number,
-      required: [true, "Rating is required"],
+      required: [true, "Service rating is required"],
+      min: 1,
+      max: 5,
+    },
+    locationRating: {
+      type: Number,
+      required: [true, "Location rating is required"],
       min: 1,
       max: 5,
     },

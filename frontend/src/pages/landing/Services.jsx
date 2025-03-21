@@ -19,7 +19,7 @@ const Features = () => {
       </header>
 
       {/* Main Content */}
-      <section className="container mx-auto px-4 sm:px-6">
+      <section id="aboutUs" className="container mx-auto px-4 sm:px-6">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {/* Section 1: Best AF Bars */}
           <div className="bg-white rounded-lg shadow hover:shadow-md transition-shadow">

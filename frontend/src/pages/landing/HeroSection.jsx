@@ -14,7 +14,7 @@ const HeroSection = () => {
   };
 
   return (
-    <section className="w-full h-[60vh] sm:h-[70vh] md:h-[80vh] lg:h-[90vh] xl:h-screen flex flex-col justify-center items-center pt-4 text-center px-4 sm:px-6 relative mt-14 sm:mt-20 bg-[#1A1A1A]">
+    <section className="w-full h-[60vh] sm:h-[70vh] md:h-[80vh] lg:h-[90vh] xl:h-screen flex flex-col justify-center items-center pt-4 text-center px-4 sm:px-6 relative mt-10 sm:mt-20 md:mt-12 bg-[#1A1A1A]">
       <motion.div
         initial={{ opacity: 0, y: -30 }}
         animate={{ opacity: 1, y: 0 }}

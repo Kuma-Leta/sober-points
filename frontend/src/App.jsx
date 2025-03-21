@@ -22,6 +22,7 @@ import VenueDetail from "./pages/landing/VenueDetail";
 import Venues from "./pages/venues/venues";
 import BottomNavBar from "./pages/venues/BottomNavBar"; // Import the BottomNavBar
 import VenueList from "./pages/landing/VenueList";
+import PrivacyPolicy from "./pages/landing/privacyPolicy"
 function Pages() {
   const user = useSelector((state) => state.auth.user);
 
@@ -45,6 +46,7 @@ function Pages() {
     <Routes>
       <Route path="/" element={<LandingPage />} />
       <Route path="/venue/:id" element={<VenueDetail />} />
+      <Route path="/privacyPolicy" element={<PrivacyPolicy/>}/>
       <Route
         path="/users"
         element={
@@ -117,6 +119,15 @@ const Routing = () => {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+  if(location.pathname ==="privacy policy"){
+    return (
+       <>
+        <Header />
+        <PrivacyPolicy/>
+        <Footer />
+      </>
+    )
+  }
   if (location.pathname === "/favorites") {
     return (
       <>

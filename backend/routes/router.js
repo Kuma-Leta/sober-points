@@ -8,7 +8,7 @@ const  {authenticate} = require("../middleware/authMiddleware");
 const {authorize} = require("../middleware/authMiddleware"); 
 const venueRoutes = require("./venue");
 const ratingRoutes = require("./rating");
-
+const favouritesRoutes =require("./favourites")
 // Authentication route
 router.post("/login", authController.login);
 router.get("/logout", authController.logoutUser);
@@ -65,6 +65,6 @@ router.delete(
 
 router.use("/venues", venueRoutes); // <-- Add this line
 router.use("/ratings", ratingRoutes);
-
+router.use("/favorites",favouritesRoutes)
 // Venues
 module.exports = router;

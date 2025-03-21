@@ -1,48 +1,93 @@
-import React, { useState, useEffect } from "react";
+import {
+  MapContainer,
+  TileLayer,
+  Marker,
+  Popup,
+  ZoomControl,
+  useMap,
+} from "react-leaflet";
+import L from "leaflet";
+import { useEffect } from "react";
+import GetDirections from "../landing/GetDirections";
 
-const GetDirections = ({ destination }) => {
-  const [userLocation, setUserLocation] = useState(null);
+// Custom Leaflet Icon
+const venueIcon = new L.Icon({
+  iconUrl:
+    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png",
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+});
 
-  // Get the user's current location
+// Custom Control Component for "Get Directions" Button
+function CustomControl({ position, children }) {
+  const map = useMap();
+
   useEffect(() => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          setUserLocation({
-            lat: position.coords.latitude,
-            lng: position.coords.longitude,
-          });
-        },
-        (error) => {
-          console.error("Error getting user location:", error);
-        }
-      );
-    } else {
-      console.error("Geolocation is not supported by this browser.");
-    }
-  }, []);
+    if (map) {
+      const control = L.control({ position });
 
-  // Open Google Maps with directions
-  const handleGetDirections = () => {
-    if (userLocation && destination) {
-      const origin = `${userLocation.lat},${userLocation.lng}`;
-      const googleMapsUrl = `https://www.google.com/maps/dir/${origin}/${destination.lat},${destination.lng}/@${destination.lat},${destination.lng},16z?entry=ttu&g_ep=EgoyMDI1MDMwOC4wIKXMDSoASAFQAw%3D%3D`;
-      window.open(googleMapsUrl, "_blank");
-    } else {
-      alert(
-        "Unable to get your current location. Please ensure location services are enabled."
-      );
+      control.onAdd = () => {
+        const div = L.DomUtil.create("div", "leaflet-bar");
+        div.style.backgroundColor = "white";
+        div.style.borderRadius = "4px";
+        div.style.padding = "4px";
+        div.style.boxShadow = "0 1px 5px rgba(0,0,0,0.4)";
+        div.appendChild(children);
+        return div;
+      };
+
+      control.addTo(map);
+
+      // Cleanup on unmount
+      return () => {
+        control.remove();
+      };
     }
-  };
+  }, [map, position, children]);
+
+  return null;
+}
+
+function VenueDetailMap({ venue }) {
+  const [longitude, latitude] = venue.location.coordinates;
 
   return (
-    <button
-      onClick={handleGetDirections}
-      className="px-4 py-2 bg-primary text-white rounded-md hover:primaryLight transition duration-300 text-sm sm:text-base"
-    >
-      Get Directions
-    </button>
-  );
-};
+    <div className="mt-6 w-full lg:w-3/5 h-[450px] lg:h-[500px] bg-white shadow-lg rounded-xl">
+      <MapContainer
+        center={[latitude, longitude]}
+        zoom={15}
+        style={{
+          height: "100%",
+          width: "100%",
+          borderRadius: "12px",
+          zIndex: "0",
+        }}
+        zoomControl={false}
+      >
+        {/* Tile Layer */}
+        <TileLayer
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        />
 
-export default GetDirections;
+        {/* Marker */}
+        <Marker position={[latitude, longitude]} icon={venueIcon}>
+          <Popup>
+            {venue.name} <br /> {venue.address}
+          </Popup>
+        </Marker>
+
+        {/* Custom Get Directions Button Inside the Map (Top-Left Corner) */}
+        <CustomControl position="topleft">
+          <GetDirections destination={{ lat: latitude, lng: longitude }} />
+        </CustomControl>
+
+        {/* Zoom Control */}
+        <ZoomControl position="topright" />
+      </MapContainer>
+    </div>
+  );
+}
+
+export default VenueDetailMap;

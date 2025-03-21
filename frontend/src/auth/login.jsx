@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { useNavigate, Link, useLocation } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 import GoogleSignInButton from "./with social/google";
 
@@ -8,8 +8,8 @@ const Login = () => {
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
   const location = useLocation();
-  const redirectPath =
-    new URLSearchParams(location.search).get("redirect") || "/";
+  const redirectPath = location.state?.from || "/";
+  new URLSearchParams(location.search).get("redirect") || "/";
 
   const handleLogin = (e) => {
     e.preventDefault();
