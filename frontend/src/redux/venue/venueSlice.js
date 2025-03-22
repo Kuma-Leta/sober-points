@@ -50,7 +50,56 @@ export const searchVenues = createAsyncThunk(
     }
   }
 );
+export const fetchMostRatedVenues = createAsyncThunk(
+  "venues/fetchMostRated",
+  async (_, thunkAPI) => {
+    try {
+      const response = await axios.get(
+        "http://localhost:5000/api/venues/most-rated"
+      );
+      console.log(response)
+      return response.data.venues;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.message || "Failed to fetch most rated venues"
+      );
+    }
+  }
+);
 
+// Fetch newest venues
+export const fetchNewestVenues = createAsyncThunk(
+  "venues/fetchNewest",
+  async (_, thunkAPI) => {
+    try {
+      const response = await axios.get(
+        "http://localhost:5000/api/venues/newest"
+      );
+      return response.data.venues;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.message || "Failed to fetch newest venues"
+      );
+    }
+  }
+);
+
+// Fetch nearest venues
+export const fetchNearestVenues = createAsyncThunk(
+  "venues/fetchNearest",
+  async ({ lat, lng }, thunkAPI) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:5000/api/venues/nearest?lat=${lat}&lng=${lng}`
+      );
+      return response.data.venues;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.message || "Failed to fetch nearest venues"
+      );
+    }
+  }
+);
 // Update rating for a venue
 export const updateVenueRating = createAsyncThunk(
   "venues/updateRating",
@@ -202,7 +251,9 @@ const venueSlice = createSlice({
 
       .addCase(addFavorite.fulfilled, (state, action) => {
         const { venueId } = action.payload;
-        if (!state.favorites.some((favorite) => favorite.venueId._id === venueId)) {
+        if (
+          !state.favorites.some((favorite) => favorite.venueId._id === venueId)
+        ) {
           state.favorites.push({ venueId: { _id: venueId } }); // Add the venueId to favorites
         }
       })
@@ -218,6 +269,46 @@ const venueSlice = createSlice({
       // Fetch Favorites
       .addCase(fetchFavorites.fulfilled, (state, action) => {
         state.favorites = action.payload; // Update favorites state
+      })
+      .addCase(fetchMostRatedVenues.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchMostRatedVenues.fulfilled, (state, action) => {
+        state.loading = false;
+        state.venues = action.payload;
+      })
+      .addCase(fetchMostRatedVenues.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
+      // Fetch Newest Venues
+      .addCase(fetchNewestVenues.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchNewestVenues.fulfilled, (state, action) => {
+        state.loading = false;
+        state.venues = action.payload;
+      })
+      .addCase(fetchNewestVenues.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
+      // Fetch Nearest Venues
+      .addCase(fetchNearestVenues.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchNearestVenues.fulfilled, (state, action) => {
+        state.loading = false;
+        state.venues = action.payload;
+      })
+      .addCase(fetchNearestVenues.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
       });
   },
 });

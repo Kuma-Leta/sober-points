@@ -17,6 +17,7 @@ import {
   FaMapMarker,
   FaMapSigns,
 } from "react-icons/fa"; // Import icons for toggle button
+import Tags from "./Tags";
 
 const VenuesPage = () => {
   const dispatch = useDispatch();
@@ -116,9 +117,10 @@ const VenuesPage = () => {
         </div>
 
         {/* Tags Section */}
-        <div>tags</div>
+        <Tags />
 
         {/* Main Content Section */}
+        <hr className="w-full text-gray-200" />
         <div
           className={
             showMap

@@ -12,10 +12,16 @@ const {
   searchVenues,
   deleteAllVenues,
   verifyVenue,
-  getVenueSuggestions
+  getVenueSuggestions,
+  getMostRatedVenues,
+  getNewestVenues,
+  getNearestVenues,
 } = require("../controllers/venueController");
 
 // 📌 Add Rating
+router.get("/most-rated", getMostRatedVenues);
+router.get("/newest", getNewestVenues);
+router.get("/nearest", getNearestVenues);
 router.post("/create", authenticate, authorize(["admin", "customer"]), createVenue);
 router.post("/add-rating", authenticate, addRating);
 router.get("/suggestions", getVenueSuggestions);
