@@ -441,3 +441,64 @@ exports.getVenueSuggestions = async (req, res) => {
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
+// 📌 Controller: Fetch Most Rated Venues
+exports.getMostRatedVenues = async (req, res) => {
+  console.log("most rated")
+  try {
+    const venues = await Venue.find().sort({ rating: -1 }).limit(10); // Sort by rating in descending order
+    res.status(200).json({ success: true, venues });
+  } catch (error) {
+    console.error("Error fetching most rated venues:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+// 📌 Controller: Fetch Newest Venues
+exports.getNewestVenues = async (req, res) => {
+  try {
+    const venues = await Venue.find().sort({ createdAt: -1 }).limit(10); // Sort by creation date in descending order
+    res.status(200).json({ success: true, venues });
+  } catch (error) {
+    console.error("Error fetching newest venues:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+// 📌 Controller: Fetch Nearest Venues
+exports.getNearestVenues = async (req, res) => {
+  try {
+    const { lat, lng } = req.query;
+
+    if (!lat || !lng) {
+      return res.status(400).json({ message: "Latitude and longitude are required." });
+    }
+
+    const latitude = parseFloat(lat);
+    const longitude = parseFloat(lng);
+
+    // Validate latitude and longitude
+    if (isNaN(latitude) ){
+      return res.status(400).json({ message: "Invalid latitude value." });
+    }
+    if (isNaN(longitude)) {
+      return res.status(400).json({ message: "Invalid longitude value." });
+    }
+
+    // MongoDB Geospatial Query
+    const venues = await Venue.find({
+      location: {
+        $near: {
+          $geometry: {
+            type: "Point",
+            coordinates: [longitude, latitude], // Note: MongoDB expects [longitude, latitude]
+          },
+        },
+      },
+    }).limit(10); // Limit to 10 nearest venues
+
+    res.status(200).json({ success: true, venues });
+  } catch (error) {
+    console.error("Error fetching nearest venues:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
