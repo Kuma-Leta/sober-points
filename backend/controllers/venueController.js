@@ -142,7 +142,6 @@ exports.getAllVenues = async (req, res) => {
       venues,
     });
   } catch (error) {
-    console.error(error);
     return res.status(500).json({ message: error.message });
   }
 };
@@ -224,8 +223,8 @@ exports.getVenueDetails = async (req, res) => {
 exports.getVenueById = async (req, res) => {
   try {
     const venue = await Venue.findById(req.params.id).populate(
-      "createdBy",
-      "name email"
+      "reviews",
+      "user"
     );
     if (!venue) {
       return res.status(404).json({ message: "Venue not found" });
@@ -315,7 +314,6 @@ exports.updateVenue = async (req, res) => {
         venue,
       });
     } catch (error) {
-      console.error("Error updating venue:", error); // Log the error
       res.status(400).json({ error: error.message });
     }
   });
@@ -333,12 +331,9 @@ exports.searchVenues = async (req, res) => {
     // Case-insensitive search across multiple fields using regex
     const searchQuery = {
       $or: [
-        { name: { $regex: query, $options: "i" } },
+       
         { address: { $regex: query, $options: "i" } },
-        { description: { $regex: query, $options: "i" } },
-        { phone: { $regex: query, $options: "i" } },
-        { menu: { $regex: query, $options: "i" } },
-        { website: { $regex: query, $options: "i" } },
+     
       ],
     };
 
@@ -354,7 +349,6 @@ exports.searchVenues = async (req, res) => {
 
     res.status(200).json({ success: true, results: venues.length, venues });
   } catch (error) {
-    console.error("Error searching venues:", error);
     res.status(500).json({ error: error.message });
   }
 };
@@ -387,7 +381,6 @@ exports.deleteVenue = async (req, res) => {
 exports.getNearbyVenues = async (req, res) => {
   try {
     const { lat, lng, query } = req.query;
-    console.log(lat, lng, query);
 
     // Validate latitude and longitude
     if (!lat || !lng) {
@@ -400,7 +393,7 @@ exports.getNearbyVenues = async (req, res) => {
     const longitude = parseFloat(lng);
 
     // Check if latitude and longitude are within valid ranges
-    if (isNaN(latitude) ){
+    if (isNaN(latitude)) {
       return res.status(400).json({ message: "Invalid latitude value." });
     }
     if (isNaN(longitude)) {
@@ -408,10 +401,14 @@ exports.getNearbyVenues = async (req, res) => {
     }
 
     if (latitude < -90 || latitude > 90) {
-      return res.status(400).json({ message: "Latitude must be between -90 and 90." });
+      return res
+        .status(400)
+        .json({ message: "Latitude must be between -90 and 90." });
     }
     if (longitude < -180 || longitude > 180) {
-      return res.status(400).json({ message: "Longitude must be between -180 and 180." });
+      return res
+        .status(400)
+        .json({ message: "Longitude must be between -180 and 180." });
     }
 
     // MongoDB Geospatial Query
@@ -439,7 +436,6 @@ exports.getNearbyVenues = async (req, res) => {
 
     res.status(200).json(venues);
   } catch (error) {
-    console.error("Error fetching nearby venues:", error);
     res.status(500).json({ message: "Error retrieving venues" });
   }
 };
@@ -463,7 +459,6 @@ exports.deleteAllVenues = async (req, res) => {
     });
   } catch (error) {
     // Handle errors
-    console.error("Error deleting all venues:", error);
     res.status(500).json({
       success: false,
       message: "An error occurred while deleting venues.",
@@ -575,5 +570,101 @@ exports.getAdminDashboardAnalytics = async (req, res) => {
       success: false,
       message: "Failed to fetch admin dashboard analytics",
     });
+  }
+};
+// 📌 Controller: Fetch Venue Suggestions
+exports.getVenueSuggestions = async (req, res) => {
+  try {
+    const { query } = req.query;
+    
+
+    if (!query || query.length < 3) {
+      return res.status(400).json({ message: "Query must be at least 3 characters long" });
+    }
+
+    // Use MongoDB's $regex to find venues matching the query
+    const suggestions = await Venue.find({
+      $or: [
+        { name: { $regex: query, $options: "i" } }, // Case-insensitive search on name
+        { address: { $regex: query, $options: "i" } }, // Case-insensitive search on address
+      ],
+    }).limit(10); // Limit to 10 suggestions
+
+    if (suggestions.length === 0) {
+      return res.status(404).json({ message: "No matching venues found" });
+    }
+
+    // Format the suggestions
+    const formattedSuggestions = suggestions.map((venue) => ({
+      name: venue.name,
+      address: venue.address,
+      location: venue.location.coordinates, // [longitude, latitude]
+    }));
+
+    res.status(200).json({ suggestions: formattedSuggestions });
+  } catch (error) {
+    console.error("Error fetching venue suggestions:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+// 📌 Controller: Fetch Most Rated Venues
+exports.getMostRatedVenues = async (req, res) => {
+  console.log("most rated")
+  try {
+    const venues = await Venue.find().sort({ rating: -1 }).limit(10); // Sort by rating in descending order
+    res.status(200).json({ success: true, venues });
+  } catch (error) {
+    console.error("Error fetching most rated venues:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+// 📌 Controller: Fetch Newest Venues
+exports.getNewestVenues = async (req, res) => {
+  try {
+    const venues = await Venue.find().sort({ createdAt: -1 }).limit(10); // Sort by creation date in descending order
+    res.status(200).json({ success: true, venues });
+  } catch (error) {
+    console.error("Error fetching newest venues:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+// 📌 Controller: Fetch Nearest Venues
+exports.getNearestVenues = async (req, res) => {
+  try {
+    const { lat, lng } = req.query;
+
+    if (!lat || !lng) {
+      return res.status(400).json({ message: "Latitude and longitude are required." });
+    }
+
+    const latitude = parseFloat(lat);
+    const longitude = parseFloat(lng);
+
+    // Validate latitude and longitude
+    if (isNaN(latitude) ){
+      return res.status(400).json({ message: "Invalid latitude value." });
+    }
+    if (isNaN(longitude)) {
+      return res.status(400).json({ message: "Invalid longitude value." });
+    }
+
+    // MongoDB Geospatial Query
+    const venues = await Venue.find({
+      location: {
+        $near: {
+          $geometry: {
+            type: "Point",
+            coordinates: [longitude, latitude], // Note: MongoDB expects [longitude, latitude]
+          },
+        },
+      },
+    }).limit(10); // Limit to 10 nearest venues
+
+    res.status(200).json({ success: true, venues });
+  } catch (error) {
+    console.error("Error fetching nearest venues:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
   }
 };

@@ -3,6 +3,9 @@ import Features from "./landing/Services";
 import VenueLists from "./landing/VenueLists";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import NewsLetter from "./landing/NewsLetter";
+import FAQ from "./landing/FAQ";
+import ContactUs from "./landing/ContactUs"
 const LandingPage = () => {
   const [query, setQuery] = useState("");
   const navigate = useNavigate();
@@ -19,6 +22,9 @@ const LandingPage = () => {
       <HeroSection setQuery={setQuery} onSearch={handleSearch} />
 
       <Features />
+      <NewsLetter />
+      <FAQ />
+      <ContactUs/>
     </div>
   );
 };

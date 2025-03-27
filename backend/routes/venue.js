@@ -12,12 +12,19 @@ const {
   searchVenues,
   deleteAllVenues,
   verifyVenue,
+  getVenueSuggestions,
+  getMostRatedVenues,
+  getNewestVenues,
+  getNearestVenues,
   getUserVenues,
   getVenueDetails,
   getAdminDashboardAnalytics,
 } = require("../controllers/venueController");
 
 // 📌 Add Rating
+router.get("/most-rated", getMostRatedVenues);
+router.get("/newest", getNewestVenues);
+router.get("/nearest", getNearestVenues);
 router.post(
   "/create",
   authenticate,
@@ -25,7 +32,7 @@ router.post(
   createVenue
 );
 router.post("/add-rating", authenticate, addRating);
-
+router.get("/suggestions", getVenueSuggestions);
 // 📌 Get Nearby Venues
 router.get("/nearby", getNearbyVenues);
 

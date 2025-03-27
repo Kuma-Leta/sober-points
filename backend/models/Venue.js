@@ -83,9 +83,18 @@ const VenueSchema = new mongoose.Schema(
     },
     rating: {
       type: Number,
-      // min: 1,
       max: 5,
-      default: 0, // Default rating (will be updated dynamically)
+      default: 0, // Overall average rating (will be updated dynamically)
+    },
+    serviceRating: {
+      type: Number,
+      max: 5,
+      default: 0, // Average service rating (will be updated dynamically)
+    },
+    locationRating: {
+      type: Number,
+      max: 5,
+      default: 0, // Average location rating (will be updated dynamically)
     },
     reviews: [
       {
@@ -100,16 +109,34 @@ const VenueSchema = new mongoose.Schema(
 // 🔹 Index for geospatial queries
 VenueSchema.index({ location: "2dsphere" });
 
-// 🔹 Function to calculate average rating when a new review is added
-VenueSchema.methods.calculateAverageRating = async function () {
+// 🔹 Function to calculate average ratings when a new review is added
+VenueSchema.methods.calculateAverageRatings = async function () {
   const venue = this;
   const ratings = await mongoose.model("Rating").find({ venueId: venue._id });
 
   if (ratings.length > 0) {
-    const avgRating =
-      ratings.reduce((sum, review) => sum + review.rating, 0) / ratings.length;
-    venue.rating = avgRating.toFixed(1); // Round to 1 decimal place
+    const totalServiceRating = ratings.reduce(
+      (sum, review) => sum + review.serviceRating,
+      0
+    );
+    const totalLocationRating = ratings.reduce(
+      (sum, review) => sum + review.locationRating,
+      0
+    );
+
+    // Calculate average ratings
+    venue.serviceRating = (totalServiceRating / ratings.length).toFixed(1);
+    venue.locationRating = (totalLocationRating / ratings.length).toFixed(1);
+
+    // Calculate overall rating as the average of service and location ratings
+    venue.rating = (
+      (parseFloat(venue.serviceRating) + parseFloat(venue.locationRating)) /
+      2
+    ).toFixed(1);
   } else {
+    // If no reviews, reset all ratings to 0
+    venue.serviceRating = 0;
+    venue.locationRating = 0;
     venue.rating = 0;
   }
 

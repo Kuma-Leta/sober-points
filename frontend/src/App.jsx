@@ -24,7 +24,8 @@ import MyVenues from "./pages/venues/myVenues";
 import MyVenueDetail from "./pages/venues/myVenueDetail";
 import AdminAnalytics from "./pages/venues/AdminAnalytics";
 import BottomNavBar from "./pages/venues/BottomNavBar"; // Import the BottomNavBar
-
+import VenueList from "./pages/landing/VenueList";
+import PrivacyPolicy from "./pages/landing/privacyPolicy"
 function Pages() {
   const user = useSelector((state) => state.auth.user);
 
@@ -47,7 +48,8 @@ function Pages() {
   return (
     <Routes>
       <Route path="/" element={<LandingPage />} />
-      <Route path="/venues/:id" element={<VenueDetail />} />
+      <Route path="/venue/:id" element={<VenueDetail />} />
+      <Route path="/privacyPolicy" element={<PrivacyPolicy/>}/>
       <Route
         path="/users"
         element={
@@ -122,7 +124,24 @@ const Routing = () => {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
-
+  if(location.pathname ==="privacy policy"){
+    return (
+       <>
+        <Header />
+        <PrivacyPolicy/>
+        <Footer />
+      </>
+    )
+  }
+  if (location.pathname === "/favorites") {
+    return (
+      <>
+        <Header />
+        <VenueList />
+        <Footer />
+      </>
+    );
+  }
   if (location.pathname === "/auth/login") {
     return (
       <div className="bg-whiteBlue max-w-[120rem] dark:bg-darkBg">
@@ -140,7 +159,7 @@ const Routing = () => {
       </div>
     );
   }
-
+  // if(location.pathname ===)
   return (
     <div className="max-w-[120rem] bg-whiteBlue dark:text-darkText dark:bg-darkBg mx-auto min-h-screen">
       <ToastContainer />

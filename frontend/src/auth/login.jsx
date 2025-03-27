@@ -1,23 +1,46 @@
-import React, { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useNavigate, Link, useLocation } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 import GoogleSignInButton from "./with social/google";
+import { toast, ToastContainer } from "react-toastify"; // Import toast and ToastContainer
+import "react-toastify/dist/ReactToastify.css"; // Import the CSS for toast notifications
 
 const Login = () => {
   const { login, error } = useAuth();
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
   const location = useLocation();
-  const redirectPath =
-    new URLSearchParams(location.search).get("redirect") || "/";
+  const redirectPath = location.state?.from || "/";
+  const navigate = useNavigate();
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    login(identifier, password, redirectPath);
+    const success = await login(identifier, password, redirectPath);
+
+    if (success) {
+      // Show success toast notification
+      toast.success("Login successful! Redirecting...", {
+        position: "top-right",
+        autoClose: 3000, // Close after 3 seconds
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+
+      // Redirect after a short delay
+      setTimeout(() => {
+        navigate(redirectPath);
+      }, 3000); // Redirect after 3 seconds
+    }
   };
 
   return (
-    <div className=" flex flex-col  dark:text-darkText  h-screen justify-center w-screen dark:bg-darkBg items-center ">
+    <div className="flex flex-col dark:text-darkText h-screen justify-center w-screen dark:bg-darkBg items-center">
+      {/* Toast Container */}
+      <ToastContainer />
+
       <div className="p-14 w-full md:w-auto md:min-w-[400px] mb-10 border dark:bg-darkCard bg-gray-200">
         <h1 className="mb-4 text-2xl">Login</h1>
         <form className="w-full pb-5" onSubmit={handleLogin}>
@@ -56,13 +79,13 @@ const Login = () => {
           {error && <p className="text-red-500 text-center">{error}</p>}
           <div className="m-auto text-center flex text-lg">
             <p>Have account already?</p>{" "}
-            <Link className=" text-primary" to={"/auth/register"}>
+            <Link className="text-primary" to={"/auth/register"}>
               Register now
             </Link>
           </div>
           <div className="mt-4 mx-auto flex flex-col items-center justify-center w-full">
             <GoogleSignInButton />
-            {/*     <FacebookLoginButton />*/}
+            {/* <FacebookLoginButton /> */}
           </div>
         </form>
       </div>

@@ -9,7 +9,7 @@ const BottomNavBar = () => {
   const navItems = [
     { icon: <FaPlus size={20} />, path: "/venue/form", label: "Add" },
     { icon: <FaHeart size={20} />, path: "/favorites", label: "Favorites" },
-    { icon: <FaSearch size={20} />, path: "#explore", label: "Explore" },
+    { icon: <FaSearch size={20} />, path: "/#explore", label: "Explore" },
     {
       icon: <FaMapMarkerAlt size={20} />,
       path: "/venues/nearby",

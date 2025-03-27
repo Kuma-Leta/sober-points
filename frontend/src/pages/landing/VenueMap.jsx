@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import {
   MapContainer,
   TileLayer,
@@ -11,13 +11,13 @@ import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchNearbyVenues } from "../../redux/venue/venueSlice";
-import logoMarker from "../../assets/images/logo.png";
-import RatingStars from "./RatingStars";
+import logoMarker from "../../assets/images/Logomark-Black.png";
+import RatingStars from "./venuedetail/RatingStars"; // Import the RatingStars component
 
 // Custom venue icon
 const venueIcon = new L.Icon({
   iconUrl: logoMarker,
-  iconSize: [40, 40],
+  iconSize: [40, 40], // Default size
   iconAnchor: [20, 40],
   popupAnchor: [0, -40],
 });
@@ -25,7 +25,7 @@ const venueIcon = new L.Icon({
 // Smaller venue icon for mobile
 const venueIconSmall = new L.Icon({
   iconUrl: logoMarker,
-  iconSize: [30, 30],
+  iconSize: [30, 30], // Smaller size for mobile
   iconAnchor: [15, 30],
   popupAnchor: [0, -30],
 });
@@ -48,12 +48,13 @@ const UpdateMapCenter = ({ center }) => {
 
 // Handle map events (e.g., user moving the map)
 const MapEvents = ({ setMapCenter }) => {
-  useMapEvents({
-    moveend: (e) => {
-      const center = e.target.getCenter();
+  const map = useMapEvents({
+    moveend: () => {
+      const center = map.getCenter();
       setMapCenter({ lat: center.lat, lng: center.lng });
     },
   });
+
   return null;
 };
 
@@ -66,10 +67,8 @@ const VenueMap = () => {
     lat: 51.509865, // Default: London
     lng: -0.118092,
   });
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
-  // useRef to store the previous map center
-  const prevCenterRef = useRef(mapCenter);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
   // Get user's location on mount
   useEffect(() => {
@@ -77,27 +76,20 @@ const VenueMap = () => {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const { latitude, longitude } = position.coords;
-          const newCenter = { lat: latitude, lng: longitude };
-          setUserLocation(newCenter);
-          setMapCenter(newCenter);
-          prevCenterRef.current = newCenter;
+          setUserLocation({ lat: latitude, lng: longitude });
+          setMapCenter({ lat: latitude, lng: longitude });
         },
         (error) => console.warn("Geolocation error:", error.message)
       );
     }
   }, []);
 
-  // Fetch nearby venues only when map center changes
+  // Fetch nearby venues when map center changes
   useEffect(() => {
-    // Compare new center with previous center to avoid unnecessary dispatches.
-    if (
-      mapCenter.lat !== prevCenterRef.current.lat ||
-      mapCenter.lng !== prevCenterRef.current.lng
-    ) {
+    if (mapCenter.lat && mapCenter.lng) {
       dispatch(fetchNearbyVenues({ lat: mapCenter.lat, lng: mapCenter.lng }));
-      prevCenterRef.current = mapCenter;
     }
-  }, [dispatch, mapCenter]);
+  }, [dispatch, mapCenter.lat, mapCenter.lng]); // Add specific dependencies
 
   // Update map center if search results change
   useEffect(() => {
@@ -105,17 +97,10 @@ const VenueMap = () => {
       const firstVenue = searchResults[0];
       if (firstVenue.location && firstVenue.location.coordinates) {
         const [lng, lat] = firstVenue.location.coordinates;
-        const newCenter = { lat, lng };
-        // Only update if the center has really changed
-        if (
-          newCenter.lat !== mapCenter.lat ||
-          newCenter.lng !== mapCenter.lng
-        ) {
-          setMapCenter(newCenter);
-        }
+        setMapCenter({ lat, lng });
       }
     }
-  }, [searchResults, mapCenter]);
+  }, [searchResults]);
 
   // Handle window resize for mobile detection
   useEffect(() => {
@@ -130,10 +115,10 @@ const VenueMap = () => {
     <MapContainer
       center={[mapCenter.lat, mapCenter.lng]}
       zoom={13}
-      className="h-[70vh] w-full rounded-md"
-      touchZoom={true}
-      doubleClickZoom={false}
-      zoomControl={!isMobile}
+      className="h-[70vh] w-full rounded-md" // Responsive height
+      touchZoom={true} // Enable touch zoom
+      doubleClickZoom={false} // Disable double-click zoom for better touch interaction
+      zoomControl={!isMobile} // Hide zoom control on mobile for cleaner UI
     >
       <TileLayer
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -164,10 +149,11 @@ const VenueMap = () => {
           <Marker
             key={venue._id}
             position={[lat, lng]}
-            icon={isMobile ? venueIconSmall : venueIcon}
+            icon={isMobile ? venueIconSmall : venueIcon} // Use smaller icon on mobile
           >
             <Popup>
               <div className="max-w-[200px]">
+                {/* Venue Image */}
                 {venue.images.length > 0 && (
                   <img
                     src={`http://localhost:5000/${venue.images[0].replace(
@@ -178,19 +164,29 @@ const VenueMap = () => {
                     className="w-full h-24 object-cover rounded-lg mb-2"
                   />
                 )}
+
+                {/* Venue Name */}
                 <h3 className="text-lg font-semibold text-gray-800">
                   {venue.name}
                 </h3>
+
+                {/* Venue Address */}
                 <p className="text-sm text-gray-600 mb-2">{venue.address}</p>
+
+                {/* Venue Rating */}
                 <div className="flex items-center mb-2">
                   <RatingStars rating={venue.rating || 0} />
                   <span className="ml-2 text-sm text-gray-600">
                     ({venue.rating || 0})
                   </span>
                 </div>
-                {venue.description && (
-                  <p className="text-sm text-gray-600">{venue.description}</p>
-                )}
+
+                {/* Venue Description */}
+                {/* {venue.description && (
+                  <p className="text-sm text-gray-600">
+                    {venue.description.substring(0, 50)}
+                  </p>
+                )} */}
               </div>
             </Popup>
           </Marker>
