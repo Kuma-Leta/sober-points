@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axiosInstance from "../../api/api";
-import RatingStars from "../landing/RatingStars";
 import {
   FaMapMarkerAlt,
   FaPhone,
@@ -15,6 +14,7 @@ import {
 import MapComponent from "./mapComp"; // Import the MapComponent
 import VenueForm from "./VenueForm"; // Import the VenueForm component
 import Modal from "react-modal"; // Import a modal library (e.g., react-modal)
+import RatingStars from "../landing/venuedetail/RatingStars";
 
 // Set app element for accessibility (required by react-modal)
 Modal.setAppElement("#root");

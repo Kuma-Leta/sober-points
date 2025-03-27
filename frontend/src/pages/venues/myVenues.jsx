@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axiosInstance from "../../api/api";
 import { useNavigate } from "react-router-dom";
 import { FaInfoCircle } from "react-icons/fa";
-import RatingStars from "../landing/RatingStars";
+import RatingStars from "../landing/venuedetail/RatingStars";
 
 const MyVenues = () => {
   const [venues, setVenues] = useState([]);
