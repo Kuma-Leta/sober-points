@@ -4,7 +4,7 @@ import useAuth from "../../hooks/useAuth";
 import { useSelector } from "react-redux";
 import blackLogo from "../../assets/images/Logo-Black.png";
 import whiteLogo from "../../assets/images/Logo-White.png";
-import { FaUser, FaBars, FaTimes, FaPlus, FaRegHeart } from "react-icons/fa";
+import { FaUser, FaBars, FaTimes, FaPlus, FaRegHeart, FaHome } from "react-icons/fa";
 import { FiSun, FiMoon } from "react-icons/fi";
 import defaultUserProfile from "../../assets/images/user.png";
 
@@ -75,7 +75,7 @@ const Header = () => {
 
         {/* Auth & Dark Mode Toggle */}
         <div className="flex items-center space-x-3">
-          <DarkModeToggle />
+          {/* <DarkModeToggle /> */}
 
           {isAuthenticated ? (
             <div className="relative flex items-center space-x-2">
@@ -308,34 +308,4 @@ const LogoutConfirmationModal = ({ onConfirm, onCancel }) => {
   );
 };
 
-/* Dark Mode Toggle */
-const DarkModeToggle = () => {
-  const [darkMode, setDarkMode] = useState(
-    localStorage.getItem("theme") === "dark" ||
-      (window.matchMedia("(prefers-color-scheme: dark)").matches &&
-        localStorage.getItem("theme") !== "light")
-  );
 
-  useEffect(() => {
-    if (darkMode) {
-      document.documentElement.classList.add("dark");
-      localStorage.setItem("theme", "dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-      localStorage.setItem("theme", "light");
-    }
-  }, [darkMode]);
-
-  return (
-    <button
-      onClick={() => setDarkMode(!darkMode)}
-      className="p-2 rounded-full transition-all bg-gray-200 dark:bg-gray-700"
-    >
-      {darkMode ? (
-        <FiSun size={16} className="text-primary" />
-      ) : (
-        <FiMoon size={16} className="text-primary" />
-      )}
-    </button>
-  );
-};
