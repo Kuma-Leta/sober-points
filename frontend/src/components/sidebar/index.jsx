@@ -10,10 +10,12 @@ import {
   FaChevronLeft,
   FaProjectDiagram,
 } from "react-icons/fa";
+import logo from "../../assets/images/logo.png";
 import { getProfilePicUrl } from "../../utils/functions";
 import { IoSettingsOutline } from "react-icons/io5";
 import { API_URL } from "../../constants/url";
 import { IoMdClose } from "react-icons/io";
+
 const Sidebar = () => {
   const user = useSelector((state) => state.auth.user);
   const [isSidebarOpen, setSidebarOpen] = useState(
@@ -46,7 +48,6 @@ const Sidebar = () => {
     {
       icon: <TfiBarChart className="text-lg" />,
       label: "Dashboard",
-      // path: `/${user?.role}s/${user?.username}`,
       path: "/admin-analytics",
     },
 
@@ -118,7 +119,8 @@ const Sidebar = () => {
             {/* Desktop Toggle Button */}
             <div className="flex  w-full h-12 items-center justify-between  transition-all duration-200">
               {isSidebarOpen && (
-                <div className="w-full mx-auto flex justify-center font-mono font-bold text-3xl cursor-pointer hover:opacity-90">
+                <div className="w-full mx-auto flex items-center justify-left font-mono font-bold text-3xl cursor-pointer hover:opacity-90">
+                  <img className="h-10 mr-2" src={logo} alt="Company Logo" />
                   {user?.company?.name}
                 </div>
               )}
@@ -166,17 +168,18 @@ const Sidebar = () => {
                 ))}
               </div>
 
-              <Link
-                to="/users/profile"
-                className="flex items-center gap-3 p-3 rounded-lg transition-all duration-200 text-gray-300 hover:bg-indigo-800/50"
-              >
+              {/* Profile Section */}
+              <div className="flex items-center gap-3 p-3 rounded-lg transition-all duration-200 text-gray-300 hover:bg-gray-800/50">
                 <img
                   className="w-8 h-8 rounded-full object-cover"
                   src={getProfilePicUrl(user?.profilePicture)}
                   alt={user?.username}
                 />
-                {isSidebarOpen && <span>{user?.username}</span>}
-              </Link>
+                {/* Always show the name for admin users, even when sidebar is closed */}
+                {(isSidebarOpen || user?.role === "admin") && (
+                  <span>{user?.username}</span>
+                )}
+              </div>
             </div>
           </div>
         </div>

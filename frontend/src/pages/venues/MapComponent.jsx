@@ -105,7 +105,6 @@ export default function MapComponent({
 
   // Handle confirmation to save location
   const handleConfirmLocation = () => {
-    
     if (isNaN(markerPosition[0]) || isNaN(markerPosition[1])) {
       console.error("Invalid latitude or longitude values.");
       return;
@@ -127,14 +126,14 @@ export default function MapComponent({
   };
 
   return (
-    <div className="w-full">
+    <div className="w-full ">
       <MapSearch
         setMarkerPosition={setMarkerPosition}
         setFormData={setFormData}
         searchQuery={searchQuery} // Pass searchQuery
         setSearchQuery={setSearchQuery} // Pass setSearchQuery
       />
-      <div className="relative w-full h-80 z-0">
+      <div className="relative w-full pb-4  h-80 z-0">
         <MapContainer
           center={markerPosition}
           zoom={13} // Higher zoom level for better visibility of the current location
@@ -168,28 +167,30 @@ export default function MapComponent({
         {/* Floating Location Card */}
         {showLocationCard && (
           <div className="absolute top-4 right-4 z-[1000]">
-            <div className="bg-white p-6 dark:bg-darkBg rounded-lg shadow-lg w-72">
-              <h3 className="text-lg font-semibold mb-4">Selected Location</h3>
-              <p className="mb-2">
+            <div className="bg-white p-4 sm:p-6 dark:bg-darkBg rounded-lg shadow-lg w-60 sm:w-72">
+              <h3 className="text-base sm:text-lg font-semibold mb-2 sm:mb-4">
+                Selected Location
+              </h3>
+              <p className="mb-1 sm:mb-2">
                 <span className="font-medium">Latitude:</span>{" "}
                 {markerPosition[0].toFixed(4)}
               </p>
-              <p className="mb-4">
+              <p className="mb-2 sm:mb-4">
                 <span className="font-medium">Longitude:</span>{" "}
                 {markerPosition[1].toFixed(4)}
               </p>
-              <div className="flex justify-end gap-2">
+              <div className="flex justify-end gap-1 sm:gap-2">
                 <button
                   type="button"
                   onClick={handleCancelLocation}
-                  className="bg-gray-400 px-4 py-2 rounded text-white hover:bg-gray-500 transition"
+                  className="bg-gray-400 px-3 py-1 sm:px-4 sm:py-2 rounded text-white hover:bg-gray-500 transition"
                 >
                   Cancel
                 </button>
                 <button
                   type="button"
                   onClick={handleConfirmLocation}
-                  className="bg-red-600 px-4 py-2 rounded text-white hover:bg-red-700 transition"
+                  className="bg-red-600 px-3 py-1 sm:px-4 sm:py-2 rounded text-white hover:bg-red-700 transition"
                 >
                   Confirm
                 </button>

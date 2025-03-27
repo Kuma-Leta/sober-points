@@ -64,28 +64,30 @@ const Header = () => {
           </Link>
         </div>
 
-        {/* Navigation Links (Desktop) */}
-        <nav className="hidden sm:flex space-x-4 text-grayColor dark:text-darkText text-sm font-medium">
-          <Link to="#contact" className="hover:text-primary transition">
-            Sober Points
-          </Link>
-          <Link to="/" className="hover:text-primary transition">
-            About us
-          </Link>
-          <Link to="#features" className="hover:text-primary transition">
-            Blog
-          </Link>
-          <Link to="#services" className="hover:text-primary transition">
-            Contact us
-          </Link>
-        </nav>
+        {/* Navigation Links (Desktop) - Conditionally rendered for non-admin users */}
+        {user?.role !== "admin" && (
+          <nav className="hidden sm:flex space-x-4 text-grayColor dark:text-darkText text-sm font-medium">
+            <Link to="#contact" className="hover:text-primary transition">
+              Sober Points
+            </Link>
+            <Link to="/" className="hover:text-primary transition">
+              About us
+            </Link>
+            <Link to="#features" className="hover:text-primary transition">
+              Blog
+            </Link>
+            <Link to="#services" className="hover:text-primary transition">
+              Contact us
+            </Link>
+          </nav>
+        )}
 
         {/* Auth & Dark Mode Toggle */}
         <div className="flex items-center space-x-3">
           {/* <DarkModeToggle /> */}
 
           {isAuthenticated ? (
-            <div className="relative flex items-center space-x-2">
+            <div className="relative flex items-center space-x-3">
               {/* Post Venue Button */}
               {user?.role !== "admin" && (
                 <Link
@@ -104,12 +106,19 @@ const Header = () => {
               >
                 <img
                   className="w-8 h-8 sm:w-9 sm:h-9 rounded-full object-cover border border-grayColor dark:border-darkText"
-                  src={user?.profilePicture || defaultUserProfile}
+                  src={
+                    user?.profilePicture
+                      ? `http://localhost:5000/${user.profilePicture}`
+                      : defaultUserProfile
+                  }
                   alt="User"
                 />
-                <span className="text-sm text-grayColor dark:text-darkText">
-                  {user?.name || user?.username}
-                </span>
+                {/* Always show the name for admin users */}
+                {(user?.role === "admin" || dropdownOpen) && (
+                  <span className="text-sm text-grayColor dark:text-darkText">
+                    {user?.name || user?.username}
+                  </span>
+                )}
               </button>
               {dropdownOpen && (
                 <div

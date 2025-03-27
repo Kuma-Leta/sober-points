@@ -4,8 +4,8 @@ const router = express.Router();
 
 const userController = require("../controllers/userController");
 const authController = require("../controllers/authController");
-const  {authenticate} = require("../middleware/authMiddleware");
-const {authorize} = require("../middleware/authMiddleware"); 
+const { authenticate } = require("../middleware/authMiddleware");
+const { authorize } = require("../middleware/authMiddleware");
 const venueRoutes = require("./venue");
 const ratingRoutes = require("./rating");
 const favouritesRoutes =require("./favourites")
@@ -22,6 +22,26 @@ router.post("/auth/google", authController.googleLogin);
 router.post("/auth/google/register", authController.googleRegister);
 router.get("/me", authenticate, authController.me);
 
+router.put(
+  "/profile-picture/:userId",
+  authenticate,
+  authorize(["admin", "customer"]),
+  userController.updateProfilePicture
+);
+
+router.put(
+  "/users/:userId",
+  authenticate,
+  authorize(["admin", "customer"]),
+  userController.updateUserName
+);
+// Route to fetch and display the user's profile picture
+router.get(
+  "/profile-picture/:userId",
+  authenticate,
+  authorize(["admin", "customer"]),
+  userController.getProfilePicture
+);
 // User routes
 router.post(
   "/users",

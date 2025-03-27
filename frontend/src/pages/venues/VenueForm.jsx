@@ -240,7 +240,7 @@ export default function VenueForm({
   };
 
   return (
-    <div className="p-4 w-full max-w-6xl mx-auto bg-white dark:bg-darkCard rounded-md ">
+    <div className="p-4 mt-20 w-full max-w-6xl mx-auto  bg-white dark:bg-darkCard rounded-md ">
       <ToastNotifications />
       <div className="flex flex-col gap-4">
         <div className="flex flex-col md:flex-row gap-4">
@@ -285,7 +285,7 @@ export default function VenueForm({
         <div className="w-full flex justify-center mt-6">
           <button
             type="button"
-            className="bg-gray-400 px-4 py-2 mr-2 rounded text-white hover:bg-gray-500 transition"
+            className="bg-gray-400 px-4 py-2 mr-2 rounded text-white hover:bg-gray-500 transition "
             onClick={handleCancel} // Handle cancel button click // Use onClose from props
           >
             Cancel

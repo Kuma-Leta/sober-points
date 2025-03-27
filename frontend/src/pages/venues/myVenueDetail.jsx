@@ -25,7 +25,6 @@ const MyVenueDetail = () => {
   const [venue, setVenue] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [isCreating, setIsCreating] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // State for delete modal
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false); // State for update modal
 
@@ -84,8 +83,8 @@ const MyVenueDetail = () => {
       }
     }
   };
-  // Handle update venue
 
+  // Handle update venue
   const handleUpdate = (updatedVenue) => {
     if (updatedVenue) {
       setVenue(updatedVenue); // Update the venue in state
@@ -95,179 +94,20 @@ const MyVenueDetail = () => {
     setIsUpdateModalOpen(false); // Close the update modal
   };
 
-  if (loading) return <p className="text-center mt-20">Loading...</p>; // Show loading state
   if (error) return <p className="text-center mt-20 text-red-500">{error}</p>; // Show error message
-  if (!venue) return <p className="text-center mt-20">Venue not found.</p>; // Handle case where venue is not found
-
-  // Extract coordinates from the location object
-  const coordinates = venue.location?.coordinates
-    ? [venue.location.coordinates[1], venue.location.coordinates[0]] // [latitude, longitude]
-    : null;
+  if (!venue && !loading)
+    return <p className="text-center mt-20">Venue not found.</p>; // Handle case where venue is not found
 
   return (
-    <div className="p-4 mt-4 max-w-7xl mx-auto">
-      {/* Header with Update and Delete Icons */}
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">{venue.name}</h1>
-      </div>
-
-      {/* Single Container for All Content */}
-      <div className="bg-white dark:bg-darkCard p-6 rounded-lg shadow-md">
-        <div className="flex justify-between items-center mb-4">
-          {/* Back Icon */}
-          <button
-            onClick={() => navigate(-1)}
-            className="text-gray-600 hover:text-gray-800 transition-colors duration-200"
-          >
-            <FaArrowLeft className="w-6 h-6" />
-          </button>
-
-          {/* Update & Delete Icons */}
-          <div className="flex space-x-4">
-            <button
-              onClick={() => setIsUpdateModalOpen(true)}
-              className="text-blue-500 hover:text-blue-700 transition-colors duration-200"
-            >
-              <FaEdit className="w-6 h-6" />
-            </button>
-
-            <button
-              onClick={() => setIsDeleteModalOpen(true)}
-              className="text-red-500 hover:text-red-700 transition-colors duration-200"
-            >
-              <FaTrash className="w-6 h-6" />
-            </button>
-          </div>
-        </div>
-        <h2 className="text-2xl font-semibold text-center mb-6">
-          Venue Details
-        </h2>
-        {/* Grid Layout for Left and Right Sections */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Left Side: Venue Details */}
-          <div>
-            {/* Description */}
-            <div className="mb-6">
-              <h3 className="text-xl font-semibold mb-2">Description</h3>
-              <p className="text-gray-600 dark:text-gray-300">
-                {venue.description}
-              </p>
-            </div>
-
-            {/* Rating */}
-            <div className="mb-6">
-              <h3 className="text-xl font-semibold mb-2">Rating</h3>
-              <div className="flex items-center">
-                <RatingStars rating={venue.rating || 0} />
-                <span className="ml-2 text-sm text-gray-600 dark:text-gray-300">
-                  ({venue.rating || 0})
-                </span>
-              </div>
-            </div>
-
-            {/* Address */}
-            <div className="mb-6">
-              <h3 className="text-xl font-semibold mb-2">Address</h3>
-              <div className="flex items-center">
-                <FaMapMarkerAlt className="w-5 h-5 text-gray-600 dark:text-gray-300 mr-2" />
-                <p className="text-gray-600 dark:text-gray-300">
-                  {venue.address}
-                </p>
-              </div>
-            </div>
-
-            {/* Phone */}
-            <div className="mb-6">
-              <h3 className="text-xl font-semibold mb-2">Phone</h3>
-              <div className="flex items-center">
-                <FaPhone className="w-5 h-5 text-gray-600 dark:text-gray-300 mr-2" />
-                <p className="text-gray-600 dark:text-gray-300">
-                  {venue.phone}
-                </p>
-              </div>
-            </div>
-
-            {/* Website */}
-            {venue.website && (
-              <div className="mb-6">
-                <h3 className="text-xl font-semibold mb-2">Website</h3>
-                <div className="flex items-center">
-                  <FaGlobe className="w-5 h-5 text-gray-600 dark:text-gray-300 mr-2" />
-                  <a
-                    href={venue.website}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-500 hover:underline"
-                  >
-                    {venue.website}
-                  </a>
-                </div>
-              </div>
-            )}
-
-            {/* Menu */}
-            <div className="mb-6">
-              <h3 className="text-xl font-semibold mb-2">Menu</h3>
-              <p className="text-gray-600 dark:text-gray-300">{venue.menu}</p>
-            </div>
-
-            {/* Status */}
-            <div className="mb-6">
-              <h3 className="text-xl font-semibold mb-2">Status</h3>
-              <p
-                className={
-                  venue.isVerified ? "text-green-500" : "text-yellow-500"
-                }
-              >
-                {venue.isVerified ? "Verified" : "Pending"}
-              </p>
-            </div>
-
-            {/* Timings */}
-            <div className="mb-6">
-              <h3 className="text-xl font-semibold mb-2">Created At</h3>
-              <div className="flex items-center">
-                <FaClock className="w-5 h-5 text-gray-600 dark:text-gray-300 mr-2" />
-                <p className="text-gray-600 dark:text-gray-300">
-                  {new Date(venue.createdAt).toLocaleDateString()}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Right Side: Images and Map */}
-          <div>
-            {/* Venue Images */}
-            <div className="mb-8">
-              <h2 className="text-xl font-semibold mb-2">Venue Images</h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {venue.images.map((image, index) => (
-                  <img
-                    key={index}
-                    src={`http://localhost:5000/${image.replace(/\\/g, "/")}`}
-                    alt={`Venue Image ${index + 1}`}
-                    loading="lazy"
-                    className="w-full h-64 object-cover rounded-lg shadow-md"
-                  />
-                ))}
-              </div>
-            </div>
-
-            {/* Location (Optional) */}
-            {coordinates && (
-              <div>
-                <h2 className="text-xl font-semibold mb-2">Location</h2>
-                <div className="h-96 w-full rounded-lg overflow-hidden">
-                  <MapComponent
-                    coordinates={coordinates} // Pass [latitude, longitude]
-                    isStatic={true} // Set to true if the map should not be interactive
-                  />
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
+    <>
+      {/* Render DetailFeature component */}
+      <DetailFeature
+        venue={venue}
+        navigate={navigate}
+        setIsUpdateModalOpen={setIsUpdateModalOpen}
+        setIsDeleteModalOpen={setIsDeleteModalOpen}
+        loading={loading} // Pass loading state
+      />
 
       {/* Delete Confirmation Modal */}
       <Modal
@@ -300,20 +140,18 @@ const MyVenueDetail = () => {
       <Modal
         isOpen={isUpdateModalOpen}
         onRequestClose={() => setIsUpdateModalOpen(false)}
-        contentLabel="Update Venue"
         className="fixed inset-0 flex items-center dark:bg-darkBg justify-center p-4 bg-black bg-opacity-50"
       >
-        <div className="bg-white dark:bg-darkBg p-6 rounded-lg shadow-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto relative">
-          <h2 className="text-2xl font-semibold mb-4">Update Venue</h2>
+        <div className="bg-white dark:bg-darkBg p-6 z-51 rounded-lg shadow-lg max-w-6xl w-full max-h-[95vh] overflow-y-auto relative">
           <VenueForm
-            mode={isCreating ? "create" : "edit"}
+            mode="edit"
             venueId={venueId}
             onUpdate={handleUpdate}
             onClose={() => setIsUpdateModalOpen(false)}
           />
         </div>
       </Modal>
-    </div>
+    </>
   );
 };
 
