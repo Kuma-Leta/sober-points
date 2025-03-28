@@ -7,11 +7,11 @@ const Features = () => {
   return (
     <div className="bg-gray-50 py-10 sm:py-12 md:py-16 font-sans">
       {/* Header */}
-      <header className="text-center px-4 mb-10 md:mb-12">
+      <header className="text-left px-6 mb-10 md:mb-12">
         <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 leading-tight">
           Discover the Best Alcohol-Free Experiences
         </h1>
-        <p className="mt-4 text-sm sm:text-base md:text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed">
+        <p className="mt-4 text-sm sm:text-base md:text-lg text-gray-600 max-w-2xl leading-relaxed">
           Our guide is meticulously curated to showcase exceptional alcohol-free
           offerings. Enjoy expert reviews and user recommendations that elevate
           your experience.
@@ -76,13 +76,14 @@ const Features = () => {
 
       {/* Footer Button */}
       <footer className="text-center mt-8 md:mt-12">
-        <button
+        <a
           className="bg-[#1A1A1A] text-white px-6 py-3 
                      rounded-lg text-base sm:text-lg md:text-xl 
                      hover:bg-black transition duration-300"
+          href="/#explore"
         >
           Explore
-        </button>
+        </a>
       </footer>
     </div>
   );

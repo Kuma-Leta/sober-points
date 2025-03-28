@@ -12,23 +12,40 @@ import "leaflet/dist/leaflet.css";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchNearbyVenues } from "../../redux/venue/venueSlice";
 import logoMarker from "../../assets/images/Logomark-Black.png";
-import RatingStars from "./venuedetail/RatingStars"; // Import the RatingStars component
+import RatingStars from "./venuedetail/RatingStars";
 
-// Custom venue icon
-const venueIcon = new L.Icon({
-  iconUrl: logoMarker,
-  iconSize: [40, 40], // Default size
-  iconAnchor: [20, 40],
-  popupAnchor: [0, -40],
-});
+// Create custom div elements for markers// Updated createVenueIcon function with larger logo
+const createVenueIcon = (isMobile) => {
+  const size = isMobile ? 50 : 60; // Location icon size
+  const logoSize = isMobile ? 22 : 26; // Keep logo smaller than the icon
 
-// Smaller venue icon for mobile
-const venueIconSmall = new L.Icon({
-  iconUrl: logoMarker,
-  iconSize: [30, 30], // Smaller size for mobile
-  iconAnchor: [15, 30],
-  popupAnchor: [0, -30],
-});
+  return L.divIcon({
+    html: `
+      <div style="position: relative; width: ${size}px; height: ${size}px;">
+        <!-- Solid Location Pin -->
+        <svg viewBox="0 0 24 24" width="${size}" height="${size}" 
+             style="position: absolute; top: 0; left: 0; fill: white; z-index: 1;">
+          <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/>
+        </svg>
+        <!-- Logo centered and not stretched -->
+        <img src="${logoMarker}" 
+             style="position: absolute; 
+                    top: 50%; 
+                    left: 50%; 
+                    transform: translate(-50%, -50%);
+                    width: ${logoSize}px;
+                    height: auto; /* Keeps original aspect ratio */
+                    object-fit: contain; /* Prevents stretching */
+                    z-index: 10;" 
+             alt="Venue logo"/>
+      </div>
+    `,
+    className: "custom-venue-marker",
+    iconSize: [size, size],
+    iconAnchor: [size / 2, size],
+    popupAnchor: [0, -size],
+  });
+};
 
 // Default user icon
 const userIcon = new L.Icon.Default();
@@ -46,7 +63,7 @@ const UpdateMapCenter = ({ center }) => {
   return null;
 };
 
-// Handle map events (e.g., user moving the map)
+// Handle map events
 const MapEvents = ({ setMapCenter }) => {
   const map = useMapEvents({
     moveend: () => {
@@ -61,13 +78,11 @@ const MapEvents = ({ setMapCenter }) => {
 const VenueMap = () => {
   const dispatch = useDispatch();
   const { venues, searchResults } = useSelector((state) => state.venues);
-
   const [userLocation, setUserLocation] = useState(null);
   const [mapCenter, setMapCenter] = useState({
-    lat: 51.509865, // Default: London
+    lat: 51.509865,
     lng: -0.118092,
   });
-
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
   // Get user's location on mount
@@ -89,7 +104,7 @@ const VenueMap = () => {
     if (mapCenter.lat && mapCenter.lng) {
       dispatch(fetchNearbyVenues({ lat: mapCenter.lat, lng: mapCenter.lng }));
     }
-  }, [dispatch, mapCenter.lat, mapCenter.lng]); // Add specific dependencies
+  }, [dispatch, mapCenter.lat, mapCenter.lng]);
 
   // Update map center if search results change
   useEffect(() => {
@@ -115,10 +130,10 @@ const VenueMap = () => {
     <MapContainer
       center={[mapCenter.lat, mapCenter.lng]}
       zoom={13}
-      className="h-[70vh] w-full rounded-md" // Responsive height
-      touchZoom={true} // Enable touch zoom
-      doubleClickZoom={false} // Disable double-click zoom for better touch interaction
-      zoomControl={!isMobile} // Hide zoom control on mobile for cleaner UI
+      className="h-[70vh] w-full rounded-md "
+      touchZoom={true}
+      doubleClickZoom={false}
+      zoomControl={!isMobile}
     >
       <TileLayer
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -144,16 +159,12 @@ const VenueMap = () => {
         }
 
         const [lng, lat] = venue.location.coordinates;
+        const venueIcon = createVenueIcon(isMobile);
 
         return (
-          <Marker
-            key={venue._id}
-            position={[lat, lng]}
-            icon={isMobile ? venueIconSmall : venueIcon} // Use smaller icon on mobile
-          >
+          <Marker key={venue._id} position={[lat, lng]} icon={venueIcon}>
             <Popup>
               <div className="max-w-[200px]">
-                {/* Venue Image */}
                 {venue.images.length > 0 && (
                   <img
                     src={`http://localhost:5000/${venue.images[0].replace(
@@ -164,29 +175,16 @@ const VenueMap = () => {
                     className="w-full h-24 object-cover rounded-lg mb-2"
                   />
                 )}
-
-                {/* Venue Name */}
                 <h3 className="text-lg font-semibold text-gray-800">
                   {venue.name}
                 </h3>
-
-                {/* Venue Address */}
                 <p className="text-sm text-gray-600 mb-2">{venue.address}</p>
-
-                {/* Venue Rating */}
                 <div className="flex items-center mb-2">
                   <RatingStars rating={venue.rating || 0} />
                   <span className="ml-2 text-sm text-gray-600">
                     ({venue.rating || 0})
                   </span>
                 </div>
-
-                {/* Venue Description */}
-                {/* {venue.description && (
-                  <p className="text-sm text-gray-600">
-                    {venue.description.substring(0, 50)}
-                  </p>
-                )} */}
               </div>
             </Popup>
           </Marker>

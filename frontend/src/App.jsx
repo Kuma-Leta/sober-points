@@ -24,8 +24,9 @@ import MyVenues from "./pages/venues/myVenues";
 import MyVenueDetail from "./pages/venues/myVenueDetail";
 import AdminAnalytics from "./pages/venues/AdminAnalytics";
 import BottomNavBar from "./pages/venues/BottomNavBar"; // Import the BottomNavBar
-import Profile from "./pages/users/profile";import VenueList from "./pages/landing/VenueList";
-import PrivacyPolicy from "./pages/landing/privacyPolicy"
+import Profile from "./pages/users/profile";
+import VenueList from "./pages/landing/VenueList";
+import PrivacyPolicy from "./pages/landing/privacyPolicy";
 function Pages() {
   const user = useSelector((state) => state.auth.user);
 
@@ -49,7 +50,7 @@ function Pages() {
     <Routes>
       <Route path="/" element={<LandingPage />} />
       <Route path="/venue/:id" element={<VenueDetail />} />
-      <Route path="/privacyPolicy" element={<PrivacyPolicy/>}/>
+      <Route path="/privacyPolicy" element={<PrivacyPolicy />} />
       <Route
         path="/users"
         element={
@@ -132,14 +133,14 @@ const Routing = () => {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
-  if(location.pathname ==="privacy policy"){
+  if (location.pathname === "privacy policy") {
     return (
-       <>
+      <>
         <Header />
-        <PrivacyPolicy/>
+        <PrivacyPolicy />
         <Footer />
       </>
-    )
+    );
   }
   if (location.pathname === "/favorites") {
     return (
@@ -186,7 +187,7 @@ const Routing = () => {
           {/* Main Content Container */}
           <div className={`flex-1 flex flex-col ${isMobile ? "z-50" : ""}`}>
             {/* Header */}
-            <div className="sticky top-0 z-[15] bg-white dark:bg-darkCard w-full">
+            <div className=" z-[15] bg-white dark:bg-darkCard w-full">
               <div
               // className={`${
               //   shouldShowSidebar && user && hideSideBar && isMobile
@@ -200,7 +201,7 @@ const Routing = () => {
 
             {/* Main Content */}
             <main
-              className={`flex-1 p-2  dark:bg-darkBg ${
+              className={`flex-1   dark:bg-darkBg ${
                 isMobile ? "relative" : ""
               }`}
             >
