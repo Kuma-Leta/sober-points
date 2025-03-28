@@ -6,8 +6,8 @@ import score from "../../assets/images/sober2.jfif";
 const Features = () => {
   return (
     <div className="bg-gray-50 py-10 sm:py-12 md:py-16 font-sans">
-      {/* Header */}
-      <header className="text-left px-6 mb-10 md:mb-12">
+      {/* Header - Left-aligned with same padding as content */}
+      <header className="text-left px-4 sm:px-6 md:px-[calc((100%-min(1200px,90vw))/2)] mb-10 md:mb-12">
         <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 leading-tight">
           Discover the Best Alcohol-Free Experiences
         </h1>
@@ -18,7 +18,7 @@ const Features = () => {
         </p>
       </header>
 
-      {/* Main Content */}
+      {/* Main Content - Centered */}
       <section id="aboutUs" className="container mx-auto px-4 sm:px-6">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {/* Section 1: Best AF Bars */}
