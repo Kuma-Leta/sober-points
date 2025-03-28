@@ -5,8 +5,9 @@ const crypto = require("crypto");
 const userSchema = new Schema({
   name: { type: String, required: true },
   email: { type: String, required: true, unique: true },
-  password: { type: String},
+  password: { type: String },
   username: { type: String, required: true },
+  profilePicture: { type: String, default: "" }, // Add this field
   role: {
     type: String,
     required: true,

@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { addRating } = require('../controllers/ratingController');
+const { addRating } = require("../controllers/ratingController");
 const { authenticate, authorize } = require("../middleware/authMiddleware");
 const {
   createVenue,
@@ -16,17 +16,33 @@ const {
   getMostRatedVenues,
   getNewestVenues,
   getNearestVenues,
+  getUserVenues,
+  getVenueDetails,
+  getAdminDashboardAnalytics,
 } = require("../controllers/venueController");
 
 // 📌 Add Rating
 router.get("/most-rated", getMostRatedVenues);
 router.get("/newest", getNewestVenues);
 router.get("/nearest", getNearestVenues);
-router.post("/create", authenticate, authorize(["admin", "customer"]), createVenue);
+router.post(
+  "/create",
+  authenticate,
+  authorize(["admin", "customer"]),
+  createVenue
+);
 router.post("/add-rating", authenticate, addRating);
 router.get("/suggestions", getVenueSuggestions);
 // 📌 Get Nearby Venues
 router.get("/nearby", getNearbyVenues);
+
+router.get("/my-venues", authenticate, authorize(["customer"]), getUserVenues);
+router.get(
+  "/my-venue/:venueId",
+  authenticate,
+  authorize(["customer"]),
+  getVenueDetails
+);
 
 // 📌 Search Venues
 router.get("/search", searchVenues);
@@ -43,12 +59,34 @@ router.get("/", getAllVenues);
 router.get("/:id", getVenueById);
 
 // 📌 Update Venue
-router.put("/:venueId", authenticate, authorize(["admin", "Customer"]), updateVenue);
+router.put(
+  "/:venueId",
+  authenticate,
+  authorize(["admin", "customer"]),
+  updateVenue
+);
 
 // 📌 Delete one Venue
-router.delete("/:id", authenticate, authorize(["admin", "customer"]), deleteVenue);
+router.delete(
+  "/:id",
+  authenticate,
+  authorize(["admin", "customer"]),
+  deleteVenue
+);
 
 // 📌 Delete All Venues
-router.delete("/", authenticate, authorize(["admin", "customer"]), deleteAllVenues);
+router.delete(
+  "/",
+  authenticate,
+  authorize(["admin", "customer"]),
+  deleteAllVenues
+);
+
+router.get(
+  "/admin/analytics",
+  authenticate,
+  authorize(["admin", "customer"]),
+  getAdminDashboardAnalytics
+);
 
 module.exports = router;

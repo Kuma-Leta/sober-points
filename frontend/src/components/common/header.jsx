@@ -4,7 +4,14 @@ import useAuth from "../../hooks/useAuth";
 import { useSelector } from "react-redux";
 import blackLogo from "../../assets/images/Logo-Black.png";
 import whiteLogo from "../../assets/images/Logo-White.png";
-import { FaUser, FaBars, FaTimes, FaPlus, FaRegHeart } from "react-icons/fa";
+import {
+  FaUser,
+  FaBars,
+  FaTimes,
+  FaPlus,
+  FaRegHeart,
+  FaHome,
+} from "react-icons/fa";
 import { FiSun, FiMoon } from "react-icons/fi";
 import defaultUserProfile from "../../assets/images/user.png";
 
@@ -14,6 +21,7 @@ const Header = () => {
   const user = useSelector((state) => state.auth.user);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false); // State for sidebar
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false); // State for mobile menu
   const dropdownRef = useRef(null);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 
@@ -56,36 +64,40 @@ const Header = () => {
           </Link>
         </div>
 
-        {/* Navigation Links (Desktop) */}
-        <nav className="hidden sm:flex space-x-4 text-grayColor dark:text-darkText text-sm font-medium">
-          <Link to="#contact" className="hover:text-primary transition">
-            Sober Points
-          </Link>
-          <Link to="/" className="hover:text-primary transition">
-            About us
-          </Link>
-          <Link to="#features" className="hover:text-primary transition">
-            Blog
-          </Link>
-          <Link to="#services" className="hover:text-primary transition">
-            Contact us
-          </Link>
-        </nav>
+        {/* Navigation Links (Desktop) - Conditionally rendered for non-admin users */}
+        {user?.role !== "admin" && (
+          <nav className="hidden sm:flex space-x-4 text-grayColor dark:text-darkText text-sm font-medium">
+            <Link to="#contact" className="hover:text-primary transition">
+              Sober Points
+            </Link>
+            <Link to="/" className="hover:text-primary transition">
+              About us
+            </Link>
+            <Link to="#features" className="hover:text-primary transition">
+              Blog
+            </Link>
+            <Link to="#services" className="hover:text-primary transition">
+              Contact us
+            </Link>
+          </nav>
+        )}
 
         {/* Auth & Dark Mode Toggle */}
         <div className="flex items-center space-x-3">
-          <DarkModeToggle />
+          {/* <DarkModeToggle /> */}
 
           {isAuthenticated ? (
-            <div className="relative flex items-center space-x-2">
+            <div className="relative flex items-center space-x-3">
               {/* Post Venue Button */}
-              <Link
-                to="/venue/form"
-                className="hidden sm:flex bg-primary hover:bg-primaryLight text-white px-3 py-1 rounded-md items-center space-x-1 text-sm transition"
-              >
-                <FaPlus />
-                <span>Post Venue</span>
-              </Link>
+              {user?.role !== "admin" && (
+                <Link
+                  to="/venue/form"
+                  className="hidden sm:flex bg-primary hover:bg-primaryLight text-white px-3 py-1 rounded-md items-center space-x-1 text-sm transition"
+                >
+                  <FaPlus />
+                  {/* <span>Post Venue</span> */}
+                </Link>
+              )}
 
               {/* User Dropdown */}
               <button
@@ -94,12 +106,19 @@ const Header = () => {
               >
                 <img
                   className="w-8 h-8 sm:w-9 sm:h-9 rounded-full object-cover border border-grayColor dark:border-darkText"
-                  src={user?.profilePicture || defaultUserProfile}
+                  src={
+                    user?.profilePicture
+                      ? `http://localhost:5000/${user.profilePicture}`
+                      : defaultUserProfile
+                  }
                   alt="User"
                 />
-                <span className="text-sm text-grayColor dark:text-darkText">
-                  {user?.name || user?.username}
-                </span>
+                {/* Always show the name for admin users */}
+                {(user?.role === "admin" || dropdownOpen) && (
+                  <span className="text-sm text-grayColor dark:text-darkText">
+                    {user?.name || user?.username}
+                  </span>
+                )}
               </button>
               {dropdownOpen && (
                 <div
@@ -120,6 +139,15 @@ const Header = () => {
                   >
                     <FaRegHeart className="inline mr-2" /> my favorites
                   </Link>
+                  {user?.role !== "admin" && (
+                    <Link
+                      onClick={() => setDropdownOpen(false)}
+                      to="/my-venue" // Update the link to your venue page
+                      className="block px-4 py-2 text-grayColor dark:text-darkText hover:bg-gray-100 dark:hover:bg-gray-800"
+                    >
+                      <FaHome className="inline mr-2" /> My Venue
+                    </Link>
+                  )}
                   <button
                     onClick={() => setShowLogoutConfirm(true)}
                     className="block w-full text-left px-4 py-2 text-grayColor dark:text-darkText hover:bg-gray-100 dark:hover:bg-gray-800"
@@ -145,6 +173,14 @@ const Header = () => {
               </Link>
             </div>
           )}
+
+          {/* Mobile Menu Toggle Button */}
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="sm:hidden p-2 text-grayColor dark:text-darkText"
+          >
+            {mobileMenuOpen ? <FaTimes size={20} /> : <FaBars size={20} />}
+          </button>
         </div>
       </div>
 
@@ -288,34 +324,83 @@ const LogoutConfirmationModal = ({ onConfirm, onCancel }) => {
   );
 };
 
-/* Dark Mode Toggle */
-const DarkModeToggle = () => {
-  const [darkMode, setDarkMode] = useState(
-    localStorage.getItem("theme") === "dark" ||
-      (window.matchMedia("(prefers-color-scheme: dark)").matches &&
-        localStorage.getItem("theme") !== "light")
-  );
-
+function Avatar() {
+  const [sidebarOpen, setSidebarOpen] = useState(false); // State for sidebar
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
+  const { logout } = useAuth();
+  const user = useSelector((state) => state.auth.user);
   useEffect(() => {
-    if (darkMode) {
-      document.documentElement.classList.add("dark");
-      localStorage.setItem("theme", "dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-      localStorage.setItem("theme", "light");
-    }
-  }, [darkMode]);
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   return (
-    <button
-      onClick={() => setDarkMode(!darkMode)}
-      className="p-2 rounded-full transition-all bg-gray-200 dark:bg-gray-700"
-    >
-      {darkMode ? (
-        <FiSun size={16} className="text-primary" />
-      ) : (
-        <FiMoon size={16} className="text-primary" />
+    <>
+      {showLogoutConfirm && (
+        <LogoutConfirmationModal
+          onConfirm={() => {
+            logout();
+            setShowLogoutConfirm(false);
+          }}
+          onCancel={() => setShowLogoutConfirm(false)}
+        />
       )}
-    </button>
+      <button
+        onClick={() => setDropdownOpen(!dropdownOpen)}
+        className="flex items-center space-x-2"
+      >
+        <img
+          className="w-8 h-8 sm:w-9 sm:h-9 rounded-full object-cover border border-grayColor dark:border-darkText"
+          src={user?.profilePicture || defaultUserProfile}
+          alt="User"
+        />
+        <span className="text-sm text-grayColor dark:text-darkText">
+          {user?.name || user?.username}
+        </span>
+      </button>
+      {dropdownOpen && (
+        <div
+          ref={dropdownRef}
+          className="absolute right-0 bottom-0 mt-2 w-40 bg-white dark:bg-darkCard shadow-md rounded-md z-50 text-sm"
+        >
+          <Link
+            onClick={() => setDropdownOpen(false)}
+            to="/users/profile"
+            className="block px-4 py-2 text-grayColor dark:text-darkText hover:bg-gray-100 dark:hover:bg-gray-800"
+          >
+            <FaUser className="inline mr-2" /> Profile
+          </Link>
+          <Link
+            to="/favorites"
+            className="block px-4 py-2 text-grayColor dark:text-darkText hover:bg-gray-100 dark:hover:bg-gray-800"
+            onClick={() => setSidebarOpen(false)}
+          >
+            <FaRegHeart className="inline mr-2" /> my favorites
+          </Link>
+          {user?.role !== "admin" && (
+            <Link
+              onClick={() => setDropdownOpen(false)}
+              to="/my-venue" // Update the link to your venue page
+              className="block px-4 py-2 text-grayColor dark:text-darkText hover:bg-gray-100 dark:hover:bg-gray-800"
+            >
+              <FaHome className="inline mr-2" /> My Venue
+            </Link>
+          )}
+          <button
+            onClick={() => setShowLogoutConfirm(true)}
+            className="block w-full text-left px-4 py-2 text-grayColor dark:text-darkText hover:bg-gray-100 dark:hover:bg-gray-800"
+          >
+            Logout
+          </button>
+        </div>
+      )}
+    </>
   );
-};
+}

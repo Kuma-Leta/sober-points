@@ -1,4 +1,6 @@
 const Venue = require("../models/Venue");
+// const User = require("../models/User");
+const User = require("../models/user");
 const APIfeatures = require("../utils/APIfeatures");
 const multer = require("multer");
 const fs = require("fs");
@@ -144,6 +146,80 @@ exports.getAllVenues = async (req, res) => {
   }
 };
 // 📌 Get Venue by ID
+// 🔹 Get all venues created by the logged-in user
+exports.getUserVenues = async (req, res) => {
+  try {
+    const userId = req.user._id; // Assuming user ID is available in the request (from auth middleware)
+
+    // Fetch venues created by the user
+    const venues = await Venue.find({ createdBy: userId })
+      .select("name images rating isVerified") // Select only necessary fields
+      .lean();
+
+    // Format the response
+    const formattedVenues = venues.map((venue) => ({
+      _id: venue._id,
+      name: venue.name,
+      image: venue.images[0] || null, // Use the first image or null if no images
+      rating: venue.rating,
+      status: venue.isVerified ? "Verified" : "Pending", // Status based on isVerified
+    }));
+
+    // Return success response with data
+    res.status(200).json({ success: true, data: formattedVenues });
+  } catch (error) {
+    // Handle errors
+    console.error("Error fetching user venues:", error);
+    res.status(500).json({ success: false, message: "Internal server error" });
+  }
+};
+
+exports.getVenueDetails = async (req, res) => {
+  try {
+    const { venueId } = req.params; // Venue ID from request params
+    const userId = req.user._id; // Logged-in user ID
+
+    // Fetch the venue and ensure it belongs to the user
+    const venue = await Venue.findOne({
+      _id: venueId,
+      createdBy: userId,
+    }).lean();
+
+    if (!venue) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Venue not found" });
+    }
+
+    // Format the response
+    const venueDetails = {
+      _id: venue._id,
+      name: venue.name,
+      description: venue.description,
+      address: venue.address,
+      phone: venue.phone,
+      location: venue.location,
+      images: venue.images,
+      menu: venue.menu,
+      website: venue.website,
+      isVerified: venue.isVerified,
+      reviews: venue.reviews,
+      rating: venue.rating,
+      createdAt: venue.createdAt,
+      updatedAt: venue.updatedAt,
+    };
+
+    // console.log("location:", venue.location);
+
+    // Return success response with data
+    res.status(200).json({ success: true, data: venueDetails });
+  } catch (error) {
+    // Handle errors
+    console.error("Error fetching venue details:", error);
+    res.status(500).json({ success: false, message: "Internal server error" });
+  }
+};
+
 exports.getVenueById = async (req, res) => {
   try {
     const venue = await Venue.findById(req.params.id).populate(
@@ -404,6 +480,96 @@ exports.verifyVenue = async (req, res) => {
     res.status(200).json({ success: true, venue });
   } catch (error) {
     res.status(500).json({ error: error.message });
+  }
+};
+
+exports.getAdminDashboardAnalytics = async (req, res) => {
+  try {
+    // 1. Venue Analytics
+    const totalVenues = await Venue.countDocuments();
+
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30); // Calculate date 30 days ago
+
+    // New Venues in the Last 30 Days
+    const newVenuesLast30Days = await Venue.countDocuments({
+      createdAt: { $gte: thirtyDaysAgo },
+    });
+
+    // Venue Status Breakdown
+    const verifiedVenues = await Venue.countDocuments({ isVerified: true });
+    const pendingVenues = await Venue.countDocuments({ isVerified: false });
+
+    // Simulate Rejected Venues
+    const rejectedVenues = await Venue.countDocuments({
+      isVerified: false,
+      createdAt: { $lt: thirtyDaysAgo }, // Venues older than 30 days and not verified
+    });
+
+    const venueStatusBreakdown = [
+      { status: "Verified", count: verifiedVenues },
+      { status: "Pending", count: pendingVenues - rejectedVenues }, // Subtract rejected venues from pending
+      { status: "Rejected", count: rejectedVenues },
+    ];
+
+    // Average Venue Rating
+    const averageRatingResult = await Venue.aggregate([
+      {
+        $group: {
+          _id: null, // Group all venues
+          averageRating: { $avg: "$rating" }, // Calculate average rating
+        },
+      },
+    ]);
+    const averageRating = averageRatingResult[0]?.averageRating || 0;
+
+    // 2. User Analytics
+    const totalUsers = await User.countDocuments();
+
+    const newUsersLast30Days = await User.countDocuments({
+      createdAt: { $gte: thirtyDaysAgo },
+    });
+
+    const userRoleBreakdown = await User.aggregate([
+      {
+        $group: {
+          _id: "$role", // Group by role (user or admin)
+          count: { $sum: 1 }, // Count users in each role
+        },
+      },
+      {
+        $project: {
+          role: "$_id",
+          count: 1,
+          _id: 0,
+        },
+      },
+    ]);
+
+    // Prepare the response
+    const analytics = {
+      venueAnalytics: {
+        totalVenues,
+        newVenuesLast30Days,
+        venueStatusBreakdown,
+        averageRating: averageRating.toFixed(1), // Round to 1 decimal place
+      },
+      userAnalytics: {
+        totalUsers,
+        newUsersLast30Days,
+
+        userRoleBreakdown,
+      },
+    };
+
+    // Send the response
+    res.status(200).json({ success: true, data: analytics });
+  } catch (error) {
+    console.error("Error fetching admin dashboard analytics:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch admin dashboard analytics",
+    });
   }
 };
 // 📌 Controller: Fetch Venue Suggestions

@@ -119,9 +119,9 @@ const FavoritesList = () => {
               className="relative group overflow-hidden rounded-lg shadow-md cursor-pointer bg-white dark:bg-darkCard p-4"
             >
               {/* Venue Image */}
-              {venue.images.length > 0 && (
+              {venue?.images?.length > 0 && (
                 <img
-                  src={`http://localhost:5000/${venue.images[0].replace(
+                  src={`http://localhost:5000/${venue?.images[0]?.replace(
                     /\\/g,
                     "/"
                   )}`}
