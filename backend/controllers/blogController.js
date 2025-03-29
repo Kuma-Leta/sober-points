@@ -129,7 +129,6 @@ exports.getAllBlogs = async (req, res) => {
     // Start with base query and populate author info
     let query = Blog.find()
       .populate("author", "name profilePicture")
-      .populate("likes", "name profilePicture")
       .populate("comments.user", "name profilePicture");
 
     // Use APIfeatures for filtering, searching, etc.
@@ -187,7 +186,6 @@ exports.getBlogBySlug = async (req, res) => {
   try {
     const blog = await Blog.findOne({ slug: req.params.slug })
       .populate("author", "name profilePicture")
-      .populate("likes", "name profilePicture")
       .populate("comments.user", "name profilePicture");
 
     if (!blog) {

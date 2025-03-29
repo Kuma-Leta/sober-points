@@ -5,6 +5,7 @@ import { FaRegHeart, FaHeart, FaRegComment, FaRegClock } from "react-icons/fa";
 import { motion } from "framer-motion";
 import DOMPurify from "dompurify";
 import { format } from "date-fns";
+import { useSelector } from "react-redux";
 
 const BlogRead = () => {
   const { slug } = useParams();
@@ -13,6 +14,10 @@ const BlogRead = () => {
   const [error, setError] = useState("");
   const [isLiked, setIsLiked] = useState(false);
   const [comment, setComment] = useState("");
+  const user = useSelector((state) => state.auth.user);
+  useEffect(() => {
+    setIsLiked(blog?.likes?.includes(user._id));
+  }, [user]);
 
   useEffect(() => {
     const fetchBlog = async () => {
@@ -34,9 +39,11 @@ const BlogRead = () => {
     try {
       const response = await axiosInstance.post(`/blogs/${blog._id}/like`);
       setIsLiked(response.data.isLiked);
-      setBlog(prev => ({
+      setBlog((prev) => ({
         ...prev,
-        likes: response.data.isLiked ? [...prev.likes, blog._id] : prev.likes.filter(id => id !== blog._id)
+        likes: response.data.isLiked
+          ? [...prev.likes, blog._id]
+          : prev.likes.filter((id) => id !== blog._id),
       }));
     } catch (err) {
       console.error("Error liking blog:", err);
@@ -47,11 +54,11 @@ const BlogRead = () => {
     e.preventDefault();
     try {
       const response = await axiosInstance.post(`/blogs/${blog._id}/comments`, {
-        text: comment
+        text: comment,
       });
-      setBlog(prev => ({
+      setBlog((prev) => ({
         ...prev,
-        comments: [...prev.comments, response.data.comment]
+        comments: [...prev.comments, response.data.comment],
       }));
       setComment("");
     } catch (err) {
@@ -94,7 +101,7 @@ const BlogRead = () => {
                 className="w-full h-full object-cover"
               />
             </div>
-            
+
             <div className="flex items-center gap-4 mb-4">
               <span className="px-3 py-1 text-sm font-semibold text-white bg-primary rounded-full">
                 {blog.categories[0]}
@@ -129,10 +136,10 @@ const BlogRead = () => {
           </header>
 
           {/* Content */}
-          <div 
+          <div
             className="prose prose-lg dark:prose-invert max-w-none mb-12"
-            dangerouslySetInnerHTML={{ 
-              __html: DOMPurify.sanitize(blog.content) 
+            dangerouslySetInnerHTML={{
+              __html: DOMPurify.sanitize(blog.content),
             }}
           />
 
@@ -199,7 +206,9 @@ const BlogRead = () => {
                       </p>
                     </div>
                   </div>
-                  <p className="text-gray-700 dark:text-gray-300">{comment.text}</p>
+                  <p className="text-gray-700 dark:text-gray-300">
+                    {comment.text}
+                  </p>
                 </motion.div>
               ))}
             </div>

@@ -7,16 +7,16 @@ import {
   FaHeart,
   FaRegComment,
   FaSearch,
-  FaFilter,
 } from "react-icons/fa";
 import { motion } from "framer-motion";
 
 const BlogList = () => {
   const [blogs, setBlogs] = useState([]);
+  const [allBlogs, setAllBlogs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
-  const [categoryFilter, setCategoryFilter] = useState("");
+  const [activeCategory, setActiveCategory] = useState("All");
   const [sortOption, setSortOption] = useState("newest");
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -35,8 +35,15 @@ const BlogList = () => {
     const fetchBlogs = async () => {
       try {
         setLoading(true);
-        const response = await axiosInstance.get(`/blogs`);
+        const params = {
+          page,
+          sort: sortOption,
+          q: searchQuery,
+        };
 
+        const response = await axiosInstance.get(`/blogs`, { params });
+        
+        setAllBlogs(response.data.blogs);
         setBlogs(response.data.blogs);
         setTotalPages(response.data.totalPages);
         setError("");
@@ -49,7 +56,18 @@ const BlogList = () => {
     };
 
     fetchBlogs();
-  }, [searchQuery, categoryFilter, sortOption, page]);
+  }, [searchQuery, sortOption, page]);
+
+  useEffect(() => {
+    if (activeCategory === "All") {
+      setBlogs(allBlogs);
+    } else {
+      const filtered = allBlogs.filter(blog => 
+        blog.categories.includes(activeCategory)
+      );
+      setBlogs(filtered);
+    }
+  }, [activeCategory, allBlogs]);
 
   const handleLike = async (blogId) => {
     try {
@@ -97,75 +115,93 @@ const BlogList = () => {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
-        {/* Header and Filters */}
         <div className="mb-12 text-center">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
-            Explore Our Blog
+          <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
+            Discover Stories
           </h1>
           <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-            Discover the latest stories, tips, and insights about nightlife and
-            entertainment
+            Explore the latest articles and insights from our community
           </p>
         </div>
 
-        {/* Search and Filter Bar */}
-        <div className="mb-8 flex flex-col md:flex-row gap-4 justify-between items-center">
-          <div className="relative w-full md:w-96">
+        <div className="mb-8">
+          <div className="relative w-full max-w-2xl mx-auto mb-6">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
               <FaSearch className="text-gray-400" />
             </div>
             <input
               type="text"
-              placeholder="Search blogs..."
-              className="block w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+              placeholder="Search articles..."
+              className="block w-full pl-10 pr-3 py-3 border border-gray-300 dark:border-gray-700 rounded-full bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <FaFilter className="text-gray-400" />
-              </div>
-              <select
-                className="appearance-none block pl-10 pr-8 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                value={categoryFilter}
-                onChange={(e) => setCategoryFilter(e.target.value)}
+          <div className="flex flex-wrap justify-center gap-2 mb-6">
+            {categories.map((category) => (
+              <button
+                key={category}
+                onClick={() => setActiveCategory(category)}
+                className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+                  activeCategory === category
+                    ? "bg-primary text-white"
+                    : "bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                }`}
               >
-                {categories.map((category) => (
-                  <option key={category} value={category}>
-                    {category}
-                  </option>
-                ))}
-              </select>
-            </div>
+                {category}
+              </button>
+            ))}
+          </div>
 
-            <select
-              className="block px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-              value={sortOption}
-              onChange={(e) => setSortOption(e.target.value)}
-            >
-              <option value="newest">Newest First</option>
-              <option value="oldest">Oldest First</option>
-              <option value="popular">Most Popular</option>
-            </select>
+          <div className="flex justify-center">
+            <div className="inline-flex rounded-md shadow-sm">
+              <button
+                onClick={() => setSortOption("newest")}
+                className={`px-4 py-2 text-sm font-medium rounded-l-lg ${
+                  sortOption === "newest"
+                    ? "bg-primary text-white"
+                    : "bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                }`}
+              >
+                Newest
+              </button>
+              <button
+                onClick={() => setSortOption("oldest")}
+                className={`px-4 py-2 text-sm font-medium ${
+                  sortOption === "oldest"
+                    ? "bg-primary text-white"
+                    : "bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                }`}
+              >
+                Oldest
+              </button>
+              <button
+                onClick={() => setSortOption("popular")}
+                className={`px-4 py-2 text-sm font-medium rounded-r-lg ${
+                  sortOption === "popular"
+                    ? "bg-primary text-white"
+                    : "bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                }`}
+              >
+                Popular
+              </button>
+            </div>
           </div>
         </div>
 
-        {/* Blog Grid */}
         {blogs.length === 0 ? (
           <div className="text-center py-12">
             <h3 className="text-xl font-medium text-gray-700 dark:text-gray-300">
-              No blogs found matching your criteria
+              No articles found matching your criteria
             </h3>
             <button
               onClick={() => {
                 setSearchQuery("");
-                setCategoryFilter("All");
+                setActiveCategory("All");
                 setSortOption("newest");
               }}
-              className="mt-4 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primaryDark"
+              className="mt-4 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primaryDark transition-colors"
             >
               Reset Filters
             </button>
@@ -175,7 +211,7 @@ const BlogList = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {blogs.map((blog, index) => (
                 <motion.div
-                  key={index}
+                  key={blog._id}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.1 }}
@@ -184,11 +220,17 @@ const BlogList = () => {
                 >
                   <Link to={`/blog/${blog.slug}`}>
                     <div className="relative h-48 w-full overflow-hidden">
-                      <img
-                        src={`http://localhost:5000/${blog.featuredImage}`}
-                        alt={blog.title}
-                        className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
-                      />
+                      {blog.featuredImage?.length > 0 ? (
+                        <img
+                          src={`http://localhost:5000/${blog.featuredImage[0]}`}
+                          alt={blog.title}
+                          className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+                        />
+                      ) : (
+                        <div className="w-full h-full bg-gradient-to-r from-blue-50 to-purple-50 dark:from-gray-700 dark:to-gray-800 flex items-center justify-center">
+                          <span className="text-gray-400">No Image</span>
+                        </div>
+                      )}
                       <div className="absolute top-4 left-4">
                         <span className="px-3 py-1 text-xs font-semibold text-white bg-primary rounded-full">
                           {blog.categories[0]}
@@ -206,7 +248,7 @@ const BlogList = () => {
                       </Link>
                     </div>
 
-                    <p className="text-gray-600 dark:text-gray-300 mb-4 line-clamp-2">
+                    <p className="text-gray-600 dark:text-gray-300 mb-4 line-clamp-3">
                       {blog.excerpt}
                     </p>
 
@@ -229,7 +271,7 @@ const BlogList = () => {
                           ) : (
                             <FaRegHeart className="mr-1" />
                           )}
-                          <span>{blog.likes}</span>
+                          <span>{blog.likes.length}</span>
                         </button>
 
                         <div className="flex items-center">
@@ -240,34 +282,31 @@ const BlogList = () => {
                     </div>
 
                     <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
-                      {blog.author &&
-                        blog.author.profilePicture &&
-                        blog.author.name && (
-                          <div className="flex items-center">
-                            <img
-                              src={`http://localhost:5000/${blog.author.profilePicture}`}
-                              alt={blog.author.name}
-                              className="w-8 h-8 rounded-full object-cover mr-2"
-                            />
-                            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                              {blog.author.name}
-                            </span>
-                          </div>
-                        )}
+                      {blog.author && (
+                        <div className="flex items-center">
+                          <img
+                            src={`http://localhost:5000/${blog.author.profilePicture}`}
+                            alt={blog.author.name}
+                            className="w-8 h-8 rounded-full object-cover mr-2"
+                          />
+                          <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                            {blog.author.name}
+                          </span>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </motion.div>
               ))}
             </div>
 
-            {/* Pagination */}
             {totalPages > 1 && (
               <div className="mt-12 flex justify-center">
                 <nav className="flex items-center space-x-2">
                   <button
                     onClick={() => setPage((p) => Math.max(1, p - 1))}
                     disabled={page === 1}
-                    className="px-4 py-2 border rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-50"
+                    className="px-4 py-2 border rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-50 transition-colors"
                   >
                     Previous
                   </button>
@@ -288,7 +327,7 @@ const BlogList = () => {
                       <button
                         key={pageNum}
                         onClick={() => setPage(pageNum)}
-                        className={`px-4 py-2 rounded-lg ${
+                        className={`px-4 py-2 rounded-lg transition-colors ${
                           page === pageNum
                             ? "bg-primary text-white"
                             : "border hover:bg-gray-100 dark:hover:bg-gray-700"
@@ -302,7 +341,7 @@ const BlogList = () => {
                   <button
                     onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                     disabled={page === totalPages}
-                    className="px-4 py-2 border rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-50"
+                    className="px-4 py-2 border rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-50 transition-colors"
                   >
                     Next
                   </button>
