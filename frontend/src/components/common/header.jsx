@@ -38,7 +38,7 @@ const Header = () => {
   return (
     <header className="bg-white dark:bg-darkCard dark:text-darkText w-full shadow-sm ">
       {/* Full-width container */}
-      <div className="w-full px-4 sm:px-6 lg:px-8 flex items-center justify-between py-3 sm:py-4">
+      <div className="w-full px-4 sm:px-6 lg:px-8 flex items-center justify-between py-3 sm:py-3">
         {/* Mobile Menu Button */}
         <button
           className="text-grayColor dark:text-darkText sm:hidden"
