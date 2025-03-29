@@ -127,7 +127,7 @@ const BlogList = () => {
 
         <div className="mb-8 w-max mx-auto">
           <div className="flex items-center justify-end">
-            <div className="relative mx-auto w-max border mb-6">
+            <div className="relative mx-auto w-max mb-6">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <FaSearch className="text-gray-400" />
               </div>
