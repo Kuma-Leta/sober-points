@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axiosInstance from "../../api/api";
 import {
   FaRegClock,
@@ -69,7 +69,7 @@ const BlogList = () => {
       setBlogs(filtered);
     }
   }, [activeCategory, allBlogs]);
-
+  const navigate = useNavigate();
   const handleLike = async (blogId) => {
     try {
       await axiosInstance.post(`/blogs/${blogId}/like`);
@@ -91,7 +91,10 @@ const BlogList = () => {
           : [...prev, blogId]
       );
     } catch (err) {
-      console.error("Error liking blog:", err);
+      if (err.response.status === 401) {
+        navigate("/login");
+      }
+      console.error("Error liking blog:", err.response.status);
     }
   };
 
