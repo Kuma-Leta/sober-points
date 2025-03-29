@@ -139,7 +139,7 @@ const SearchBar = ({ setQuery, onSearch }) => {
         {/* Search Button (Outside input) */}
         <button
           onClick={handleSearch}
-          className="bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-dark transition duration-300 sm:hidden md:flex items-center gap-2"
+          className="bg-primary hidden text-white px-4 py-2 rounded-lg hover:bg-primary-dark  transition duration-300  md:flex items-center gap-2"
         >
           <FaSearch />
           <span>Search</span>

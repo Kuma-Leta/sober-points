@@ -28,7 +28,8 @@ import Profile from "./pages/users/profile";
 import VenueList from "./pages/landing/VenueList";
 import PrivacyPolicy from "./pages/landing/privacyPolicy";
 import NotFound from "./pages/404";
-import NewsletterManager from "./pages/newsletter/NewsletterManager";
+import VenueSubmissionPage from "./pages/landing/VenueSubmissionPage";
+// import NewsletterManager from "./pages/newsletter/NewsletterManager";
 import BlogAdmin from "./pages/blog/admin";
 import BlogForm from "./pages/blog/admin/form";
 function Pages() {
@@ -55,6 +56,7 @@ function Pages() {
       <Route path="/" element={<LandingPage />} />
       <Route path="/venue/:id" element={<VenueDetail />} />
       <Route path="/privacyPolicy" element={<PrivacyPolicy />} />
+      <Route path="/howToContribute" element={<VenueSubmissionPage />} />
       <Route
         path="/users"
         element={
@@ -111,6 +113,15 @@ function Pages() {
           </ProtectedRoute>
         }
       />
+
+      {/* <Route
+        path="/newsletter"
+        element={
+          <ProtectedRoute>
+            <NewsletterManager />
+          </ProtectedRoute>
+        }
+      /> */}
 
       <Route
         path="/admin-analytics"
@@ -191,7 +202,7 @@ const Routing = () => {
   }
   // if(location.pathname ===)
   return (
-    <div className="max-w-[120rem] bg-whiteBlue dark:text-darkText dark:bg-darkBg mx-auto min-h-screen">
+    <div className="max-w-[120rem] bg-white dark:text-darkText dark:bg-darkBg mx-auto min-h-screen">
       <ToastContainer />
       <div className="flex min-h-screen flex-col">
         <div className="flex flex-1">

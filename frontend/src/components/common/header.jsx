@@ -159,16 +159,16 @@ const Header = () => {
           ) : (
             <div className="flex space-x-2">
               <Link
-                to="/auth/login"
-                className="border bg-lime-400 text-black px-3 py-1 rounded-md hover:bg-lime-600 hover:text-white text-sm transition"
+                to="/howToContribute"
+                className="bg-primary text-white px-4 py-2 rounded-md text-sm font-semibold hover:bg-primary-dark transition"
               >
                 Join
               </Link>
               <Link
                 to="/auth/login"
-                className="border text-white px-3 bg-[#1A1A1A] py-1 rounded-md text-sm transition"
+                className="border border-primary text-primary px-4 py-2 rounded-md text-sm font-semibold hover:bg-primary hover:text-white transition"
               >
-                Sign in
+                Sign In
               </Link>
             </div>
           )}

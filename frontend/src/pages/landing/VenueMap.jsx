@@ -130,7 +130,7 @@ const VenueMap = () => {
     <MapContainer
       center={[mapCenter.lat, mapCenter.lng]}
       zoom={13}
-      className="h-[70vh] w-full rounded-md "
+      className="h-full w-full rounded-md "
       touchZoom={true}
       doubleClickZoom={false}
       zoomControl={!isMobile}
