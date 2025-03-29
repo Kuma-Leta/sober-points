@@ -117,13 +117,13 @@ const BlogAdmin = () => {
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                     <div className="flex space-x-3">
                       <Link
-                        to={`/blog/${blog.slug}`}
+                        to={`/admin/blogs/${blog.slug}`}
                         className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white"
                       >
                         <FaEye className="h-5 w-5" />
                       </Link>
                       <Link
-                        to={`/blog/admin/edit/${blog._id}`}
+                        to={`/admin/blogs/${blog._id}`}
                         className="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300"
                       >
                         <FaEdit className="h-5 w-5" />

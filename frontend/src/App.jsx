@@ -97,6 +97,14 @@ function Pages() {
         }
       />
       <Route
+        path="/admin/blogs/:slug"
+        element={
+          <ProtectedRoute>
+            <BlogForm />
+          </ProtectedRoute>
+        }
+      />
+      <Route
         path="/venues"
         element={
           <ProtectedRoute>
