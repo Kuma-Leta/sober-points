@@ -24,8 +24,10 @@ import MyVenues from "./pages/venues/myVenues";
 import MyVenueDetail from "./pages/venues/myVenueDetail";
 import AdminAnalytics from "./pages/venues/AdminAnalytics";
 import BottomNavBar from "./pages/venues/BottomNavBar"; // Import the BottomNavBar
-import Profile from "./pages/users/profile";import VenueList from "./pages/landing/VenueList";
-import PrivacyPolicy from "./pages/landing/privacyPolicy"
+import Profile from "./pages/users/profile";
+import VenueList from "./pages/landing/VenueList";
+import PrivacyPolicy from "./pages/landing/privacyPolicy";
+import NewsletterManager from "./pages/newsletter/NewsletterManager";
 function Pages() {
   const user = useSelector((state) => state.auth.user);
 
@@ -49,7 +51,7 @@ function Pages() {
     <Routes>
       <Route path="/" element={<LandingPage />} />
       <Route path="/venue/:id" element={<VenueDetail />} />
-      <Route path="/privacyPolicy" element={<PrivacyPolicy/>}/>
+      <Route path="/privacyPolicy" element={<PrivacyPolicy />} />
       <Route
         path="/users"
         element={
@@ -79,6 +81,15 @@ function Pages() {
         element={
           <ProtectedRoute>
             <Venues />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/newsletter"
+        element={
+          <ProtectedRoute>
+            <NewsletterManager />
           </ProtectedRoute>
         }
       />
@@ -132,14 +143,14 @@ const Routing = () => {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
-  if(location.pathname ==="privacy policy"){
+  if (location.pathname === "privacy policy") {
     return (
-       <>
+      <>
         <Header />
-        <PrivacyPolicy/>
+        <PrivacyPolicy />
         <Footer />
       </>
-    )
+    );
   }
   if (location.pathname === "/favorites") {
     return (

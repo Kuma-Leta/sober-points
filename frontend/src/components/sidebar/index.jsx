@@ -8,7 +8,7 @@ import {
   FaBars,
   FaUsers,
   FaChevronLeft,
-  FaProjectDiagram,
+  FaEnvelopeOpenText,
 } from "react-icons/fa";
 import logo from "../../assets/images/logo.png";
 import { getProfilePicUrl } from "../../utils/functions";
@@ -62,6 +62,12 @@ const Sidebar = () => {
             icon: <FaBuilding className="text-lg" />,
             label: "Venues",
             path: "/venues",
+          },
+
+          {
+            icon: <FaEnvelopeOpenText className="text-lg" />,
+            label: "Newsletter",
+            path: "/newsletter",
           },
           {
             icon: <IoSettingsOutline className="text-lg" />,

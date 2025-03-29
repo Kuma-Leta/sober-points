@@ -8,7 +8,9 @@ const { authenticate } = require("../middleware/authMiddleware");
 const { authorize } = require("../middleware/authMiddleware");
 const venueRoutes = require("./venue");
 const ratingRoutes = require("./rating");
-const favouritesRoutes =require("./favourites")
+const favouritesRoutes = require("./favourites");
+const subscriberRoutes = require("./subscriber");
+const newsletterRoutes = require("./newsletter");
 // Authentication route
 router.post("/login", authController.login);
 router.get("/logout", authController.logoutUser);
@@ -85,6 +87,8 @@ router.delete(
 
 router.use("/venues", venueRoutes); // <-- Add this line
 router.use("/ratings", ratingRoutes);
-router.use("/favorites",favouritesRoutes)
+router.use("/favorites", favouritesRoutes);
+router.use("/subscriber", subscriberRoutes);
+router.use("/newsletter", newsletterRoutes);
 // Venues
 module.exports = router;
