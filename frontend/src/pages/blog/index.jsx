@@ -267,8 +267,9 @@ const BlogList = () => {
                           }}
                           className="flex items-center hover:text-primary-500 transition-colors"
                         >
-                          {blog?.likes?.includes(user._id) ||
-                          likedBlogs.includes(blog._id) ? (
+                          {user &&
+                          (blog?.likes?.includes(user._id) ||
+                            likedBlogs.includes(blog._id)) ? (
                             <FaHeart className="text-red-500 mr-1" />
                           ) : (
                             <FaRegHeart className="mr-1" />
