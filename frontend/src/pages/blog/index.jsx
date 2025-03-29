@@ -9,6 +9,7 @@ import {
   FaSearch,
 } from "react-icons/fa";
 import { motion } from "framer-motion";
+import { useSelector } from "react-redux";
 
 const BlogList = () => {
   const [blogs, setBlogs] = useState([]);
@@ -42,7 +43,7 @@ const BlogList = () => {
         };
 
         const response = await axiosInstance.get(`/blogs`, { params });
-        
+
         setAllBlogs(response.data.blogs);
         setBlogs(response.data.blogs);
         setTotalPages(response.data.totalPages);
@@ -57,12 +58,12 @@ const BlogList = () => {
 
     fetchBlogs();
   }, [searchQuery, sortOption, page]);
-
+  const user = useSelector((state) => state.auth.user);
   useEffect(() => {
     if (activeCategory === "All") {
       setBlogs(allBlogs);
     } else {
-      const filtered = allBlogs.filter(blog => 
+      const filtered = allBlogs.filter((blog) =>
         blog.categories.includes(activeCategory)
       );
       setBlogs(filtered);
@@ -266,7 +267,8 @@ const BlogList = () => {
                           }}
                           className="flex items-center hover:text-primary-500 transition-colors"
                         >
-                          {likedBlogs.includes(blog._id) ? (
+                          {blog?.likes?.includes(user._id) ||
+                          likedBlogs.includes(blog._id) ? (
                             <FaHeart className="text-red-500 mr-1" />
                           ) : (
                             <FaRegHeart className="mr-1" />
