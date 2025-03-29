@@ -119,7 +119,7 @@ export default function Users({ role }) {
         <Search setQuery={handleSearchChange} />
         <button
           onClick={handleCreate}
-          className="bg-ternary h-min text-white px-4 py-2 rounded"
+          className="bg-primary h-min text-white px-4 py-2 rounded"
         >
           Add User
         </button>

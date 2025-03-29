@@ -16,6 +16,7 @@ export default function NewsletterForm({
   };
 
   const [newsletterData, setNewsletterData] = useState(initialNewsletterData);
+  const [editorContent, setEditorContent] = useState("");
   const [loading, setLoading] = useState(false);
   const [sendLoading, setSendLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -48,6 +49,7 @@ export default function NewsletterForm({
   useEffect(() => {
     // Reset form when mode or newsletterId changes
     setNewsletterData(initialNewsletterData);
+    setEditorContent("");
     setError(null);
 
     if (mode === "edit" && newsletterId) {
@@ -55,13 +57,17 @@ export default function NewsletterForm({
         try {
           setLoading(true);
           const res = await axiosInstance.get(`/newsletters/${newsletterId}`);
+          const newsletter = res.data;
+
           setNewsletterData({
-            subject: res.data.subject || "",
-            content: res.data.content || "",
-            scheduledAt: res.data.scheduledAt
-              ? new Date(res.data.scheduledAt).toISOString().slice(0, 16)
+            subject: newsletter.subject || "",
+            content: newsletter.content || "",
+            scheduledAt: newsletter.scheduledAt
+              ? new Date(newsletter.scheduledAt).toISOString().slice(0, 16)
               : "",
           });
+
+          setEditorContent(newsletter.content || "");
         } catch (error) {
           setError(
             error.response?.data?.message || "Error fetching newsletter"
@@ -79,7 +85,8 @@ export default function NewsletterForm({
   };
 
   const handleContentChange = (content) => {
-    setNewsletterData({ ...newsletterData, content });
+    setEditorContent(content);
+    setNewsletterData((prev) => ({ ...prev, content }));
   };
 
   const handleSubmit = async (e, sendImmediately = false) => {
@@ -157,7 +164,7 @@ export default function NewsletterForm({
           </label>
           <div className="border rounded-lg dark:bg-darkBg dark:border-gray-700">
             <ReactQuill
-              value={newsletterData.content}
+              value={editorContent}
               onChange={handleContentChange}
               modules={modules}
               formats={formats}

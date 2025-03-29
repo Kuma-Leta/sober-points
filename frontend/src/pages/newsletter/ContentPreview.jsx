@@ -5,16 +5,28 @@ import Modal from "../../ui/modal";
 export default function ContentPreview({ content, maxLength = 100 }) {
   const [isOpen, setIsOpen] = useState(false);
 
+  // Function to strip HTML tags and get plain text
+  const stripHtml = (html) => {
+    if (!html) return "";
+    const tmp = document.createElement("div");
+    tmp.innerHTML = html;
+    return tmp.textContent || tmp.innerText || "";
+  };
+
+  // Get clean text content
+  const cleanContent = stripHtml(content);
+
+  // Truncate if needed
   const truncatedContent =
-    content.length > maxLength
-      ? `${content.substring(0, maxLength)}...`
-      : content;
+    cleanContent.length > maxLength
+      ? `${cleanContent.substring(0, maxLength)}...`
+      : cleanContent;
 
   return (
     <>
       <div className="max-h-20 overflow-y-auto">
         {truncatedContent}
-        {content.length > maxLength && (
+        {cleanContent.length > maxLength && (
           <button
             onClick={() => setIsOpen(true)}
             className="text-blue-500 hover:text-blue-700 ml-1"

@@ -119,7 +119,6 @@ export default function NewsletterManager() {
     }));
     setMappedNewsletters(mapped);
   }, [newsletters]);
-
   const handleCreate = () => {
     setSelectedId(null); // Clear any selected ID
     setIsCreating(true);
@@ -133,7 +132,7 @@ export default function NewsletterManager() {
         </h1>
         <button
           onClick={handleCreate}
-          className="bg-ternary h-min text-white px-4 py-2 rounded"
+          className="bg-primary h-min text-white px-4 py-2 rounded"
         >
           Create Newsletter
         </button>

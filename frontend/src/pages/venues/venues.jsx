@@ -172,7 +172,7 @@ export default function Venues() {
         </div>
         <button
           onClick={handleCreate}
-          className="bg-ternary h-min text-white px-4 py-2 rounded"
+          className="bg-primary h-min text-white px-4 py-2 rounded"
         >
           Add Venue
         </button>
