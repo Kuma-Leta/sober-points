@@ -126,35 +126,35 @@ const BlogList = () => {
         </div>
 
         <div className="mb-8">
-          <div className="relative w-full max-w-2xl mx-auto mb-6">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <FaSearch className="text-gray-400" />
+          <div className="flex items-center">
+            <div className="relative max-w-2xl mx-auto mb-6">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <FaSearch className="text-gray-400" />
+              </div>
+              <input
+                type="text"
+                placeholder="Search articles..."
+                className="block w-full pl-10 pr-3 py-3 border border-gray-300 dark:border-gray-700 rounded-full bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
             </div>
-            <input
-              type="text"
-              placeholder="Search articles..."
-              className="block w-full pl-10 pr-3 py-3 border border-gray-300 dark:border-gray-700 rounded-full bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
+            <div className="flex flex-wrap justify-center gap-2 mb-6">
+              {categories.map((category) => (
+                <button
+                  key={category}
+                  onClick={() => setActiveCategory(category)}
+                  className={`px-4 py-2 text-sm font-medium transition-colors ${
+                    activeCategory === category
+                      ? "bg-primary text-white"
+                      : "bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                  }`}
+                >
+                  {category}
+                </button>
+              ))}
+            </div>
           </div>
-
-          <div className="flex flex-wrap justify-center gap-2 mb-6">
-            {categories.map((category) => (
-              <button
-                key={category}
-                onClick={() => setActiveCategory(category)}
-                className={`px-4 py-2 text-sm font-medium transition-colors ${
-                  activeCategory === category
-                    ? "bg-primary text-white"
-                    : "bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
-                }`}
-              >
-                {category}
-              </button>
-            ))}
-          </div>
-
           <div className="flex justify-center">
             <div className="inline-flex rounded-md shadow-sm">
               <button
