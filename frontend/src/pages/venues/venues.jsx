@@ -7,6 +7,7 @@ import Pagination from "../../ui/pagination";
 import { useSelector } from "react-redux";
 import { FaEdit, FaRegTrashAlt, FaEye, FaSearch } from "react-icons/fa";
 import VenueDetailModal from "./VenueDetailModal"; // Import the new component
+import { useNavigate } from "react-router-dom";
 
 export default function Venues() {
   const columns = [
@@ -147,9 +148,13 @@ export default function Venues() {
     setFilterCriteria(e.target.value);
     setPage(1); // Reset to first page on new filter
   };
-
+  const navigate = useNavigate();
   const user = useSelector((state) => state.auth.user);
-
+  useEffect(() => {
+    if (user?.role !== "admin") {
+      // navigate("/");
+    }
+  }, [user]);
   return (
     <div className="w-full max-w-7xl mx-auto px-6  mt-20">
       <div className="flex gap-2 items-center mb-4 justify-between">

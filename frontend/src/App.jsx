@@ -78,6 +78,7 @@ function Pages() {
           </ProtectedRoute>
         }
       />
+
       <Route
         path="/venues"
         element={
