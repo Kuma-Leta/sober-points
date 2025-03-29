@@ -15,9 +15,9 @@ const BlogForm = () => {
     categories: [],
     tags: "",
     isFeatured: false,
-    images: []
+    images: [],
   });
-
+  const [id, setId] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [imagePreview, setImagePreview] = useState([]);
@@ -35,6 +35,7 @@ const BlogForm = () => {
       setLoading(true);
       const response = await axiosInstance.get(`/blogs/${slug}`);
       const blog = response.data.blog;
+      setId(blog._id);
       setFormData({
         title: blog.title,
         excerpt: blog.excerpt,
@@ -42,7 +43,7 @@ const BlogForm = () => {
         categories: blog.categories,
         tags: blog.tags.join(", "),
         isFeatured: blog.isFeatured,
-        images: []
+        images: [],
       });
       setImagePreview(blog.images || []);
     } catch (error) {
@@ -54,38 +55,38 @@ const BlogForm = () => {
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: type === "checkbox" ? checked : value
+      [name]: type === "checkbox" ? checked : value,
     }));
   };
 
   const handleCategoryChange = (category) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       categories: prev.categories.includes(category)
-        ? prev.categories.filter(c => c !== category)
-        : [...prev.categories, category]
+        ? prev.categories.filter((c) => c !== category)
+        : [...prev.categories, category],
     }));
   };
 
   const handleImageChange = (e) => {
     const files = Array.from(e.target.files);
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      images: [...prev.images, ...files]
+      images: [...prev.images, ...files],
     }));
 
-    const newPreviews = files.map(file => URL.createObjectURL(file));
-    setImagePreview(prev => [...prev, ...newPreviews]);
+    const newPreviews = files.map((file) => URL.createObjectURL(file));
+    setImagePreview((prev) => [...prev, ...newPreviews]);
   };
 
   const removeImage = (index) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      images: prev.images.filter((_, i) => i !== index)
+      images: prev.images.filter((_, i) => i !== index),
     }));
-    setImagePreview(prev => prev.filter((_, i) => i !== index));
+    setImagePreview((prev) => prev.filter((_, i) => i !== index));
   };
 
   const handleSubmit = async (e) => {
@@ -96,9 +97,9 @@ const BlogForm = () => {
     const formDataToSend = new FormData();
 
     // Append all non-file fields
-    Object.keys(formData).forEach(key => {
+    Object.keys(formData).forEach((key) => {
       if (key === "tags") {
-        const tags = formData.tags.split(",").map(tag => tag.trim());
+        const tags = formData.tags.split(",").map((tag) => tag.trim());
         formDataToSend.append("tags", JSON.stringify(tags));
       } else if (key !== "images") {
         formDataToSend.append(key, formData[key]);
@@ -106,19 +107,19 @@ const BlogForm = () => {
     });
 
     // Append files
-    formData.images.forEach(image => {
+    formData.images.forEach((image) => {
       formDataToSend.append("images", image);
     });
 
     try {
       const config = {
         headers: {
-          'Content-Type': 'multipart/form-data'
-        }
+          "Content-Type": "multipart/form-data",
+        },
       };
 
       if (isEditMode) {
-        await axiosInstance.put(`/blogs/${slug}`, formDataToSend, config);
+        await axiosInstance.put(`/blogs/${id}`, formDataToSend, config);
       } else {
         await axiosInstance.post("/blogs", formDataToSend, config);
       }
@@ -199,15 +200,16 @@ const BlogForm = () => {
             Categories
           </label>
           <div className="flex flex-wrap gap-3">
-            {categories.map(category => (
+            {categories.map((category) => (
               <button
                 key={category}
                 type="button"
                 onClick={() => handleCategoryChange(category)}
                 className={`px-4 py-2 rounded-full text-sm font-medium transition-colors
-                  ${formData.categories.includes(category)
-                    ? 'bg-primary text-white'
-                    : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
+                  ${
+                    formData.categories.includes(category)
+                      ? "bg-primary text-white"
+                      : "bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300"
                   }`}
               >
                 {category}
@@ -269,7 +271,9 @@ const BlogForm = () => {
           <div className="flex items-center justify-center w-full">
             <label className="w-full flex flex-col items-center px-4 py-6 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg border-2 border-dashed cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-600">
               <MdCloudUpload className="w-8 h-8" />
-              <span className="mt-2 text-sm">Click or drag images to upload</span>
+              <span className="mt-2 text-sm">
+                Click or drag images to upload
+              </span>
               <input
                 type="file"
                 multiple
@@ -294,7 +298,7 @@ const BlogForm = () => {
             disabled={loading}
             className="px-6 py-2 bg-primary text-white rounded-lg hover:bg-primaryDark disabled:opacity-50"
           >
-            {loading ? "Saving..." : (isEditMode ? "Update" : "Create")}
+            {loading ? "Saving..." : isEditMode ? "Update" : "Create"}
           </button>
         </div>
       </form>
@@ -303,4 +307,3 @@ const BlogForm = () => {
 };
 
 export default BlogForm;
-
