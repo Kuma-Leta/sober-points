@@ -25,13 +25,14 @@ import MyVenueDetail from "./pages/venues/myVenueDetail";
 import AdminAnalytics from "./pages/venues/AdminAnalytics";
 import BottomNavBar from "./pages/venues/BottomNavBar"; // Import the BottomNavBar
 import Profile from "./pages/users/profile";
-
 import VenueList from "./pages/landing/VenueList";
 import PrivacyPolicy from "./pages/landing/privacyPolicy";
 import NotFound from "./pages/404";
 import VenueSubmissionPage from "./pages/landing/VenueSubmissionPage";
 import ContactUs from "./pages/landing/ContactUs";
 // import NewsletterManager from "./pages/newsletter/NewsletterManager";
+import BlogAdmin from "./pages/blog/admin";
+import BlogForm from "./pages/blog/admin/form";
 function Pages() {
   const user = useSelector((state) => state.auth.user);
 
@@ -81,7 +82,30 @@ function Pages() {
           </ProtectedRoute>
         }
       />
-
+      <Route
+        path="/admin/blogs"
+        element={
+          <ProtectedRoute>
+            <BlogAdmin />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin/blogs/new"
+        element={
+          <ProtectedRoute>
+            <BlogForm />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin/blogs/:slug"
+        element={
+          <ProtectedRoute>
+            <BlogForm />
+          </ProtectedRoute>
+        }
+      />
       <Route
         path="/venues"
         element={
@@ -90,15 +114,6 @@ function Pages() {
           </ProtectedRoute>
         }
       />
-
-      {/* <Route
-        path="/newsletter"
-        element={
-          <ProtectedRoute>
-            <NewsletterManager />
-          </ProtectedRoute>
-        }
-      /> */}
 
       <Route
         path="/admin-analytics"
