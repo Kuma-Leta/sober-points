@@ -65,30 +65,37 @@ const VenuesPage = () => {
   }, [dispatch, searchParams]);
 
   return (
-    <div className="flex flex-col min-h-screen bg-white mt-20 p-2  dark:bg-darkBg">
-      {/* <div className="flex flex-col md:flex-row flex-1 pt-20">
-        <div
-          className={`w-full ${
-            showMap ? "md:w-1/2" : "md:w-full"
-          } p-6 bg-white dark:bg-darkCard overflow-y-auto h-screen`}
+    <div className="flex flex-col min-h-screen bg-white p-2 dark:bg-darkBg">
+      {/* Header Section */}
+      <div className="flex justify-between p-3 items-center mb-2">
+        <SearchBar />
+        <button
+          onClick={() => setShowMap(!showMap)}
+          title="Toggle Map"
+          className="bg-black flex items-center justify-center p-2 rounded-md transition text-black-400 bg-white border-2 border-solid border-blgray rounded-lg duration-300"
         >
-          <div className="flex justify-between items-center mb-4">
-            <SearchBar />
+          {showMap ? <FaBars size={20} /> : <FaMapMarker size={20} />}
+        </button>
+      </div>
 
-            <button
-              onClick={() => setShowMap(!showMap)}
-              title="Toggle Map"
-              className="p-2 bg-black  rounded-md transition text-black-400 bg-white border-2 border-solid border-blgray rounded-lg p-3 duration-300"
-            >
-              {showMap ? <FaBars size={20} /> : <FaMapMarker size={20} />}
-            </button>
-          </div>
+      {/* Tags Section */}
+      <Tags />
+
+      {/* Main Content Section */}
+      <hr className="w-full text-gray-200" />
+      <div
+        className={`grid ${
+          showMap ? "md:grid-cols-2" : "grid-cols-1"
+        } gap-4 h-screen`}
+      >
+        {/* VenueLists (Scrollable) */}
+        <div className={`overflow-y-auto ${showMap ? "h-screen" : ""}`}>
           <VenueLists isSideBySide={showMap} loading={loading} error={error} />
         </div>
-        <div></div>
 
+        {/* VenueMap (Full Height & Sticky) */}
         {showMap && (
-          <div className="w-full md:w-1/2 h-screen sticky top-6 z-0">
+          <div className="w-full h-screen sticky top-0">
             <VenueMap
               venues={
                 searchResults.length > 0
@@ -102,64 +109,6 @@ const VenuesPage = () => {
             />
           </div>
         )}
-      </div> */}
-      <div>
-        {/* Header Section */}
-        <div className="flex justify-between p-3 items-center mb-2">
-          <SearchBar />
-          <button
-            onClick={() => setShowMap(!showMap)}
-            title="Toggle Map"
-            className="bg-black flex items-center justify-center p-2 rounded-md transition text-black-400 bg-white border-2 border-solid border-blgray rounded-lg duration-300"
-          >
-            {showMap ? <FaBars size={20} /> : <FaMapMarker size={20} />}
-          </button>
-        </div>
-
-        {/* Tags Section */}
-        <Tags />
-
-        {/* Main Content Section */}
-        <hr className="w-full text-gray-200" />
-        <div
-          className={
-            showMap
-              ? "grid grid-cols-1 md:grid-cols-2 gap-4 z-0 relative"
-              : "grid grid-cols-1 gap-4 z-0 relative"
-          }
-        >
-          {/* VenueLists (Scrollable) */}
-          <div
-            className={
-              showMap
-                ? "h-[calc(100vh-200px)] overflow-y-auto" // Adjust height as needed
-                : ""
-            }
-          >
-            <VenueLists
-              isSideBySide={showMap}
-              loading={loading}
-              error={error}
-            />
-          </div>
-
-          {/* VenueMap (Sticky) */}
-          {showMap && (
-            <div className="w-full sticky top-0 h-[calc(100vh-100px)]">
-              <VenueMap
-                venues={
-                  searchResults.length > 0
-                    ? searchResults
-                    : nearbyVenues.length > 0
-                    ? nearbyVenues
-                    : venues
-                }
-                center={mapCenter}
-                userLocation={userLocation}
-              />
-            </div>
-          )}
-        </div>
       </div>
     </div>
   );

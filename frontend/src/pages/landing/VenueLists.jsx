@@ -96,7 +96,7 @@ const VenueLists = ({ isSideBySide = false, error }) => {
   return (
     <div className="mt-4">
       {/* Pagination Controls */}
-      <div className="flex justify-center p-2 items-center mt-6 space-x-4">
+      <div className="flex justify-center  p-2 items-center mt-3 space-x-4">
         <button
           onClick={goToPrevPage}
           disabled={currentPage === 1}

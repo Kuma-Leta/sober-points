@@ -5,7 +5,7 @@ export default function Footer() {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
   return (
-    <footer className="bg-white text-black font-sans">
+    <footer className="bg-gray-70 text-black font-sans">
       <div className="max-w-6xl mx-auto py-10 px-4 sm:px-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
         {/* Left Column: Logo & Links */}
         <div>

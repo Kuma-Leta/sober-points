@@ -4,7 +4,6 @@ import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { searchVenues, fetchNearbyVenues } from "../redux/venue/venueSlice";
-import axiosInstance from "../api/api"; // Import your axios instance
 import axios from "axios";
 
 const SearchBar = ({ setQuery, onSearch }) => {
@@ -14,7 +13,8 @@ const SearchBar = ({ setQuery, onSearch }) => {
   const [suggestions, setSuggestions] = useState([]);
   const [isInputFocused, setIsInputFocused] = useState(false);
   const [locationError, setLocationError] = useState(null);
-  const inputRef = useRef(null); // Ref to handle input focus
+  const inputRef = useRef(null);
+
   useEffect(() => {
     const fetchSuggestions = async () => {
       if (searchTerm.length > 2) {
@@ -24,7 +24,6 @@ const SearchBar = ({ setQuery, onSearch }) => {
               searchTerm
             )}`
           );
-          console.log("here is the suggestions", response);
           setSuggestions(response.data.suggestions);
         } catch (error) {
           console.error("Error fetching suggestions:", error);
@@ -38,27 +37,31 @@ const SearchBar = ({ setQuery, onSearch }) => {
     fetchSuggestions();
   }, [searchTerm]);
 
-  const handleSearch = (e) => {
-    if (e.key === "Enter") {
+  const handleSearch = () => {
+    if (searchTerm.trim()) {
       dispatch(searchVenues(searchTerm));
       setSuggestions([]);
-      if (onSearch) onSearch(e);
+      if (onSearch) onSearch();
     }
   };
 
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      handleSearch();
+    }
+  };
   const handleSuggestionClick = (selectedPlace) => {
-    console.log("Selected place:", selectedPlace.location);
-    setSearchTerm(selectedPlace.name); // Update the search term with the selected suggestion
+    setSearchTerm(selectedPlace.name);
     dispatch(
       fetchNearbyVenues({
         lat: selectedPlace.location[1],
         lng: selectedPlace.location[0],
       })
     );
-    setIsInputFocused(false); // Hide suggestions
+    setIsInputFocused(false);
     navigate(`/venues/nearby`);
-    setSuggestions([]); // Clear suggestions
-    inputRef.current.blur(); // Remove focus from the input
+    setSuggestions([]);
+    inputRef.current.blur();
   };
 
   const handleFindNearMe = () => {
@@ -86,50 +89,62 @@ const SearchBar = ({ setQuery, onSearch }) => {
     setSearchTerm("");
     setSuggestions([]);
     if (setQuery) setQuery("");
-    inputRef.current.focus(); // Focus back on the input after clearing
+    inputRef.current.focus();
   };
 
-  // Handle input focus and button visibility
   const handleInputFocus = () => {
     setIsInputFocused(true);
   };
 
-  // Delay hiding the button to allow clicking it
   const handleInputBlur = () => {
     setTimeout(() => {
       setIsInputFocused(false);
-    }, 200); // Delay of 200ms to allow clicking the button
+    }, 200);
   };
 
-  return (
-    <motion.div id="explore" className="relative w-full max-w-md">
-      <div className="relative">
-        {/* Search Input */}
-        <input
-          id="search"
-          type="text"
-          placeholder="Find restaurants near me"
-          value={searchTerm}
-          ref={inputRef} // Attach the ref to the input
-          className="w-full border border-gray-300 rounded-lg px-4 py-2 pl-10 pr-10 text-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-400"
-          onChange={(e) => {
-            setSearchTerm(e.target.value);
-            if (setQuery) setQuery(e.target.value);
-          }}
-          onKeyDown={handleSearch}
-          onFocus={handleInputFocus} // Handle input focus
-          onBlur={handleInputBlur} // Handle input blur with a delay
-        />
-        {/* Search Icon (Left) */}
-        <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
+  // ... (keep other handler functions the same)
 
-        {/* Clear Button (Right) */}
-        {searchTerm && (
-          <FaTimes
-            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 cursor-pointer hover:text-gray-600"
-            onClick={handleClearSearch}
+  return (
+    <motion.div id="explore" className="relative w-full max-w-2xl">
+      <div className="flex items-center gap-2">
+        {/* Search Input Container */}
+        <div className="relative flex-1">
+          <input
+            id="search"
+            type="text"
+            placeholder="Find restaurants near me"
+            value={searchTerm}
+            ref={inputRef}
+            className="w-full border border-gray-300 rounded-lg px-4 py-2 pl-10 pr-10 text-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-400"
+            onChange={(e) => {
+              setSearchTerm(e.target.value);
+              if (setQuery) setQuery(e.target.value);
+            }}
+            onKeyDown={handleKeyDown}
+            onFocus={handleInputFocus}
+            onBlur={handleInputBlur}
           />
-        )}
+
+          {/* Search Icon (Left inside input) */}
+          <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
+
+          {/* Clear Button (Right inside input) */}
+          {searchTerm && (
+            <FaTimes
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 cursor-pointer hover:text-gray-600"
+              onClick={handleClearSearch}
+            />
+          )}
+        </div>
+
+        {/* Search Button (Outside input) */}
+        <button
+          onClick={handleSearch}
+          className="bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-dark transition duration-300 flex items-center gap-2"
+        >
+          <FaSearch />
+          <span>Search</span>
+        </button>
       </div>
 
       {/* Suggestions Dropdown */}
@@ -139,7 +154,7 @@ const SearchBar = ({ setQuery, onSearch }) => {
             <li
               key={index}
               className="px-4 py-2 cursor-pointer hover:bg-gray-200"
-              onMouseDown={(e) => e.preventDefault()} // Prevent input blur on click
+              onMouseDown={(e) => e.preventDefault()}
               onClick={() => handleSuggestionClick(suggestion)}
             >
               <div className="font-semibold">{suggestion.name}</div>
@@ -149,7 +164,7 @@ const SearchBar = ({ setQuery, onSearch }) => {
         </ul>
       )}
 
-      {/* Find Nearby Venues Button (Only shown when input is focused) */}
+      {/* Find Nearby Venues Button */}
       {isInputFocused && (
         <button
           onClick={handleFindNearMe}

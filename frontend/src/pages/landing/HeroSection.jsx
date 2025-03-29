@@ -14,14 +14,14 @@ const HeroSection = () => {
   };
 
   return (
-    <section className="w-full h-[60vh] sm:h-[70vh] md:h-[80vh] lg:h-[90vh] xl:h-screen flex flex-col justify-center items-center pt-4 text-center px-4 sm:px-6 relative mt-10 sm:mt-20 md:mt-12 bg-[#1A1A1A]">
+    <section className="w-full h-[70vh] xs:h-[80vh] sm:h-[80vh] md:h-[85vh] lg:h-[90vh] xl:h-screen flex flex-col justify-center items-center text-center relative bg-[#1A1A1A]">
       <motion.div
         initial={{ opacity: 0, y: -30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
-        className="flex flex-col items-center gap-2 sm:gap-4 mb-4 sm:mb-6"
+        className="flex flex-col items-center gap-2 sm:gap-4 mb-4 sm:mb-6 px-4"
       >
-        <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight">
+        <h1 className="text-3xl xs:text-4xl sm:text-5xl md:text-5xl lg:text-6xl font-bold text-white leading-tight">
           Discover the Best Alcohol-Free Experiences
         </h1>
       </motion.div>
@@ -41,7 +41,7 @@ const HeroSection = () => {
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ delay: 0.6, duration: 0.6 }}
-        className="w-full max-w-md sm:max-w-lg mt-6"
+        className="w-full max-w-md sm:max-w-lg mt-6 px-4"
       >
         <SearchBar
           setQuery={setQuery}

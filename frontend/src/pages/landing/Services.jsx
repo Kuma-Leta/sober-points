@@ -6,19 +6,19 @@ import score from "../../assets/images/sober2.jfif";
 const Features = () => {
   return (
     <div className="bg-gray-50 py-10 sm:py-12 md:py-16 font-sans">
-      {/* Header */}
-      <header className="text-center px-4 mb-10 md:mb-12">
+      {/* Header - Left-aligned with same padding as content */}
+      <header className="text-left px-4 sm:px-6 md:px-[calc((100%-min(1200px,90vw))/2)] mb-10 md:mb-12">
         <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 leading-tight">
           Discover the Best Alcohol-Free Experiences
         </h1>
-        <p className="mt-4 text-sm sm:text-base md:text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed">
+        <p className="mt-4 text-sm sm:text-base md:text-lg text-gray-600 max-w-2xl leading-relaxed">
           Our guide is meticulously curated to showcase exceptional alcohol-free
           offerings. Enjoy expert reviews and user recommendations that elevate
           your experience.
         </p>
       </header>
 
-      {/* Main Content */}
+      {/* Main Content - Centered */}
       <section id="aboutUs" className="container mx-auto px-4 sm:px-6">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {/* Section 1: Best AF Bars */}
@@ -76,13 +76,14 @@ const Features = () => {
 
       {/* Footer Button */}
       <footer className="text-center mt-8 md:mt-12">
-        <button
+        <a
           className="bg-[#1A1A1A] text-white px-6 py-3 
                      rounded-lg text-base sm:text-lg md:text-xl 
                      hover:bg-black transition duration-300"
+          href="/#explore"
         >
           Explore
-        </button>
+        </a>
       </footer>
     </div>
   );
