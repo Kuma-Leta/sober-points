@@ -125,21 +125,21 @@ const BlogList = () => {
           </h1>
         </div>
 
-        <div className="mb-8">
-          <div className="flex items-center">
-            <div className="relative max-w-2xl mx-auto mb-6">
+        <div className="mb-8 w-max mx-auto">
+          <div className="flex items-center justify-end">
+            <div className="relative mx-auto w-max border mb-6">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <FaSearch className="text-gray-400" />
               </div>
               <input
                 type="text"
                 placeholder="Search articles..."
-                className="block w-full pl-10 pr-3 py-3 border border-gray-300 dark:border-gray-700 rounded-full bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                className="block pl-10 pr-3 py-3 border border-gray-300 dark:border-gray-700 rounded-full bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
             </div>
-            <div className="flex flex-wrap justify-center gap-2 mb-6">
+            <div className="flex gap-2 mb-6">
               {categories.map((category) => (
                 <button
                   key={category}
