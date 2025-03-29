@@ -85,7 +85,6 @@ const Login = () => {
           </div>
           <div className="mt-4 mx-auto flex flex-col items-center justify-center w-full">
             <GoogleSignInButton />
-            {/* <FacebookLoginButton /> */}
           </div>
         </form>
       </div>
