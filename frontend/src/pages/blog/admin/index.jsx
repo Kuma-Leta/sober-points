@@ -123,7 +123,7 @@ const BlogAdmin = () => {
                         <FaEye className="h-5 w-5" />
                       </Link>
                       <Link
-                        to={`/admin/blogs/${blog._id}`}
+                        to={`/admin/blogs/${blog.slug}`}
                         className="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300"
                       >
                         <FaEdit className="h-5 w-5" />

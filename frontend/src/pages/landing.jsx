@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import NewsLetter from "./landing/NewsLetter";
 import FAQ from "./landing/FAQ";
 import ContactUs from "./landing/ContactUs";
+import VenueSubmissionPage from "./landing/VenueSubmissionPage";
 const LandingPage = () => {
   const [query, setQuery] = useState("");
   const navigate = useNavigate();
@@ -24,6 +25,7 @@ const LandingPage = () => {
       <Features />
       {/* <FAQ /> */}
       {/* <ContactUs /> */}
+      <VenueSubmissionPage />
       <NewsLetter />
     </div>
   );

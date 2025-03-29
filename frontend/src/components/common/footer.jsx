@@ -50,12 +50,12 @@ export default function Footer() {
               </a>
             </li>
             <li>
-              <a href="/#aboutus" className="hover:text-black transition">
+              <a href="/venues/nearby" className="hover:text-black transition">
                 Sober Map
               </a>
             </li>
             <li>
-              <a href="/#contactus" className="hover:text-black transition">
+              <a href="/contact" className="hover:text-black transition">
                 About Us
               </a>
             </li>
@@ -65,12 +65,15 @@ export default function Footer() {
               </a>
             </li>
             <li>
-              <a href="/#FAQ" className="hover:text-black transition">
+              <a
+                href="/howToContribute"
+                className="hover:text-black transition"
+              >
                 Join Us
               </a>
             </li>
             <li>
-              <a href="/#FAQ" className="hover:text-black transition">
+              <a href="/contact" className="hover:text-black transition">
                 Contact Us
               </a>
             </li>

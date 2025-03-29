@@ -18,6 +18,7 @@ import {
   FaMapSigns,
 } from "react-icons/fa"; // Import icons for toggle button
 import Tags from "./Tags";
+import ContributePage from "./ContributePage";
 
 const VenuesPage = () => {
   const dispatch = useDispatch();
@@ -95,7 +96,7 @@ const VenuesPage = () => {
 
         {/* VenueMap (Full Height & Sticky) */}
         {showMap && (
-          <div className="w-full h-screen sticky top-0">
+          <div className="w-full min-h-screen md:sticky top-0">
             <VenueMap
               venues={
                 searchResults.length > 0
@@ -110,6 +111,7 @@ const VenuesPage = () => {
           </div>
         )}
       </div>
+      <ContributePage />
     </div>
   );
 };

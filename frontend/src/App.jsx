@@ -28,6 +28,9 @@ import Profile from "./pages/users/profile";
 import VenueList from "./pages/landing/VenueList";
 import PrivacyPolicy from "./pages/landing/privacyPolicy";
 import NotFound from "./pages/404";
+import VenueSubmissionPage from "./pages/landing/VenueSubmissionPage";
+import ContactUs from "./pages/landing/ContactUs";
+// import NewsletterManager from "./pages/newsletter/NewsletterManager";
 import BlogAdmin from "./pages/blog/admin";
 import BlogForm from "./pages/blog/admin/form";
 import NewsletterManager from "./pages/newsletter/NewsletterManager";
@@ -56,6 +59,7 @@ function Pages() {
       <Route path="/" element={<LandingPage />} />
       <Route path="/venue/:id" element={<VenueDetail />} />
       <Route path="/privacyPolicy" element={<PrivacyPolicy />} />
+      <Route path="/howToContribute" element={<VenueSubmissionPage />} />
       <Route
         path="/users"
         element={
@@ -123,6 +127,7 @@ function Pages() {
           </ProtectedRoute>
         }
       />
+      <Route path="/contact" element={<ContactUs />} />
       <Route path="/favorites" element={<VenueList />} />
       <Route path="/ld" element={<LandingPage />} />
       <Route path="/venue/form" element={<VenueForm />} />
@@ -194,7 +199,7 @@ const Routing = () => {
   }
   // if(location.pathname ===)
   return (
-    <div className="max-w-[120rem] bg-whiteBlue dark:text-darkText dark:bg-darkBg mx-auto min-h-screen">
+    <div className="max-w-[120rem] bg-white dark:text-darkText dark:bg-darkBg mx-auto min-h-screen">
       <ToastContainer />
       <div className="flex min-h-screen flex-col">
         <div className="flex flex-1">
