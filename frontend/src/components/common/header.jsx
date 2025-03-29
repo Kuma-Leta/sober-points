@@ -4,7 +4,6 @@ import useAuth from "../../hooks/useAuth";
 import { useSelector } from "react-redux";
 import blackLogo from "../../assets/images/SP-Main-Logo-Black.png";
 import MobileLogo from "../../assets/images/Logo-Black.png";
-import whiteLogo from "../../assets/images/Logo-White.png";
 import {
   FaUser,
   FaBars,
@@ -13,8 +12,8 @@ import {
   FaRegHeart,
   FaHome,
 } from "react-icons/fa";
-import { FiSun, FiMoon } from "react-icons/fi";
 import defaultUserProfile from "../../assets/images/user.png";
+import { BiPlusCircle } from "react-icons/bi";
 
 const Header = () => {
   const { logout } = useAuth();
@@ -94,8 +93,8 @@ const Header = () => {
                   to="/venue/form"
                   className="hidden sm:flex bg-primary hover:bg-primaryLight text-white px-3 py-1 rounded-md items-center space-x-1 text-sm transition"
                 >
-                  <FaPlus />
-                  {/* <span>Post Venue</span> */}
+                  <BiPlusCircle />
+                  <span>Contribute</span>
                 </Link>
               )}
 

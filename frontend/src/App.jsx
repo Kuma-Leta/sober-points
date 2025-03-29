@@ -25,9 +25,11 @@ import MyVenueDetail from "./pages/venues/myVenueDetail";
 import AdminAnalytics from "./pages/venues/AdminAnalytics";
 import BottomNavBar from "./pages/venues/BottomNavBar"; // Import the BottomNavBar
 import Profile from "./pages/users/profile";
+
 import VenueList from "./pages/landing/VenueList";
 import PrivacyPolicy from "./pages/landing/privacyPolicy";
 import NotFound from "./pages/404";
+import NewsletterManager from "./pages/newsletter/NewsletterManager";
 function Pages() {
   const user = useSelector((state) => state.auth.user);
 
@@ -76,11 +78,21 @@ function Pages() {
           </ProtectedRoute>
         }
       />
+
       <Route
         path="/venues"
         element={
           <ProtectedRoute>
             <Venues />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/newsletter"
+        element={
+          <ProtectedRoute>
+            <NewsletterManager />
           </ProtectedRoute>
         }
       />
@@ -93,6 +105,7 @@ function Pages() {
           </ProtectedRoute>
         }
       />
+      <Route path="/favorites" element={<VenueList />} />
       <Route path="/ld" element={<LandingPage />} />
       <Route path="/venue/form" element={<VenueForm />} />
       <Route path="/my-venue" element={<MyVenues />} />
@@ -143,15 +156,7 @@ const Routing = () => {
       </>
     );
   }
-  if (location.pathname === "/favorites") {
-    return (
-      <>
-        <Header />
-        <VenueList />
-        <Footer />
-      </>
-    );
-  }
+
   if (location.pathname === "/auth/login") {
     return (
       <div className="bg-whiteBlue max-w-[120rem] dark:bg-darkBg">

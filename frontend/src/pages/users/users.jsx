@@ -7,6 +7,7 @@ import { getProfilePicUrl } from "../../utils/functions";
 import { FaEdit, FaRegTrashAlt, FaSearch } from "react-icons/fa";
 import Pagination from "../../ui/pagination";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 // const columns = ["NAME", "EMAIL", "STATUS", "ACTION"];
 export default function Users({ role }) {
@@ -106,6 +107,12 @@ export default function Users({ role }) {
     setIsCreating(true);
   };
   const user = useSelector((state) => state.auth.user);
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (user?.role !== "admin") {
+      navigate("/404");
+    }
+  }, [user]);
   return (
     <div className="w-full max-w-7xl mx-auto px-6  mt-20">
       <div className="flex gap-2 items-center mb-4 justify-between">

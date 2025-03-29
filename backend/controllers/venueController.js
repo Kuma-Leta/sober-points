@@ -330,11 +330,7 @@ exports.searchVenues = async (req, res) => {
 
     // Case-insensitive search across multiple fields using regex
     const searchQuery = {
-      $or: [
-       
-        { address: { $regex: query, $options: "i" } },
-     
-      ],
+      $or: [{ address: { $regex: query, $options: "i" } }],
     };
 
     // Fetch matching venues
@@ -352,7 +348,6 @@ exports.searchVenues = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
-
 
 exports.deleteVenue = async (req, res) => {
   try {
@@ -413,6 +408,7 @@ exports.getNearbyVenues = async (req, res) => {
 
     // MongoDB Geospatial Query
     let filter = {
+      isVerified: true,
       location: {
         $near: {
           $geometry: {
@@ -576,14 +572,16 @@ exports.getAdminDashboardAnalytics = async (req, res) => {
 exports.getVenueSuggestions = async (req, res) => {
   try {
     const { query } = req.query;
-    
 
     if (!query || query.length < 3) {
-      return res.status(400).json({ message: "Query must be at least 3 characters long" });
+      return res
+        .status(400)
+        .json({ message: "Query must be at least 3 characters long" });
     }
 
     // Use MongoDB's $regex to find venues matching the query
     const suggestions = await Venue.find({
+      isVerified: true,
       $or: [
         { name: { $regex: query, $options: "i" } }, // Case-insensitive search on name
         { address: { $regex: query, $options: "i" } }, // Case-insensitive search on address
@@ -609,9 +607,11 @@ exports.getVenueSuggestions = async (req, res) => {
 };
 // 📌 Controller: Fetch Most Rated Venues
 exports.getMostRatedVenues = async (req, res) => {
-  console.log("most rated")
+  console.log("most rated");
   try {
-    const venues = await Venue.find().sort({ rating: -1 }).limit(10); // Sort by rating in descending order
+    const venues = await Venue.find({ isVerified: true })
+      .sort({ rating: -1 })
+      .limit(10); // Sort by rating in descending order
     res.status(200).json({ success: true, venues });
   } catch (error) {
     console.error("Error fetching most rated venues:", error);
@@ -622,7 +622,9 @@ exports.getMostRatedVenues = async (req, res) => {
 // 📌 Controller: Fetch Newest Venues
 exports.getNewestVenues = async (req, res) => {
   try {
-    const venues = await Venue.find().sort({ createdAt: -1 }).limit(10); // Sort by creation date in descending order
+    const venues = await Venue.find({ isVerified: true })
+      .sort({ createdAt: -1 })
+      .limit(10); // Sort by creation date in descending order
     res.status(200).json({ success: true, venues });
   } catch (error) {
     console.error("Error fetching newest venues:", error);
@@ -636,14 +638,16 @@ exports.getNearestVenues = async (req, res) => {
     const { lat, lng } = req.query;
 
     if (!lat || !lng) {
-      return res.status(400).json({ message: "Latitude and longitude are required." });
+      return res
+        .status(400)
+        .json({ message: "Latitude and longitude are required." });
     }
 
     const latitude = parseFloat(lat);
     const longitude = parseFloat(lng);
 
     // Validate latitude and longitude
-    if (isNaN(latitude) ){
+    if (isNaN(latitude)) {
       return res.status(400).json({ message: "Invalid latitude value." });
     }
     if (isNaN(longitude)) {
@@ -652,6 +656,7 @@ exports.getNearestVenues = async (req, res) => {
 
     // MongoDB Geospatial Query
     const venues = await Venue.find({
+      isVerified: true,
       location: {
         $near: {
           $geometry: {
