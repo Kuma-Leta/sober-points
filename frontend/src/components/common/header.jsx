@@ -55,7 +55,7 @@ const Header = () => {
             <img
               src={blackLogo}
               alt="Sober Points Logo"
-              className="w-24 sm:w-24 h-auto dark:hidden" // Show in light mode
+              className="w-36 :w h-auto dark:hidden" // Show in light mode
             />
             <img
               src={whiteLogo}
