@@ -408,6 +408,7 @@ exports.getNearbyVenues = async (req, res) => {
 
     // MongoDB Geospatial Query
     let filter = {
+      isVerified: true,
       location: {
         $near: {
           $geometry: {
