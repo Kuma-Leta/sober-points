@@ -13,6 +13,7 @@ import {
   FaHome,
 } from "react-icons/fa";
 import defaultUserProfile from "../../assets/images/user.png";
+import { BiPlusCircle } from "react-icons/bi";
 
 const Header = () => {
   const { logout } = useAuth();
@@ -98,8 +99,8 @@ const Header = () => {
                   to="/venue/form"
                   className="hidden sm:flex bg-primary hover:bg-primaryLight text-white px-3 py-1 rounded-md items-center space-x-1 text-sm transition"
                 >
-                  <FaPlus />
-                  {/* <span>Post Venue</span> */}
+                  <BiPlusCircle />
+                  <span>Contribute</span>
                 </Link>
               )}
 
