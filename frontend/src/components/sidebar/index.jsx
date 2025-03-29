@@ -171,7 +171,7 @@ const Sidebar = () => {
                   alt={user?.username}
                 />
                 {/* Always show the name for admin users, even when sidebar is closed */}
-                {(isSidebarOpen || user?.role === "admin") && (
+                {(isSidebarOpen && user?.role === "admin") && (
                   <span>{user?.username}</span>
                 )}
               </div>
