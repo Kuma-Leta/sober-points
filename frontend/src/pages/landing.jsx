@@ -23,7 +23,7 @@ const LandingPage = () => {
 
       <Features />
       {/* <FAQ /> */}
-      <ContactUs />
+      {/* <ContactUs /> */}
       <NewsLetter />
     </div>
   );

@@ -9,6 +9,7 @@ import {
   FaUsers,
   FaChevronLeft,
   FaEnvelopeOpenText,
+  FaNewspaper,
 } from "react-icons/fa";
 import logo from "../../assets/images/logo.png";
 import { getProfilePicUrl } from "../../utils/functions";
@@ -63,7 +64,11 @@ const Sidebar = () => {
             label: "Venues",
             path: "/venues",
           },
-
+          {
+            icon: <FaNewspaper className="text-lg" />,
+            label: "Blogs",
+            path: "/admin/blogs",
+          },
           {
             icon: <FaEnvelopeOpenText className="text-lg" />,
             label: "Newsletter",

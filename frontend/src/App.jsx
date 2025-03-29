@@ -29,6 +29,9 @@ import VenueList from "./pages/landing/VenueList";
 import PrivacyPolicy from "./pages/landing/privacyPolicy";
 import NotFound from "./pages/404";
 import NewsletterManager from "./pages/newsletter/NewsletterManager";
+import BlogAdmin from "./pages/blog/admin";
+import BlogForm from "./pages/blog/admin/form";
+import NewsletterManager from "./pages/newsletter/NewsletterManager";
 
 function Pages() {
   const user = useSelector((state) => state.auth.user);
@@ -79,6 +82,30 @@ function Pages() {
         }
       />
       <Route
+        path="/admin/blogs"
+        element={
+          <ProtectedRoute>
+            <BlogAdmin />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin/blogs/new"
+        element={
+          <ProtectedRoute>
+            <BlogForm />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin/blogs/:slug"
+        element={
+          <ProtectedRoute>
+            <BlogForm />
+          </ProtectedRoute>
+        }
+      />
+      <Route
         path="/venues"
         element={
           <ProtectedRoute>
@@ -97,6 +124,7 @@ function Pages() {
           </ProtectedRoute>
         }
       />
+      <Route path="/favorites" element={<VenueList />} />
       <Route path="/ld" element={<LandingPage />} />
       <Route path="/venue/form" element={<VenueForm />} />
       <Route path="/my-venue" element={<MyVenues />} />
@@ -147,15 +175,7 @@ const Routing = () => {
       </>
     );
   }
-  if (location.pathname === "/favorites") {
-    return (
-      <>
-        <Header />
-        <VenueList />
-        <Footer />
-      </>
-    );
-  }
+
   if (location.pathname === "/auth/login") {
     return (
       <div className="bg-whiteBlue max-w-[120rem] dark:bg-darkBg">

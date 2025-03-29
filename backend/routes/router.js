@@ -11,6 +11,7 @@ const ratingRoutes = require("./rating");
 const favouritesRoutes = require("./favourites");
 const subscriberRoutes = require("./subscriber");
 const newsletterRoutes = require("./newsletter");
+const blogRoutes = require("./blog");
 // Authentication route
 router.post("/login", authController.login);
 router.get("/logout", authController.logoutUser);
@@ -91,4 +92,7 @@ router.use("/favorites", favouritesRoutes);
 router.use("/subscriber", subscriberRoutes);
 router.use("/newsletters", newsletterRoutes);
 // Venues
+
+// blog
+router.use("/blogs", blogRoutes);
 module.exports = router;
