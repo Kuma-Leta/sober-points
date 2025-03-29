@@ -1,7 +1,14 @@
 import React, { useEffect, useState } from "react";
 import axiosInstance from "../../api/api";
 import { useNavigate } from "react-router-dom";
-import { FaBuilding, FaCheckCircle, FaImage, FaInfoCircle, FaMapMarkerAlt, FaPlus } from "react-icons/fa";
+import {
+  FaBuilding,
+  FaCheckCircle,
+  FaImage,
+  FaInfoCircle,
+  FaMapMarkerAlt,
+  FaPlus,
+} from "react-icons/fa";
 import RatingStars from "../landing/venuedetail/RatingStars";
 
 const SkeletonCard = () => (
@@ -42,13 +49,13 @@ const MyVenues = () => {
   };
 
   const handleAddVenue = () => {
-    navigate('/venue/form');
+    navigate("/venue/form");
   };
 
-  if (error) return <p className="text-center mt-20 text-red-500">{error}</p>;
+  if (error) return <p className="text-center mt-4 text-red-500">{error}</p>;
 
   return (
-    <div className="p-4 mt-4 pt-20 max-w-7xl mx-auto">
+    <div className="p-4 mt-4  max-w-7xl mx-auto">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold text-center sm:text-left">
           My Venues
@@ -91,7 +98,10 @@ const MyVenues = () => {
                 >
                   {venue.image ? (
                     <img
-                      src={`http://localhost:5000/${venue.image.replace(/\\/g, "/")}`}
+                      src={`http://localhost:5000/${venue.image.replace(
+                        /\\/g,
+                        "/"
+                      )}`}
                       alt={venue.name}
                       loading="lazy"
                       className="w-full h-48 sm:h-56 object-cover group-hover:scale-105 transition-transform duration-200"
@@ -118,7 +128,13 @@ const MyVenues = () => {
                     </h2>
 
                     <p className="text-gray-600 dark:text-gray-300 mt-2 flex items-center gap-2">
-                      <FaCheckCircle className={venue.status === "Verified" ? "text-green-500" : "text-yellow-500"} />
+                      <FaCheckCircle
+                        className={
+                          venue.status === "Verified"
+                            ? "text-green-500"
+                            : "text-yellow-500"
+                        }
+                      />
                       Status:{" "}
                       <span
                         className={

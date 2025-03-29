@@ -36,6 +36,8 @@ import BlogForm from "./pages/blog/admin/form";
 import BlogList from "./pages/blog";
 import BlogRead from "./pages/blog/read";
 import ScrollToTopOnNavigation from "./scroltop";
+import NewsletterManager from "./pages/newsletter/NewsletterManager";
+
 function Pages() {
   const user = useSelector((state) => state.auth.user);
 
@@ -133,6 +135,8 @@ function Pages() {
           </ProtectedRoute>
         }
       />
+
+      <Route path="/newsletter" element={<NewsletterManager />} />
 
       <Route
         path="/admin-analytics"

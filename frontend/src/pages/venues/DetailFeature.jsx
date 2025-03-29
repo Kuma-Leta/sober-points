@@ -24,7 +24,7 @@ const DetailFeature = ({
     : null;
 
   return (
-    <div className="p-4 mt-2 pt-20 max-w-7xl mx-auto">
+    <div className="p-4 mt-4  max-w-7xl mx-auto">
       {/* Header with Update and Delete Icons */}
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-3xl font-bold">
