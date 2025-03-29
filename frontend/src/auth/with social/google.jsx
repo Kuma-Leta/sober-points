@@ -34,7 +34,7 @@ const GoogleSignInButton = () => {
       if (result.status === 200) {
         dispatch(loginSuccess(data.token, data.data.user));
         localStorage.setItem("_auth_token", data.token);
-        window.location.href = `/`;
+        window.location.href = "/my-venue";
       } else {
         toast.success("You don't have account with this ID try register");
         dispatch(loginFailure("Google login failed"));
