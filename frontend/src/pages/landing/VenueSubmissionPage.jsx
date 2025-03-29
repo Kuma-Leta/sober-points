@@ -63,7 +63,7 @@ const VenueSubmissionPage = () => {
       <div className="flex justify-center mt-10">
         <Link
           to="/auth/login"
-          className="flex items-center gap-2 text-lg font-semibold text-black  px-6 py-3 rounded-lg shadow-md  transition duration-300"
+          className="flex items-center gap-2 text-lg font-semibold text-white bg-primary px-6 py-3 rounded-lg shadow-md hover:bg-primaryLight transition duration-300"
         >
           Sign In <FaAngleRight />
         </Link>

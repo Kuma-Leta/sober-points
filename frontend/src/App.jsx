@@ -30,6 +30,7 @@ import VenueList from "./pages/landing/VenueList";
 import PrivacyPolicy from "./pages/landing/privacyPolicy";
 import NotFound from "./pages/404";
 import VenueSubmissionPage from "./pages/landing/VenueSubmissionPage";
+import ContactUs from "./pages/landing/ContactUs";
 // import NewsletterManager from "./pages/newsletter/NewsletterManager";
 function Pages() {
   const user = useSelector((state) => state.auth.user);
@@ -107,6 +108,7 @@ function Pages() {
           </ProtectedRoute>
         }
       />
+      <Route path="/contact" element={<ContactUs />} />
       <Route path="/favorites" element={<VenueList />} />
       <Route path="/ld" element={<LandingPage />} />
       <Route path="/venue/form" element={<VenueForm />} />
