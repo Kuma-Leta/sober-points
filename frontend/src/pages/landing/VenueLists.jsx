@@ -81,9 +81,9 @@ const VenueLists = ({ isSideBySide = false, error }) => {
     );
   }
 
-  if (error) {
-    return <p className="text-red-500 text-center">{error}</p>;
-  }
+  // if (error) {
+  //   return <p className="text-red-500 text-center">{error}</p>;
+  // }
 
   if (!Array.isArray(venues) || venues.length === 0) {
     return (

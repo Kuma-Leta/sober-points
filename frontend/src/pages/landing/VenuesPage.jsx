@@ -9,8 +9,16 @@ import {
 import VenueLists from "./VenueLists";
 import VenueMap from "./VenueMap";
 import SearchBar from "../../components/search";
-import { FaBars, FaMapMarker } from "react-icons/fa";
+import {
+  FaBars,
+  FaLocationArrow,
+  FaMap,
+  FaSearchLocation,
+  FaMapMarker,
+  FaMapSigns,
+} from "react-icons/fa"; // Import icons for toggle button
 import Tags from "./Tags";
+import ContributePage from "./ContributePage";
 
 const VenuesPage = () => {
   const dispatch = useDispatch();
@@ -19,12 +27,14 @@ const VenuesPage = () => {
     (state) => state.venues
   );
 
+  // Track user's location
   const [userLocation, setUserLocation] = useState(null);
   const [mapCenter, setMapCenter] = useState({
     lat: 51.509865, // Default to London
     lng: -0.118092,
   });
 
+  // Track map visibility
   const [showMap, setShowMap] = useState(true);
 
   useEffect(() => {
@@ -63,7 +73,7 @@ const VenuesPage = () => {
         <button
           onClick={() => setShowMap(!showMap)}
           title="Toggle Map"
-          className="bg-white flex items-center justify-center p-2 border-2 border-gray-300 rounded-md transition duration-300"
+          className="bg-black flex items-center justify-center p-2 rounded-md transition text-black-400 bg-white border-2 border-solid border-blgray rounded-lg duration-300"
         >
           {showMap ? <FaBars size={20} /> : <FaMapMarker size={20} />}
         </button>
@@ -75,18 +85,18 @@ const VenuesPage = () => {
       {/* Main Content Section */}
       <hr className="w-full text-gray-200" />
       <div
-        className={`flex ${
-          showMap ? "md:flex-row" : "flex-col"
-        } h-screen gap-4`}
+        className={`grid ${
+          showMap ? "md:grid-cols-2" : "grid-cols-1"
+        } gap-4 h-screen`}
       >
         {/* VenueLists (Scrollable) */}
-        <div className="h-full w-full overflow-y-auto flex-1">
+        <div className={`overflow-y-auto ${showMap ? "h-screen" : ""}`}>
           <VenueLists isSideBySide={showMap} loading={loading} error={error} />
         </div>
 
-        {/* VenueMap (Full Height) */}
+        {/* VenueMap (Full Height & Sticky) */}
         {showMap && (
-          <div className="h-full w-full flex-1">
+          <div className="w-full min-h-screen md:sticky top-0">
             <VenueMap
               venues={
                 searchResults.length > 0
@@ -101,6 +111,7 @@ const VenuesPage = () => {
           </div>
         )}
       </div>
+      <ContributePage />
     </div>
   );
 };

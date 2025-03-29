@@ -27,7 +27,7 @@ function NewsLetter() {
 
   return (
     <div className="bg-white text-white px-4 xs:px-5 sm:px-6 py-8 sm:py-10 md:py-12 lg:py-16">
-      <div className="bg-black px-5 xs:px-6 sm:px-8 md:px-10 py-8 sm:py-10 md:py-12 lg:py-16 mx-auto max-w-4xl rounded-lg shadow-lg">
+      <div className="bg-black px-5 xs:px-6 sm:px-8 md:px-10 py-8 sm:py-10 md:py-12 lg:py-16 mx-auto max-w-6xl rounded-lg shadow-lg">
         <h2 className="text-2xl xs:text-2.5xl sm:text-3xl md:text-4xl font-bold leading-tight mb-4 px-3 xs:px-4 sm:px-5">
           Stay Updated with Our Newsletter
         </h2>
@@ -47,7 +47,7 @@ function NewsLetter() {
               placeholder="Your Email Here"
               className="w-full p-3 xs:p-3.5 sm:p-4 rounded-lg border border-gray-500 text-black focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm xs:text-sm sm:text-base"
               value={email}
-            onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => setEmail(e.target.value)}
               required
             />
           </div>
@@ -55,7 +55,7 @@ function NewsLetter() {
             <button
               type="submit"
               className="w-full sm:w-auto whitespace-nowrap bg-white text-black font-semibold px-5 xs:px-6 py-2.5 xs:py-3 sm:py-3.5 rounded-lg hover:bg-gray-200 transition duration-300 text-sm xs:text-sm sm:text-base"
-              >
+            >
               Join Now
             </button>
           </div>

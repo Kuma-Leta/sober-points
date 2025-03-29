@@ -29,6 +29,7 @@ import VenueList from "./pages/landing/VenueList";
 import PrivacyPolicy from "./pages/landing/privacyPolicy";
 import NotFound from "./pages/404";
 import VenueSubmissionPage from "./pages/landing/VenueSubmissionPage";
+import ContactUs from "./pages/landing/ContactUs";
 // import NewsletterManager from "./pages/newsletter/NewsletterManager";
 import BlogAdmin from "./pages/blog/admin";
 import BlogForm from "./pages/blog/admin/form";
@@ -114,15 +115,6 @@ function Pages() {
         }
       />
 
-      {/* <Route
-        path="/newsletter"
-        element={
-          <ProtectedRoute>
-            <NewsletterManager />
-          </ProtectedRoute>
-        }
-      /> */}
-
       <Route
         path="/admin-analytics"
         element={
@@ -131,6 +123,7 @@ function Pages() {
           </ProtectedRoute>
         }
       />
+      <Route path="/contact" element={<ContactUs />} />
       <Route path="/favorites" element={<VenueList />} />
       <Route path="/ld" element={<LandingPage />} />
       <Route path="/venue/form" element={<VenueForm />} />

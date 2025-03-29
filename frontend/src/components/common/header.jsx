@@ -69,13 +69,13 @@ const Header = () => {
               </Link>
 
               <Link to="/" className="hover:text-primary transition">
-                About us
+                About
               </Link>
               <Link to="#features" className="hover:text-primary transition">
                 Blog
               </Link>
-              <Link to="#services" className="hover:text-primary transition">
-                Contact us
+              <Link to="/contact" className="hover:text-primary transition">
+                Contact
               </Link>
             </nav>
           )}
@@ -134,7 +134,7 @@ const Header = () => {
                   <Link
                     to="/favorites"
                     className="block px-4 py-2 text-grayColor dark:text-darkText hover:bg-gray-100 dark:hover:bg-gray-800"
-                    onClick={() => setSidebarOpen(false)}
+                    onClick={() => setDropdownOpen(false)}
                   >
                     <FaRegHeart className="inline mr-2" /> my favorites
                   </Link>
@@ -218,14 +218,14 @@ const Header = () => {
                   className="text-grayColor dark:text-darkText hover:text-primary transition"
                   onClick={() => setSidebarOpen(false)}
                 >
-                  About Us
+                  About
                 </Link>
                 <Link
                   to="#services"
                   className="text-grayColor dark:text-darkText hover:text-primary transition"
                   onClick={() => setSidebarOpen(false)}
                 >
-                  Contact us
+                  Contact
                 </Link>
                 {isAuthenticated && (
                   <Link

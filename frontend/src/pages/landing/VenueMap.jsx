@@ -130,7 +130,7 @@ const VenueMap = () => {
     <MapContainer
       center={[mapCenter.lat, mapCenter.lng]}
       zoom={13}
-      className="h-full w-full rounded-md "
+      className="h-full w-full z-0 rounded-md "
       touchZoom={true}
       doubleClickZoom={false}
       zoomControl={!isMobile}
@@ -153,43 +153,45 @@ const VenueMap = () => {
       )}
 
       {/* Venue Markers */}
-      {venues.map((venue) => {
-        if (!venue.location || !venue.location.coordinates) {
-          return null;
-        }
+      {venues
+        .filter((venue) => venue.isVerified)
+        .map((venue) => {
+          if (!venue.location || !venue.location.coordinates) {
+            return null;
+          }
 
-        const [lng, lat] = venue.location.coordinates;
-        const venueIcon = createVenueIcon(isMobile);
+          const [lng, lat] = venue.location.coordinates;
+          const venueIcon = createVenueIcon(isMobile);
 
-        return (
-          <Marker key={venue._id} position={[lat, lng]} icon={venueIcon}>
-            <Popup>
-              <div className="max-w-[200px]">
-                {venue.images.length > 0 && (
-                  <img
-                    src={`http://localhost:5000/${venue.images[0].replace(
-                      /\\/g,
-                      "/"
-                    )}`}
-                    alt={venue.name}
-                    className="w-full h-24 object-cover rounded-lg mb-2"
-                  />
-                )}
-                <h3 className="text-lg font-semibold text-gray-800">
-                  {venue.name}
-                </h3>
-                <p className="text-sm text-gray-600 mb-2">{venue.address}</p>
-                <div className="flex items-center mb-2">
-                  <RatingStars rating={venue.rating || 0} />
-                  <span className="ml-2 text-sm text-gray-600">
-                    ({venue.rating || 0})
-                  </span>
+          return (
+            <Marker key={venue._id} position={[lat, lng]} icon={venueIcon}>
+              <Popup>
+                <div className="max-w-[200px]">
+                  {venue.images.length > 0 && (
+                    <img
+                      src={`http://localhost:5000/${venue.images[0].replace(
+                        /\\/g,
+                        "/"
+                      )}`}
+                      alt={venue.name}
+                      className="w-full h-24 object-cover rounded-lg mb-2"
+                    />
+                  )}
+                  <h3 className="text-lg font-semibold text-gray-800">
+                    {venue.name}
+                  </h3>
+                  <p className="text-sm text-gray-600 mb-2">{venue.address}</p>
+                  <div className="flex items-center mb-2">
+                    <RatingStars rating={venue.rating || 0} />
+                    <span className="ml-2 text-sm text-gray-600">
+                      ({venue.rating || 0})
+                    </span>
+                  </div>
                 </div>
-              </div>
-            </Popup>
-          </Marker>
-        );
-      })}
+              </Popup>
+            </Marker>
+          );
+        })}
     </MapContainer>
   );
 };
