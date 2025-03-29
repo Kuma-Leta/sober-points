@@ -58,7 +58,7 @@ const MyVenues = () => {
           className="flex items-center gap-2 bg-primary hover:bg-primaryLight text-white px-4 py-2 rounded-lg transition-colors duration-200"
         >
           <FaPlus className="text-lg" />
-          <span>Add New Venue</span>
+          <span>Contribute New Venue</span>
         </button>
       </div>
 
@@ -74,7 +74,7 @@ const MyVenues = () => {
             className="flex items-center gap-2 bg-primary hover:bg-primaryLight text-white px-6 py-3 rounded-lg transition-colors duration-200"
           >
             <FaPlus className="text-lg" />
-            <span>Add Your First Venue</span>
+            <span>Contribute Your First Venue</span>
           </button>
         </div>
       ) : (
