@@ -41,12 +41,6 @@ const Header = () => {
       {/* Full-width container */}
       <div className="w-full px-4 sm:px-6 lg:px-8 flex items-center justify-between py-3 sm:py-3">
         {/* Mobile Menu Button */}
-        <button
-          className="text-grayColor dark:text-darkText sm:hidden"
-          onClick={() => setSidebarOpen(!sidebarOpen)}
-        >
-          {sidebarOpen ? <FaTimes size={20} /> : <FaBars size={20} />}
-        </button>
 
         {/* Logo */}
         <div className="flex items-center space-x-3">
@@ -182,14 +176,15 @@ const Header = () => {
 
           {/* Mobile Menu Toggle Button */}
           <button
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="sm:hidden p-2 text-grayColor dark:text-darkText"
+            className="text-grayColor dark:text-darkText sm:hidden"
+            onClick={() => setSidebarOpen(!sidebarOpen)}
           >
-            {mobileMenuOpen ? <FaTimes size={20} /> : <FaBars size={20} />}
+            {sidebarOpen ? <FaTimes size={20} /> : <FaBars size={20} />}
           </button>
         </div>
       </div>
 
+      {/* Sidebar for Mobile */}
       {/* Sidebar for Mobile */}
       {sidebarOpen && (
         <>
@@ -199,8 +194,8 @@ const Header = () => {
             onClick={() => setSidebarOpen(false)}
           ></div>
 
-          {/* Sidebar */}
-          <div className="fixed inset-y-0 left-0 w-64 bg-white dark:bg-darkCard shadow-lg z-50 sm:hidden">
+          {/* Sidebar - Changed from left-0 to right-0 */}
+          <div className="fixed inset-y-0 right-0 w-64 bg-white dark:bg-darkCard shadow-lg z-50 sm:hidden">
             <div className="p-4">
               {/* Close Button */}
               <button
@@ -210,7 +205,7 @@ const Header = () => {
                 <FaTimes size={20} />
               </button>
 
-              {/* Navigation Links */}
+              {/* Rest of the sidebar content remains exactly the same */}
               <nav className="flex flex-col space-y-3">
                 <Link
                   to="/"
@@ -244,7 +239,6 @@ const Header = () => {
                 )}
               </nav>
 
-              {/* User Dropdown (Mobile) */}
               {isAuthenticated && (
                 <div className="mt-6">
                   <div className="flex items-center space-x-2">

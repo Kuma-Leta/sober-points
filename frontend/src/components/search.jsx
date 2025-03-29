@@ -26,7 +26,6 @@ const SearchBar = ({ setQuery, onSearch }) => {
           );
           setSuggestions(response.data.suggestions);
         } catch (error) {
-          console.error("Error fetching suggestions:", error);
           setSuggestions([]);
         }
       } else {
@@ -112,7 +111,7 @@ const SearchBar = ({ setQuery, onSearch }) => {
           <input
             id="search"
             type="text"
-            placeholder="Find restaurants near me"
+            placeholder="Find venues near me"
             value={searchTerm}
             ref={inputRef}
             className="w-full border border-gray-300 rounded-lg px-4 py-2 pl-10 pr-10 text-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-400"
@@ -140,7 +139,7 @@ const SearchBar = ({ setQuery, onSearch }) => {
         {/* Search Button (Outside input) */}
         <button
           onClick={handleSearch}
-          className="bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-dark transition duration-300 flex items-center gap-2"
+          className="bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-dark transition duration-300 sm:hidden md:flex items-center gap-2"
         >
           <FaSearch />
           <span>Search</span>

@@ -1,26 +1,28 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
+
+import blackLogo from "../../assets/images/Logo-Black.png";
+
 export default function Footer() {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
+
   return (
-    <footer className="bg-gray-70 text-black font-sans">
-      <div className="max-w-6xl mx-auto py-10 px-4 sm:px-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-        {/* Left Column: Logo & Links */}
+    <footer className="bg-gray-100 text-black font-sans">
+      <div className="max-w-6xl mx-auto py-10 px-4 sm:px-6 grid gap-8 sm:grid-cols-2 text-left">
+        {/* Left Column: Logo & Navigation */}
         <div>
-          <h3 className="text-xl sm:text-2xl font-bold tracking-wide">
-            SOBER POINTS
-          </h3>
-          <ul className="mt-4 text-sm grid grid-cols-2 gap-2 md:grid-cols-1 sm:text-base text-gray-600">
+          <img src={blackLogo} alt="logo" className="w-20 h-20 mb-4" />
+          <ul className="text-sm  grid md:flex  md:flex-wrap   gap-3 sm:text-base text-gray-600">
             <li>
               <a href="/#aboutus" className="hover:text-black transition">
-                About Us
+                Sober Map
               </a>
             </li>
             <li>
               <a href="/#contactus" className="hover:text-black transition">
-                Contact Us
+                About Us
               </a>
             </li>
             <li>
@@ -30,33 +32,31 @@ export default function Footer() {
             </li>
             <li>
               <a href="/#FAQ" className="hover:text-black transition">
-                FAQs
+                Join Us
               </a>
             </li>
-            {!isAuthenticated && (
-              <li>
-                <a href="/auth/login" className="hover:text-black transition">
-                  Get Started
-                </a>
-              </li>
-            )}
+            <li>
+              <a href="/#FAQ" className="hover:text-black transition">
+                Contact Us
+              </a>
+            </li>
           </ul>
         </div>
 
-        {/* Right Columns: Subscription Form */}
-        <div className="sm:col-span-2">
+        {/* Right Column: Newsletter Signup */}
+        <div>
           <h3 className="text-lg sm:text-xl font-semibold">
-            Join Our Community
+            Sign up for our newsletter
           </h3>
-          <form className="mt-4 flex border border-gray-500 rounded-lg overflow-hidden max-w-md">
+          <form className="mt-4 flex flex-col sm:flex-row gap-2">
             <input
               type="email"
               placeholder="Enter your email"
-              className="p-3 w-full outline-none text-black text-sm sm:text-base"
+              className="p-3 w-full outline-none border border-black text-black text-sm sm:text-base rounded-md focus:ring-2 focus:ring-black focus:border-transparent"
             />
             <button
               type="submit"
-              className="bg-black text-white px-4 sm:px-5 hover:bg-gray-800 transition text-sm sm:text-base"
+              className="bg-primary text-white px-4 py-3 hover:bg-primaryLight transition text-sm sm:text-base border-2 border-black rounded-md hover:border-black"
             >
               Subscribe
             </button>
@@ -72,11 +72,8 @@ export default function Footer() {
       </div>
 
       {/* Bottom Bar */}
-      <hr className="border-gray-300" />
-      <div
-        className="max-w-6xl mx-auto py-4 px-4 sm:px-6 flex flex-col sm:flex-row 
-                      justify-between items-start sm:items-center text-xs sm:text-sm text-gray-600"
-      >
+      <hr className="border-gray-300 my-4" />
+      <div className="max-w-6xl mx-auto   px-4 sm:py-6 flex flex-col sm:flex-row justify-between items-start text-xs sm:text-sm text-gray-600 text-left">
         <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4">
           <a href="/privacyPolicy" className="hover:text-black transition">
             Privacy Policy
@@ -88,8 +85,8 @@ export default function Footer() {
             Cookies Settings
           </a>
         </div>
-        <p className="mt-2 sm:mt-0 text-gray-600">
-          &copy; 2025 Relume. All rights reserved.
+        <p className="mt-2 sm:mt-0">
+          &copy; 2025 Sober Points. All rights reserved.
         </p>
       </div>
     </footer>
