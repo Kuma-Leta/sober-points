@@ -127,7 +127,10 @@ export default function NewsletterManager() {
 
   return (
     <div className="w-full max-w-7xl mx-auto px-6 mt-8">
-      <div className="flex gap-2 items-center mb-4 justify-end">
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+          Newsletter Management
+        </h1>
         <button
           onClick={handleCreate}
           className="bg-ternary h-min text-white px-4 py-2 rounded"

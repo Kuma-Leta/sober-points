@@ -9,16 +9,17 @@ export default function NewsletterForm({
   onClose,
   onUpdate,
 }) {
-  const [newsletterData, setNewsletterData] = useState({
+  const initialNewsletterData = {
     subject: "",
     content: "",
     scheduledAt: "",
-  });
+  };
+
+  const [newsletterData, setNewsletterData] = useState(initialNewsletterData);
   const [loading, setLoading] = useState(false);
   const [sendLoading, setSendLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // Quill editor modules configuration
   const modules = {
     toolbar: [
       [{ header: [1, 2, 3, false] }],
@@ -30,7 +31,6 @@ export default function NewsletterForm({
     ],
   };
 
-  // Quill editor formats configuration
   const formats = [
     "header",
     "bold",
@@ -46,14 +46,9 @@ export default function NewsletterForm({
   ];
 
   useEffect(() => {
-    // Reset form when mode changes to create
-    if (mode === "create" && !newsletterId) {
-      setNewsletterData({
-        subject: "",
-        content: "",
-        scheduledAt: "",
-      });
-    }
+    // Reset form when mode or newsletterId changes
+    setNewsletterData(initialNewsletterData);
+    setError(null);
 
     if (mode === "edit" && newsletterId) {
       const fetchNewsletter = async () => {
@@ -77,7 +72,7 @@ export default function NewsletterForm({
       };
       fetchNewsletter();
     }
-  }, [mode, newsletterId]); // Add mode and newsletterId as dependencies
+  }, [mode, newsletterId]);
 
   const handleChange = (e) => {
     setNewsletterData({ ...newsletterData, [e.target.name]: e.target.value });
@@ -121,8 +116,6 @@ export default function NewsletterForm({
   };
 
   const handleFormReset = () => {
-    setNewsletterData({ subject: "", content: "", scheduledAt: "" });
-    setError(null);
     onClose();
   };
 
