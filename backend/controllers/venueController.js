@@ -618,7 +618,9 @@ exports.getMostRatedVenues = async (req, res) => {
 // 📌 Controller: Fetch Newest Venues
 exports.getNewestVenues = async (req, res) => {
   try {
-    const venues = await Venue.find().sort({ createdAt: -1 }).limit(10); // Sort by creation date in descending order
+    const venues = await Venue.find({ isVerified: true })
+      .sort({ createdAt: -1 })
+      .limit(10); // Sort by creation date in descending order
     res.status(200).json({ success: true, venues });
   } catch (error) {
     console.error("Error fetching newest venues:", error);
