@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 import { useSelector } from "react-redux";
 import blackLogo from "../../assets/images/SP-Main-Logo-Black.png";
+import MobileLogo from "../../assets/images/Logo-Black.png";
 import whiteLogo from "../../assets/images/Logo-White.png";
 import {
   FaUser,
@@ -55,12 +56,12 @@ const Header = () => {
             <img
               src={blackLogo}
               alt="Sober Points Logo"
-              className="w-36 :w h-auto dark:hidden" // Show in light mode
+              className="w-36 md:block hidden h-auto dark:hidden" // Show in light mode
             />
             <img
-              src={whiteLogo}
+              src={MobileLogo}
               alt="Sober Points Logo"
-              className="w-24 sm:w-24 h-auto hidden dark:block" // Show in dark mode
+              className="h-8 md:hidden h- dark:hidden" // Show in light mode
             />
           </Link>
 
