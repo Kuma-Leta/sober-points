@@ -44,7 +44,11 @@ const useAuth = () => {
       if (response.status === 200) {
         dispatch(loginSuccess(data.token, data.data.user));
         setLoading(false);
-        window.location.href = redirectPath || "/";
+        if (data.data.user.role === "customer") {
+          window.location.href = redirectPath || "/my-venue";
+        } else {
+          window.location.href = redirectPath || "/";
+        }
       } else {
         dispatch(loginFailure("an authorized"));
         setError("Unauthorized, meet super admin to access this page");
@@ -89,7 +93,11 @@ const useAuth = () => {
         );
         console.log(data.data.user);
         dispatch(loginSuccess(data.token, data.data.user));
-        window.location.href = redirectPath || "/";
+        if (data.data.user.role === "customer") {
+          window.location.href = redirectPath || "/my-venue";
+        } else {
+          window.location.href = redirectPath || "/";
+        }
       } else {
         dispatch(loginFailure(data?.error?.message || "Registration failed"));
         setError(data?.error?.message || "Registration failed");
