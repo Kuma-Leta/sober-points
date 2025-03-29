@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 
 import axiosInstance from "../../api/api";
-import blackLogo from "../../assets/images/Logo-Black.png";
+import MobileLogo from "../../assets/images/Logo-Black.png";
 
 export default function Footer() {
   const navigate = useNavigate();
