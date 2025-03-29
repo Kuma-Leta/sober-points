@@ -41,7 +41,7 @@ exports.login = async (req, res) => {
     if (!user.password) {
       return res
         .status(400)
-        .json({ message: "Please with google or try forgot password" });
+        .json({ message: "Please login with Google to continue" });
     }
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
