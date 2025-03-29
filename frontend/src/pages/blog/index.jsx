@@ -273,7 +273,7 @@ const BlogList = () => {
                           ) : (
                             <FaRegHeart className="mr-1" />
                           )}
-                          <span>{blog.likes.length}</span>
+                          <span>{blog?.likes?.length}</span>
                         </button>
 
                         <div className="flex items-center">
