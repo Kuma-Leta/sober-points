@@ -166,7 +166,7 @@ const Sidebar = () => {
               {/* Profile Section */}
               <div className="flex items-center gap-3 p-3 rounded-lg transition-all duration-200 text-gray-300 hover:bg-gray-800/50">
                 <img
-                  className="w-8 h-8 rounded-full object-cover"
+                  className="w-8 h-8 border rounded-full object-cover"
                   src={getProfilePicUrl(user?.profilePicture)}
                   alt={user?.username}
                 />
