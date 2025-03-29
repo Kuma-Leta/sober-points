@@ -35,6 +35,7 @@ import BlogAdmin from "./pages/blog/admin";
 import BlogForm from "./pages/blog/admin/form";
 import BlogList from "./pages/blog";
 import BlogRead from "./pages/blog/read";
+import ScrollToTopOnNavigation from "./scroltop";
 function Pages() {
   const user = useSelector((state) => state.auth.user);
 
@@ -265,6 +266,7 @@ const Routing = () => {
 
 const App = () => (
   <BrowserRouter>
+     <ScrollToTopOnNavigation />
     <Routing />
   </BrowserRouter>
 );
