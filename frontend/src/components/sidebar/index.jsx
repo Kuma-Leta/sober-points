@@ -117,25 +117,20 @@ const Sidebar = () => {
 
           <div className="w-full">
             {/* Desktop Toggle Button */}
-            <div className="flex  w-full h-12 items-center justify-between  transition-all duration-200">
-              {isSidebarOpen && (
-                <div className="w-full mx-auto flex items-center justify-left font-mono font-bold text-3xl cursor-pointer hover:opacity-90">
-                  <img className="h-10 mr-2" src={logo} alt="Company Logo" />
-                  {user?.company?.name}
-                </div>
-              )}
+            <div
+              className={`flex  w-full h-12 items-center ${
+                !isSidebarOpen ? "justify-center" : "justify-end"
+              } transition-all duration-200`}
+            >
               {!isMobile && (
                 <button
                   onClick={toggleSidebar}
-                  className="w- text-white hover:opacity-80  "
+                  className="w- text-white hover:opacity-80 "
                 >
                   {isSidebarOpen ? (
                     <FaChevronLeft size={24} />
                   ) : (
-                    <img
-                      className="sm:ml-2 h-10 "
-                      src={user ? `${API_URL}/${user?.company?.logo}` : logo}
-                    />
+                    <FaBars className="text-2xl" />
                   )}
                 </button>
               )}
