@@ -121,11 +121,8 @@ const BlogList = () => {
       <div className="max-w-7xl mx-auto">
         <div className="mb-12 text-center">
           <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
-            Discover Stories
+            Explore Our Featured Blogs
           </h1>
-          <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-            Explore the latest articles and insights from our community
-          </p>
         </div>
 
         <div className="mb-8">
