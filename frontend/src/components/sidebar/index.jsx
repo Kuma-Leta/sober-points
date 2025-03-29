@@ -69,11 +69,6 @@ const Sidebar = () => {
             label: "Newsletter",
             path: "/newsletter",
           },
-          {
-            icon: <IoSettingsOutline className="text-lg" />,
-            label: "Settings",
-            path: "/setting",
-          },
         ]
       : []),
 

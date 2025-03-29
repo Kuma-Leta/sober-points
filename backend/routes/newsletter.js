@@ -4,20 +4,25 @@ const { authenticate, authorize } = require("../middleware/authMiddleware");
 const {
   createNewsletter,
   sendNewsletter,
-  scheduleNewsletter,
+
   getNewsletters,
-  getNewsletterStats,
+
+  deleteNewsletter,
+  getNewsletterById,
+  updateNewsletter,
+  createAndSendNewsletter,
 } = require("../controllers/newsletterController");
 
 // Admin-protected routes
-router.use(authenticate, authorize("customer"));
+router.use(authenticate, authorize("admin"));
 
 router.route("/").post(createNewsletter).get(getNewsletters);
 
-router.route("/stats").get(getNewsletterStats);
+router.delete("/:id", deleteNewsletter);
 
 router.route("/:id/send").post(sendNewsletter);
-
-router.route("/:id/schedule").put(scheduleNewsletter);
+router.get("/:id", getNewsletterById);
+router.put("/:id", updateNewsletter);
+router.post("/create-and-send", createAndSendNewsletter);
 
 module.exports = router;

@@ -89,6 +89,6 @@ router.use("/venues", venueRoutes); // <-- Add this line
 router.use("/ratings", ratingRoutes);
 router.use("/favorites", favouritesRoutes);
 router.use("/subscriber", subscriberRoutes);
-router.use("/newsletter", newsletterRoutes);
+router.use("/newsletters", newsletterRoutes);
 // Venues
 module.exports = router;
