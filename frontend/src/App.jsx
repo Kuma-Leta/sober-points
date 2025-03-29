@@ -27,7 +27,7 @@ import BottomNavBar from "./pages/venues/BottomNavBar"; // Import the BottomNavB
 import Profile from "./pages/users/profile";
 import VenueList from "./pages/landing/VenueList";
 import PrivacyPolicy from "./pages/landing/privacyPolicy";
-import NewsletterManager from "./pages/newsletter/NewsletterManager";
+
 function Pages() {
   const user = useSelector((state) => state.auth.user);
 
@@ -81,15 +81,6 @@ function Pages() {
         element={
           <ProtectedRoute>
             <Venues />
-          </ProtectedRoute>
-        }
-      />
-
-      <Route
-        path="/newsletter"
-        element={
-          <ProtectedRoute>
-            <NewsletterManager />
           </ProtectedRoute>
         }
       />
