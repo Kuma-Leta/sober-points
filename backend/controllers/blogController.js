@@ -134,7 +134,7 @@ exports.getAllBlogs = async (req, res) => {
 
     // Use APIfeatures for filtering, searching, etc.
     const features = new APIfeatures(query, req.query)
-      .multfilter(["title", "excerpt", "content", "tags"])
+      .multfilter(["title", "excerpt", "categories", "content", "tags"])
       .filter()
       .sort()
       .limiting()

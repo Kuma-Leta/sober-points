@@ -34,6 +34,7 @@ import ContactUs from "./pages/landing/ContactUs";
 import BlogAdmin from "./pages/blog/admin";
 import BlogForm from "./pages/blog/admin/form";
 import BlogList from "./pages/blog";
+import BlogRead from "./pages/blog/read";
 function Pages() {
   const user = useSelector((state) => state.auth.user);
 
@@ -96,6 +97,14 @@ function Pages() {
         element={
           <ProtectedRoute>
             <BlogList />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/blog/:slug"
+        element={
+          <ProtectedRoute>
+            <BlogRead />
           </ProtectedRoute>
         }
       />
