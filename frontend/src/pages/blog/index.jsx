@@ -1,28 +1,36 @@
-import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import axios from 'axios';
-import { FaRegClock, FaRegHeart, FaRegComment } from 'react-icons/fa';
-import { MdCategory } from 'react-icons/md';
+import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import axios from "axios";
+import { FaRegClock, FaRegHeart, FaRegComment } from "react-icons/fa";
+import { MdCategory } from "react-icons/md";
 
 const BlogListing = () => {
   const [blogs, setBlogs] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState('all');
+  const [selectedCategory, setSelectedCategory] = useState("all");
   const [loading, setLoading] = useState(true);
 
-  const categories = ["All", "Nightlife", "Food", "Culture", "Wellness", "Travel"];
+  const categories = [
+    "All",
+    "Nightlife",
+    "Food",
+    "Culture",
+    "Wellness",
+    "Travel",
+  ];
 
   useEffect(() => {
     const fetchBlogs = async () => {
       try {
-        const url = selectedCategory === 'all' 
-          ? '/api/blogs'
-          : `/api/blogs/category/${selectedCategory}`;
-        
+        const url =
+          selectedCategory === "all"
+            ? "/api/blogs"
+            : `/api/blogs/category/${selectedCategory}`;
+
         const response = await axios.get(url);
         setBlogs(response.data.blogs);
         setLoading(false);
       } catch (error) {
-        console.error('Error fetching blogs:', error);
+        console.error("Error fetching blogs:", error);
         setLoading(false);
       }
     };
@@ -42,9 +50,12 @@ const BlogListing = () => {
     <div className="min-h-screen bg-gray-50 dark:bg-darkBg py-12 px-4 sm:px-6 lg:px-8">
       {/* Header Section */}
       <div className="max-w-7xl mx-auto mb-12">
-        <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">Our Blog</h1>
+        <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
+          Our Blog
+        </h1>
         <p className="text-lg text-gray-600 dark:text-gray-300">
-          Discover the latest stories, tips, and insights about travel and experiences
+          Discover the latest stories, tips, and insights about travel and
+          experiences
         </p>
       </div>
 
@@ -56,7 +67,7 @@ const BlogListing = () => {
               key={category}
               onClick={() => setSelectedCategory(category.toLowerCase())}
               className={`px-4 py-2 rounded-full text-sm font-medium transition-colors
-                ${selectedCategory === category.toLowerCase()
+                ${selectedCategory === category.toLowerCase()}
                   ? 'bg-primary text-white'
                   : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
                 }`}
@@ -88,7 +99,7 @@ const BlogListing = () => {
                   </div>
                 )}
               </div>
-              
+
               <div className="p-6">
                 <div className="flex items-center gap-4 mb-4">
                   {blog.categories.map((category) => (
@@ -105,7 +116,7 @@ const BlogListing = () => {
                 <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-3">
                   {blog.title}
                 </h2>
-                
+
                 <p className="text-gray-600 dark:text-gray-300 mb-4 line-clamp-2">
                   {blog.excerpt}
                 </p>
