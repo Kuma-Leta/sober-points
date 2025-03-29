@@ -49,7 +49,7 @@ const Register = () => {
             />
           </div>
           <button
-            className="w-full py-3 mb-4 text-lg font-semibold bg-primary text-black hover:bg-opacity-85"
+            className="w-full py-3 mb-4 text-lg font-semibold bg-primary text-white hover:bg-opacity-85"
             type="submit"
           >
             Sign Up
