@@ -26,12 +26,12 @@ function NewsLetter() {
   };
 
   return (
-    <div className="bg-white text-white text-center px-4 md:px-6 py-8 sm:py-12 lg:py-16">
-      <div className="bg-black py-8 sm:py-12 lg:py-16 mx-auto max-w-4xl rounded-lg shadow-lg">
-        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold leading-tight mb-4 px-4 sm:px-6">
+    <div className="bg-white text-white px-4 xs:px-5 sm:px-6 py-8 sm:py-10 md:py-12 lg:py-16">
+      <div className="bg-black px-5 xs:px-6 sm:px-8 md:px-10 py-8 sm:py-10 md:py-12 lg:py-16 mx-auto max-w-4xl rounded-lg shadow-lg">
+        <h2 className="text-2xl xs:text-2.5xl sm:text-3xl md:text-4xl font-bold leading-tight mb-4 px-3 xs:px-4 sm:px-5">
           Stay Updated with Our Newsletter
         </h2>
-        <p className="mt-3 text-sm sm:text-base text-gray-300 max-w-xl mx-auto leading-relaxed mb-6 px-4 sm:px-6">
+        <p className="mt-3 text-sm xs:text-sm sm:text-base text-gray-300 max-w-xl leading-relaxed mb-6 px-3 xs:px-4 sm:px-5">
           Subscribe for the latest updates and exclusive insights on
           alcohol-free offerings near you.
         </p>
@@ -39,22 +39,26 @@ function NewsLetter() {
         {/* Subscription Form */}
         <form
           onSubmit={handleSubmit}
-          className="mt-6 flex flex-col sm:flex-row items-center gap-3 max-w-md mx-auto px-4 sm:px-6"
+          className="mt-6 flex flex-col sm:flex-row items-center gap-3 max-w-md px-3 xs:px-4 sm:px-5"
         >
-          <input
-            type="email"
-            placeholder="Your Email Here"
-            className="w-full p-3 sm:p-4 rounded-lg border border-gray-500 text-black focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
-            value={email}
+          <div className="w-full sm:flex-1">
+            <input
+              type="email"
+              placeholder="Your Email Here"
+              className="w-full p-3 xs:p-3.5 sm:p-4 rounded-lg border border-gray-500 text-black focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm xs:text-sm sm:text-base"
+              value={email}
             onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-          <button
-            type="submit"
-            className="w-full sm:w-auto bg-white text-black font-semibold p-3 nowrap rounded-lg hover:bg-gray-200 transition duration-300 text-sm sm:text-base"
-          >
-            Join Now
-          </button>
+              required
+            />
+          </div>
+          <div className="w-full sm:w-auto">
+            <button
+              type="submit"
+              className="w-full sm:w-auto whitespace-nowrap bg-white text-black font-semibold px-5 xs:px-6 py-2.5 xs:py-3 sm:py-3.5 rounded-lg hover:bg-gray-200 transition duration-300 text-sm xs:text-sm sm:text-base"
+              >
+              Join Now
+            </button>
+          </div>
         </form>
 
         {/* Message Display */}
@@ -68,7 +72,7 @@ function NewsLetter() {
           </p>
         )}
 
-        <p className="text-xs sm:text-sm text-gray-400 mt-4 px-4 sm:px-6">
+        <p className="text-xs xs:text-xs sm:text-sm text-gray-400 mt-4 px-3 xs:px-4 sm:px-5">
           By clicking Join Now, you agree to our{" "}
           <a
             href="#"

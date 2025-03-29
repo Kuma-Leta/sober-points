@@ -119,7 +119,7 @@ const VenueDetail = () => {
   const [longitude, latitude] = venue.location.coordinates;
 
   return (
-    <div className="mt-16 sm:p-1 sm:mt-6 md:mt-16 bg-white dark:bg-darkBg min-h-screen">
+    <div className=" sm:p-1   bg-white dark:bg-darkBg min-h-screen">
       <ToastContainer />
       <div className="pl-6 sm:pl-8 lg:pl-12 py-4">
         <SearchBar />

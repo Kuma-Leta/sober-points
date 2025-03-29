@@ -2,7 +2,8 @@ import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 import { useSelector } from "react-redux";
-import blackLogo from "../../assets/images/Logo-Black.png";
+import blackLogo from "../../assets/images/SP-Main-Logo-Black.png";
+import MobileLogo from "../../assets/images/Logo-Black.png";
 import whiteLogo from "../../assets/images/Logo-White.png";
 import {
   FaUser,
@@ -36,9 +37,9 @@ const Header = () => {
   }, []);
 
   return (
-    <header className="bg-white dark:bg-darkCard dark:text-darkText w-full shadow-sm fixed top-0 z-50">
+    <header className="bg-white dark:bg-darkCard dark:text-darkText w-full shadow-sm ">
       {/* Full-width container */}
-      <div className="w-full px-4 sm:px-6 lg:px-8 flex items-center justify-between py-3 sm:py-4">
+      <div className="w-full px-4 sm:px-6 lg:px-8 flex items-center justify-between py-3 sm:py-3">
         {/* Mobile Menu Button */}
         <button
           className="text-grayColor dark:text-darkText sm:hidden"
@@ -49,45 +50,50 @@ const Header = () => {
 
         {/* Logo */}
         <div className="flex items-center space-x-3">
+          {/* Logo */}
           <Link to="/">
             {/* Black logo for light mode, white logo for dark mode */}
             <img
               src={blackLogo}
               alt="Sober Points Logo"
-              className="w-16 sm:w-20 h-auto object-contain dark:hidden" // Show in light mode
+              className="w-36 md:block hidden h-auto dark:hidden" // Show in light mode
             />
             <img
-              src={whiteLogo}
+              src={MobileLogo}
               alt="Sober Points Logo"
-              className="w-16 sm:w-20 h-auto object-contain hidden dark:block" // Show in dark mode
+              className="h-8 md:hidden h- dark:hidden" // Show in light mode
             />
           </Link>
-        </div>
 
-        {/* Navigation Links (Desktop) - Conditionally rendered for non-admin users */}
-        {user?.role !== "admin" && (
-          <nav className="hidden sm:flex space-x-4 text-grayColor dark:text-darkText text-sm font-medium">
-            <Link to="#contact" className="hover:text-primary transition">
-              Sober Points
-            </Link>
-            <Link to="/" className="hover:text-primary transition">
-              About us
-            </Link>
-            <Link to="#features" className="hover:text-primary transition">
-              Blog
-            </Link>
-            <Link to="#services" className="hover:text-primary transition">
-              Contact us
-            </Link>
-          </nav>
-        )}
+          {/* Navigation Links (Desktop) - Conditionally rendered for non-admin users */}
+          {user?.role !== "admin" && (
+            <nav className="hidden sm:flex space-x-4  dark:text-darkText text-sm font-bold">
+              <Link
+                to="/venues/nearby"
+                className="hover:text-primary transition"
+              >
+                Map
+              </Link>
+
+              <Link to="/" className="hover:text-primary transition">
+                About us
+              </Link>
+              <Link to="#features" className="hover:text-primary transition">
+                Blog
+              </Link>
+              <Link to="#services" className="hover:text-primary transition">
+                Contact us
+              </Link>
+            </nav>
+          )}
+        </div>
 
         {/* Auth & Dark Mode Toggle */}
         <div className="flex items-center space-x-3">
           {/* <DarkModeToggle /> */}
 
           {isAuthenticated ? (
-            <div className="relative flex items-center space-x-3">
+            <div className="relative flex flex-start items-center space-x-3">
               {/* Post Venue Button */}
               {user?.role !== "admin" && (
                 <Link

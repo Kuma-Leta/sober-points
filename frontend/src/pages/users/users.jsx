@@ -4,9 +4,8 @@ import axiosInstance from "../../api/api";
 import Table from "../../ui/table";
 import Modal from "../../ui/modal";
 import { getProfilePicUrl } from "../../utils/functions";
-import { FaEdit, FaRegTrashAlt } from "react-icons/fa";
+import { FaEdit, FaRegTrashAlt, FaSearch } from "react-icons/fa";
 import Pagination from "../../ui/pagination";
-import Search from "../../components/search";
 import { useSelector } from "react-redux";
 
 // const columns = ["NAME", "EMAIL", "STATUS", "ACTION"];
@@ -108,9 +107,9 @@ export default function Users({ role }) {
   };
   const user = useSelector((state) => state.auth.user);
   return (
-    <div className="w-full mt-20">
+    <div className="w-full max-w-7xl mx-auto px-6  mt-20">
       <div className="flex gap-2 items-center mb-4 justify-between">
-        <Search setQuery={handleSearchChange} />{" "}
+        <Search setQuery={handleSearchChange} />
         <button
           onClick={handleCreate}
           className="bg-ternary h-min text-white px-4 py-2 rounded"
@@ -187,3 +186,17 @@ const Action = ({ userId, onDelete, onEdit }) => {
     </div>
   );
 };
+
+function Search({ setQuery, placeholder = "Search..." }) {
+  return (
+    <div className="relative min-w-[25%] dark:bg-darkCard">
+      <input
+        type="text"
+        placeholder={placeholder}
+        className="border w-full dark:border-gray-500 rounded dark:bg-darkCard px-4 py-2 pl-10" // Add left padding to make space for the icon
+        onChange={setQuery}
+      />
+      <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
+    </div>
+  );
+}

@@ -25,6 +25,7 @@ import MyVenueDetail from "./pages/venues/myVenueDetail";
 import AdminAnalytics from "./pages/venues/AdminAnalytics";
 import BottomNavBar from "./pages/venues/BottomNavBar"; // Import the BottomNavBar
 import Profile from "./pages/users/profile";
+
 import VenueList from "./pages/landing/VenueList";
 import PrivacyPolicy from "./pages/landing/privacyPolicy";
 
@@ -104,7 +105,7 @@ function Pages() {
       <Route path="/auth/forgot-password" element={<ForgotPassword />} />
       <Route path="/auth/reset-password" element={<ResetPassword />} />
       <Route path="/auth/logout" element={<Logout />} />
-      <Route path="/*" element={<>Not found</>} />
+      <Route path="/*" element={<NotFound />} />
     </Routes>
   );
 }
@@ -188,7 +189,7 @@ const Routing = () => {
           {/* Main Content Container */}
           <div className={`flex-1 flex flex-col ${isMobile ? "z-50" : ""}`}>
             {/* Header */}
-            <div className="sticky top-0 z-[15] bg-white dark:bg-darkCard w-full">
+            <div className=" z-[15] bg-white dark:bg-darkCard w-full">
               <div
               // className={`${
               //   shouldShowSidebar && user && hideSideBar && isMobile
@@ -202,7 +203,7 @@ const Routing = () => {
 
             {/* Main Content */}
             <main
-              className={`flex-1 p-2  dark:bg-darkBg ${
+              className={`flex-1   dark:bg-darkBg ${
                 isMobile ? "relative" : ""
               }`}
             >
