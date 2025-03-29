@@ -13,7 +13,7 @@ export default function Footer() {
       <div className="max-w-6xl mx-auto py-10 px-4 sm:px-6 grid gap-8 sm:grid-cols-2 text-left">
         {/* Left Column: Logo & Navigation */}
         <div>
-          <img src={blackLogo} alt="logo" className="w-20 h-20 mb-4" />
+          <img src={blackLogo} alt="logo" className="h-12 mb-4" />
           <ul className="text-sm  grid md:flex  md:flex-wrap   gap-3 sm:text-base text-gray-600">
             <li>
               <a href="/#aboutus" className="hover:text-black transition">
