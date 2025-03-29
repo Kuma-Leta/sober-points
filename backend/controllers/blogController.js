@@ -50,12 +50,34 @@ exports.createBlog = async (req, res) => {
       const images =
         req.files?.map((file) => `uploads/blog-images/${file.filename}`) || [];
 
+      // Handle categories and tags parsing
+      let parsedCategories = [];
+      let parsedTags = [];
+
+      try {
+        parsedCategories = typeof categories === 'string' ? 
+          (categories.startsWith('[') ? JSON.parse(categories) : categories.split(',').map(cat => cat.trim())) : 
+          categories;
+      } catch (e) {
+        parsedCategories = categories.split(',').map(cat => cat.trim());
+      }
+
+      try {
+        parsedTags = tags ? 
+          (typeof tags === 'string' ? 
+            (tags.startsWith('[') ? JSON.parse(tags) : tags.split(',').map(tag => tag.trim())) : 
+            tags) : 
+          [];
+      } catch (e) {
+        parsedTags = tags ? tags.split(',').map(tag => tag.trim()) : [];
+      }
+
       const blog = new Blog({
         title,
         excerpt,
         content,
-        categories: JSON.parse(categories),
-        tags: tags ? JSON.parse(tags) : [],
+        categories: parsedCategories,
+        tags: parsedTags,
         author,
         readTime,
         featuredImage: images[0] || "",
@@ -75,7 +97,7 @@ exports.createBlog = async (req, res) => {
         blog: populatedBlog,
       });
     } catch (error) {
-      // Clean up uploaded files if error occurs
+      console.log(error);
       if (req.files && req.files.length > 0) {
         req.files.forEach((file) => {
           const filePath = path.join(
