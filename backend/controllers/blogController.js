@@ -312,15 +312,7 @@ exports.deleteBlog = async (req, res) => {
       });
     }
 
-    // Delete associated images
-    blog.images.forEach((image) => {
-      const filePath = path.join(__dirname, "../", image);
-      if (fs.existsSync(filePath)) {
-        fs.unlinkSync(filePath);
-      }
-    });
-
-    await blog.remove();
+    await Blog.findByIdAndDelete(req.params.id);
 
     res.status(200).json({
       success: true,
