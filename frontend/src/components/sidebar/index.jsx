@@ -164,17 +164,20 @@ const Sidebar = () => {
               </div>
 
               {/* Profile Section */}
-              <div className="flex items-center gap-3 p-3 rounded-lg transition-all duration-200 text-gray-300 hover:bg-gray-800/50">
+              <Link
+                to={"/users/profile"}
+                className="flex items-center gap-3 p-3 rounded-lg transition-all duration-200 text-gray-300 hover:bg-gray-800/50"
+              >
                 <img
                   className="w-8 h-8 border rounded-full object-cover"
                   src={getProfilePicUrl(user?.profilePicture)}
                   alt={user?.username}
                 />
                 {/* Always show the name for admin users, even when sidebar is closed */}
-                {(isSidebarOpen && user?.role === "admin") && (
+                {isSidebarOpen && user?.role === "admin" && (
                   <span>{user?.username}</span>
                 )}
-              </div>
+              </Link>
             </div>
           </div>
         </div>
