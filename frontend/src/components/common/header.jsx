@@ -4,7 +4,6 @@ import useAuth from "../../hooks/useAuth";
 import { useSelector } from "react-redux";
 import blackLogo from "../../assets/images/SP-Main-Logo-Black.png";
 import MobileLogo from "../../assets/images/Logo-Black.png";
-import whiteLogo from "../../assets/images/Logo-White.png";
 import {
   FaUser,
   FaBars,
@@ -13,7 +12,6 @@ import {
   FaRegHeart,
   FaHome,
 } from "react-icons/fa";
-import { FiSun, FiMoon } from "react-icons/fi";
 import defaultUserProfile from "../../assets/images/user.png";
 
 const Header = () => {

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
+import GoogleSignInButton from "./with social/google";
 
 const Register = () => {
   const { register, error } = useAuth();
@@ -49,7 +50,7 @@ const Register = () => {
             />
           </div>
           <button
-            className="w-full py-3 mb-4 text-lg font-semibold bg-primary text-black hover:bg-opacity-85"
+            className="w-full py-3 mb-4 text-lg font-semibold bg-primary text-white hover:bg-opacity-85"
             type="submit"
           >
             Sign Up
@@ -62,6 +63,9 @@ const Register = () => {
             </Link>
           </div>
         </form>
+        <div className="mt-4 mx-auto flex flex-col items-center justify-center w-full">
+          <GoogleSignInButton />
+        </div>
       </div>
     </div>
   );

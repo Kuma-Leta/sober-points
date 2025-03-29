@@ -1,6 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
+import MobileLogo from "../../assets/images/Logo-Black.png";
 export default function Footer() {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
@@ -10,9 +11,18 @@ export default function Footer() {
         {/* Left Column: Logo & Links */}
         <div>
           <h3 className="text-xl sm:text-2xl font-bold tracking-wide">
-            SOBER POINTS
+            <img
+              src={MobileLogo}
+              alt="Sober Points Logo"
+              className=" h-8 dark:hidden" // Show in light mode
+            />
           </h3>
           <ul className="mt-4 text-sm grid grid-cols-2 gap-2 md:grid-cols-1 sm:text-base text-gray-600">
+            <li>
+              <a href="/" className="hover:text-black transition">
+                Home
+              </a>
+            </li>
             <li>
               <a href="/#aboutus" className="hover:text-black transition">
                 About Us
@@ -24,13 +34,8 @@ export default function Footer() {
               </a>
             </li>
             <li>
-              <a href="#" className="hover:text-black transition">
+              <a href="/blogs" className="hover:text-black transition">
                 Our Blog
-              </a>
-            </li>
-            <li>
-              <a href="/#FAQ" className="hover:text-black transition">
-                FAQs
               </a>
             </li>
             {!isAuthenticated && (
