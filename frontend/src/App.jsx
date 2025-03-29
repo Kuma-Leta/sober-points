@@ -26,6 +26,7 @@ import AdminAnalytics from "./pages/venues/AdminAnalytics";
 import BottomNavBar from "./pages/venues/BottomNavBar"; // Import the BottomNavBar
 import Profile from "./pages/users/profile";import VenueList from "./pages/landing/VenueList";
 import PrivacyPolicy from "./pages/landing/privacyPolicy"
+import NotFound from "./pages/404";
 function Pages() {
   const user = useSelector((state) => state.auth.user);
 
@@ -102,7 +103,7 @@ function Pages() {
       <Route path="/auth/forgot-password" element={<ForgotPassword />} />
       <Route path="/auth/reset-password" element={<ResetPassword />} />
       <Route path="/auth/logout" element={<Logout />} />
-      <Route path="/*" element={<>Not found</>} />
+      <Route path="/*" element={<NotFound />} />
     </Routes>
   );
 }
