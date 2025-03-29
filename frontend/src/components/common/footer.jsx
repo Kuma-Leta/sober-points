@@ -19,6 +19,11 @@ export default function Footer() {
           </h3>
           <ul className="mt-4 text-sm grid grid-cols-2 gap-2 md:grid-cols-1 sm:text-base text-gray-600">
             <li>
+              <a href="/" className="hover:text-black transition">
+                Home
+              </a>
+            </li>
+            <li>
               <a href="/#aboutus" className="hover:text-black transition">
                 About Us
               </a>
@@ -31,11 +36,6 @@ export default function Footer() {
             <li>
               <a href="#" className="hover:text-black transition">
                 Our Blog
-              </a>
-            </li>
-            <li>
-              <a href="/#FAQ" className="hover:text-black transition">
-                FAQs
               </a>
             </li>
             {!isAuthenticated && (
