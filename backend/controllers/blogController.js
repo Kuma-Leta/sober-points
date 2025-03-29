@@ -243,15 +243,17 @@ exports.updateBlog = async (req, res) => {
       }
 
       // Handle images - keep existing if no new ones uploaded
-      let images = existingBlog.images;
+      let images = existingBlog.images || [];
       if (req.files && req.files.length > 0) {
         // Delete old images if they're being replaced
-        existingBlog.images.forEach((image) => {
-          const filePath = path.join(__dirname, "../", image);
-          if (fs.existsSync(filePath)) {
-            fs.unlinkSync(filePath);
-          }
-        });
+        if (existingBlog.images && existingBlog.images.length > 0) {
+          existingBlog.images.forEach((image) => {
+            const filePath = path.join(__dirname, "../", image);
+            if (fs.existsSync(filePath)) {
+              fs.unlinkSync(filePath);
+            }
+          });
+        }
 
         images = req.files.map(
           (file) => `uploads/blog-images/${file.filename}`
@@ -262,13 +264,19 @@ exports.updateBlog = async (req, res) => {
         title: title || existingBlog.title,
         excerpt: excerpt || existingBlog.excerpt,
         content: content || existingBlog.content,
-        categories: categories
-          ? JSON.parse(categories)
-          : existingBlog.categories,
-        tags: tags ? JSON.parse(tags) : existingBlog.tags,
+        categories: categories ? 
+          (typeof categories === 'string' ? 
+            (categories.startsWith('[') ? JSON.parse(categories) : categories.split(',').map(cat => cat.trim())) : 
+            categories) : 
+          existingBlog.categories,
+        tags: tags ? 
+          (typeof tags === 'string' ? 
+            (tags.startsWith('[') ? JSON.parse(tags) : tags.split(',').map(tag => tag.trim())) : 
+            tags) : 
+          existingBlog.tags,
         readTime,
-        featuredImage: images[0] || existingBlog.featuredImage,
-        images,
+        featuredImage: images && images.length > 0 ? images[0] : (existingBlog.featuredImage || ""),
+        images: images && images.length > 0 ? images : (existingBlog.images || []),
         updatedAt: Date.now(),
       };
 
@@ -282,6 +290,7 @@ exports.updateBlog = async (req, res) => {
         blog: updatedBlog,
       });
     } catch (error) {
+      console.log(error)
       res.status(500).json({
         success: false,
         message: error.message,

@@ -23,10 +23,12 @@ const blogSchema = new mongoose.Schema(
       type: String,
       required: [true, "Blog content is required"],
     },
-    featuredImage: {
-      type: String,
-      required: [true, "Featured image is required"],
-    },
+    featuredImage: [
+      {
+        type: String,
+        required: [true, "Featured image is required"],
+      },
+    ],
     author: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",

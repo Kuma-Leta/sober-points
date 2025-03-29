@@ -45,7 +45,7 @@ const BlogForm = () => {
         isFeatured: blog.isFeatured,
         images: [],
       });
-      setImagePreview(blog.images || []);
+      setImagePreview(blog.featuredImage || []);
     } catch (error) {
       setError("Failed to fetch blog data");
     } finally {
@@ -254,7 +254,11 @@ const BlogForm = () => {
             {imagePreview.map((url, index) => (
               <div key={index} className="relative">
                 <img
-                  src={url}
+                  src={
+                    url.startsWith("http")
+                      ? url
+                      : `${import.meta.env.VITE_API_URL}/${url}`
+                  }
                   alt={`Preview ${index + 1}`}
                   className="h-24 w-24 object-cover rounded"
                 />
