@@ -1,40 +1,47 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import axiosInstance from '../../api/api';
-import { 
-  FaRegClock, 
-  FaRegHeart, 
-  FaHeart, 
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import axiosInstance from "../../api/api";
+import {
+  FaRegClock,
+  FaRegHeart,
+  FaHeart,
   FaRegComment,
   FaSearch,
-  FaFilter
-} from 'react-icons/fa';
-import { motion } from 'framer-motion';
+  FaFilter,
+} from "react-icons/fa";
+import { motion } from "framer-motion";
 
 const BlogList = () => {
   const [blogs, setBlogs] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-  const [searchQuery, setSearchQuery] = useState('');
-  const [categoryFilter, setCategoryFilter] = useState('');
-  const [sortOption, setSortOption] = useState('newest');
+  const [error, setError] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [categoryFilter, setCategoryFilter] = useState("");
+  const [sortOption, setSortOption] = useState("newest");
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [likedBlogs, setLikedBlogs] = useState([]);
 
-  const categories = ["All", "Nightlife", "Food", "Culture", "Wellness", "Travel"];
+  const categories = [
+    "All",
+    "Nightlife",
+    "Food",
+    "Culture",
+    "Wellness",
+    "Travel",
+  ];
 
   useEffect(() => {
     const fetchBlogs = async () => {
       try {
         setLoading(true);
-        const response = await axiosInstance.get('/blogs');
+        const response = await axiosInstance.get(`/blogs`);
 
         setBlogs(response.data.blogs);
         setTotalPages(response.data.totalPages);
-        setError('');
+        setError("");
       } catch (err) {
-        setError('Failed to fetch blogs. Please try again later.');
+        setError("Failed to fetch blogs. Please try again later.");
         console.error(err);
       } finally {
         setLoading(false);
@@ -47,23 +54,25 @@ const BlogList = () => {
   const handleLike = async (blogId) => {
     try {
       await axiosInstance.post(`/blogs/${blogId}/like`);
-      setBlogs(blogs.map(blog => {
-        if (blog._id === blogId) {
-          const isLiked = likedBlogs.includes(blogId);
-          return {
-            ...blog,
-            likes: isLiked ? blog.likes - 1 : blog.likes + 1
-          };
-        }
-        return blog;
-      }));
-      setLikedBlogs(prev => 
-        prev.includes(blogId) 
-          ? prev.filter(id => id !== blogId) 
+      setBlogs(
+        blogs.map((blog) => {
+          if (blog._id === blogId) {
+            const isLiked = likedBlogs.includes(blogId);
+            return {
+              ...blog,
+              likes: isLiked ? blog.likes - 1 : blog.likes + 1,
+            };
+          }
+          return blog;
+        })
+      );
+      setLikedBlogs((prev) =>
+        prev.includes(blogId)
+          ? prev.filter((id) => id !== blogId)
           : [...prev, blogId]
       );
     } catch (err) {
-      console.error('Error liking blog:', err);
+      console.error("Error liking blog:", err);
     }
   };
 
@@ -94,7 +103,8 @@ const BlogList = () => {
             Explore Our Blog
           </h1>
           <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-            Discover the latest stories, tips, and insights about nightlife and entertainment
+            Discover the latest stories, tips, and insights about nightlife and
+            entertainment
           </p>
         </div>
 
@@ -123,8 +133,10 @@ const BlogList = () => {
                 value={categoryFilter}
                 onChange={(e) => setCategoryFilter(e.target.value)}
               >
-                {categories.map(category => (
-                  <option key={category} value={category}>{category}</option>
+                {categories.map((category) => (
+                  <option key={category} value={category}>
+                    {category}
+                  </option>
                 ))}
               </select>
             </div>
@@ -147,11 +159,11 @@ const BlogList = () => {
             <h3 className="text-xl font-medium text-gray-700 dark:text-gray-300">
               No blogs found matching your criteria
             </h3>
-            <button 
+            <button
               onClick={() => {
-                setSearchQuery('');
-                setCategoryFilter('All');
-                setSortOption('newest');
+                setSearchQuery("");
+                setCategoryFilter("All");
+                setSortOption("newest");
               }}
               className="mt-4 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primaryDark"
             >
@@ -205,7 +217,7 @@ const BlogList = () => {
                       </div>
 
                       <div className="flex items-center space-x-4">
-                        <button 
+                        <button
                           onClick={(e) => {
                             e.preventDefault();
                             handleLike(blog._id);
@@ -249,7 +261,7 @@ const BlogList = () => {
               <div className="mt-12 flex justify-center">
                 <nav className="flex items-center space-x-2">
                   <button
-                    onClick={() => setPage(p => Math.max(1, p - 1))}
+                    onClick={() => setPage((p) => Math.max(1, p - 1))}
                     disabled={page === 1}
                     className="px-4 py-2 border rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-50"
                   >
@@ -272,9 +284,10 @@ const BlogList = () => {
                       <button
                         key={pageNum}
                         onClick={() => setPage(pageNum)}
-                        className={`px-4 py-2 rounded-lg ${page === pageNum
-                          ? 'bg-primary text-white'
-                          : 'border hover:bg-gray-100 dark:hover:bg-gray-700'
+                        className={`px-4 py-2 rounded-lg ${
+                          page === pageNum
+                            ? "bg-primary text-white"
+                            : "border hover:bg-gray-100 dark:hover:bg-gray-700"
                         }`}
                       >
                         {pageNum}
@@ -283,7 +296,7 @@ const BlogList = () => {
                   })}
 
                   <button
-                    onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                    onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                     disabled={page === totalPages}
                     className="px-4 py-2 border rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-50"
                   >
