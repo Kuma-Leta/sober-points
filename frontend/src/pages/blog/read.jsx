@@ -96,7 +96,7 @@ const BlogRead = () => {
           <header className="mb-8">
             <div className="relative h-96 rounded-xl overflow-hidden mb-8">
               <img
-                src={`http://localhost:5000/${blog.featuredImage}`}
+                src={`${import.meta.env.VITE_API_URL}/${blog.featuredImage}`}
                 alt={blog.title}
                 className="w-full h-full object-cover"
               />
@@ -119,7 +119,9 @@ const BlogRead = () => {
             <div className="flex items-center gap-4">
               <div className="flex items-center">
                 <img
-                  src={`http://localhost:5000/${blog.author.profilePicture}`}
+                  src={`${import.meta.env.VITE_API_URL}/${
+                    blog.author.profilePicture
+                  }`}
                   alt={blog.author.name}
                   className="h-10 w-10 rounded-full mr-3"
                 />
@@ -193,7 +195,9 @@ const BlogRead = () => {
                 >
                   <div className="flex items-center gap-3 mb-3">
                     <img
-                      src={`http://localhost:5000/${comment.user.profilePicture}`}
+                      src={`${import.meta.env.VITE_API_URL}/${
+                        comment.user.profilePicture
+                      }`}
                       alt={comment.user.name}
                       className="h-8 w-8 rounded-full"
                     />
