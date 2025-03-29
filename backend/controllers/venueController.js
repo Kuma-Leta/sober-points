@@ -330,11 +330,7 @@ exports.searchVenues = async (req, res) => {
 
     // Case-insensitive search across multiple fields using regex
     const searchQuery = {
-      $or: [
-       
-        { address: { $regex: query, $options: "i" } },
-     
-      ],
+      $or: [{ address: { $regex: query, $options: "i" } }],
     };
 
     // Fetch matching venues
@@ -352,7 +348,6 @@ exports.searchVenues = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
-
 
 exports.deleteVenue = async (req, res) => {
   try {
@@ -576,10 +571,11 @@ exports.getAdminDashboardAnalytics = async (req, res) => {
 exports.getVenueSuggestions = async (req, res) => {
   try {
     const { query } = req.query;
-    
 
     if (!query || query.length < 3) {
-      return res.status(400).json({ message: "Query must be at least 3 characters long" });
+      return res
+        .status(400)
+        .json({ message: "Query must be at least 3 characters long" });
     }
 
     // Use MongoDB's $regex to find venues matching the query
@@ -609,7 +605,7 @@ exports.getVenueSuggestions = async (req, res) => {
 };
 // 📌 Controller: Fetch Most Rated Venues
 exports.getMostRatedVenues = async (req, res) => {
-  console.log("most rated")
+  console.log("most rated");
   try {
     const venues = await Venue.find().sort({ rating: -1 }).limit(10); // Sort by rating in descending order
     res.status(200).json({ success: true, venues });
@@ -636,14 +632,16 @@ exports.getNearestVenues = async (req, res) => {
     const { lat, lng } = req.query;
 
     if (!lat || !lng) {
-      return res.status(400).json({ message: "Latitude and longitude are required." });
+      return res
+        .status(400)
+        .json({ message: "Latitude and longitude are required." });
     }
 
     const latitude = parseFloat(lat);
     const longitude = parseFloat(lng);
 
     // Validate latitude and longitude
-    if (isNaN(latitude) ){
+    if (isNaN(latitude)) {
       return res.status(400).json({ message: "Invalid latitude value." });
     }
     if (isNaN(longitude)) {
@@ -652,6 +650,7 @@ exports.getNearestVenues = async (req, res) => {
 
     // MongoDB Geospatial Query
     const venues = await Venue.find({
+      isVerified: true,
       location: {
         $near: {
           $geometry: {
