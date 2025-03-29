@@ -91,4 +91,7 @@ router.use("/favorites", favouritesRoutes);
 router.use("/subscriber", subscriberRoutes);
 router.use("/newsletter", newsletterRoutes);
 // Venues
+
+// blog
+router.use("/blogs", blogRoutes);
 module.exports = router;

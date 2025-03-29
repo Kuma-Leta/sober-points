@@ -1,4 +1,4 @@
-const Blog = require("../models/Blog");
+const Blog = require("../models/blog");
 const APIfeatures = require("../utils/APIfeatures");
 const { v4: uuidv4 } = require("uuid");
 const multer = require("multer");
