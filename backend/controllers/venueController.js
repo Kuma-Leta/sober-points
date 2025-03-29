@@ -31,7 +31,7 @@ const upload = multer({
       cb(new Error("Only image files are allowed!"), false);
     }
   },
-}).array("images", 5); // Allow up to 5 images
+}).array("images", 10); // Allow up to 10 images
 
 // 📌 Create Venue
 exports.createVenue = async (req, res) => {

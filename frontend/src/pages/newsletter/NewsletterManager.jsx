@@ -189,9 +189,13 @@ export default function NewsletterManager() {
           <div className="flex justify-end space-x-4 mt-4">
             <button
               onClick={handleSend}
-              className="bg-ternary text-white px-4 py-2 rounded"
+              className={`bg-ternary text-white px-4 py-2 rounded ${
+                loading ? "opacity-50 cursor-not-allowed" : ""
+              }`}
+              disabled={loading} // Disable the button while loading
             >
-              Yes, Send
+              {loading ? "Sending..." : "Yes, Send"}{" "}
+              {/* Show loading text when loading */}
             </button>
             <button
               onClick={handleCloseModal}
