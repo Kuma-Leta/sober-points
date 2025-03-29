@@ -153,16 +153,18 @@ export default function Venues() {
   return (
     <div className="w-full mt-20">
       <div className="flex gap-2 items-center mb-4 justify-between">
-        <Search setQuery={handleSearchChange} />
-        <select
-          onChange={handleFilterChange}
-          value={filterCriteria}
-          className="bg-white border border-gray-300 dark:bg-darkCard rounded px-4 py-2"
-        >
-          <option value="">All</option>
-          <option value="verified">Verified</option>
-          <option value="unverified">Unverified</option>
-        </select>
+        <div className="flex items-center gap-2 ">
+          <Search setQuery={handleSearchChange} />
+          <select
+            onChange={handleFilterChange}
+            value={filterCriteria}
+            className="bg-white border border-gray-300 dark:bg-darkCard rounded -4 p-2"
+          >
+            <option value="">All</option>
+            <option value="verified">Verified</option>
+            <option value="unverified">Unverified</option>
+          </select>
+        </div>
         <button
           onClick={handleCreate}
           className="bg-ternary h-min text-white px-4 py-2 rounded"
@@ -253,7 +255,6 @@ const Action = ({ venueId, onDelete, onEdit, onView }) => {
     </div>
   );
 };
-
 
 function Search({ setQuery, placeholder = "Search..." }) {
   return (
