@@ -16,6 +16,7 @@ const BlogForm = () => {
     tags: "",
     isFeatured: false,
     images: [],
+    featuredImage: [],
   });
   const [id, setId] = useState("");
   const [loading, setLoading] = useState(false);
@@ -44,6 +45,7 @@ const BlogForm = () => {
         tags: blog.tags.join(", "),
         isFeatured: blog.isFeatured,
         images: [],
+        featuredImage: blog.featuredImage,
       });
       setImagePreview(blog.featuredImage || []);
     } catch (error) {

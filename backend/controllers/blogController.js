@@ -243,11 +243,11 @@ exports.updateBlog = async (req, res) => {
       }
 
       // Handle images - keep existing if no new ones uploaded
-      let images = existingBlog.images || [];
+      let images = existingBlog.featuredImage || [];
       if (req.files && req.files.length > 0) {
         // Delete old images if they're being replaced
-        if (existingBlog.images && existingBlog.images.length > 0) {
-          existingBlog.images.forEach((image) => {
+        if (existingBlog.featuredImage && existingBlog.featuredImage.length > 0) {
+          existingBlog.featuredImage.forEach((image) => {
             const filePath = path.join(__dirname, "../", image);
             if (fs.existsSync(filePath)) {
               fs.unlinkSync(filePath);
@@ -275,7 +275,7 @@ exports.updateBlog = async (req, res) => {
             tags) : 
           existingBlog.tags,
         readTime,
-        featuredImage: images && images.length > 0 ? images[0] : (existingBlog.featuredImage || ""),
+        featuredImage: images && images.length > 0 ? [...(existingBlog.featuredImage || []), ...images] : (existingBlog.featuredImage || []),
         images: images && images.length > 0 ? images : (existingBlog.images || []),
         updatedAt: Date.now(),
       };
