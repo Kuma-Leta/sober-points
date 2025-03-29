@@ -580,6 +580,7 @@ exports.getVenueSuggestions = async (req, res) => {
 
     // Use MongoDB's $regex to find venues matching the query
     const suggestions = await Venue.find({
+      isVerified: true,
       $or: [
         { name: { $regex: query, $options: "i" } }, // Case-insensitive search on name
         { address: { $regex: query, $options: "i" } }, // Case-insensitive search on address
@@ -607,7 +608,9 @@ exports.getVenueSuggestions = async (req, res) => {
 exports.getMostRatedVenues = async (req, res) => {
   console.log("most rated");
   try {
-    const venues = await Venue.find().sort({ rating: -1 }).limit(10); // Sort by rating in descending order
+    const venues = await Venue.find({ isVerified: true })
+      .sort({ rating: -1 })
+      .limit(10); // Sort by rating in descending order
     res.status(200).json({ success: true, venues });
   } catch (error) {
     console.error("Error fetching most rated venues:", error);
