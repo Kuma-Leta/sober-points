@@ -29,7 +29,7 @@ import Profile from "./pages/users/profile";
 import VenueList from "./pages/landing/VenueList";
 import PrivacyPolicy from "./pages/landing/privacyPolicy";
 import NotFound from "./pages/404";
-import NewsletterManager from "./pages/newsletter/NewsletterManager";
+// import NewsletterManager from "./pages/newsletter/NewsletterManager";
 function Pages() {
   const user = useSelector((state) => state.auth.user);
 
@@ -88,14 +88,14 @@ function Pages() {
         }
       />
 
-      <Route
+      {/* <Route
         path="/newsletter"
         element={
           <ProtectedRoute>
             <NewsletterManager />
           </ProtectedRoute>
         }
-      />
+      /> */}
 
       <Route
         path="/admin-analytics"
