@@ -4,9 +4,8 @@ import axiosInstance from "../../api/api";
 import Table from "../../ui/table";
 import Modal from "../../ui/modal";
 import Pagination from "../../ui/pagination";
-import Search from "../../components/search";
 import { useSelector } from "react-redux";
-import { FaEdit, FaRegTrashAlt, FaEye } from "react-icons/fa";
+import { FaEdit, FaRegTrashAlt, FaEye, FaSearch } from "react-icons/fa";
 import VenueDetailModal from "./VenueDetailModal"; // Import the new component
 
 export default function Venues() {
@@ -254,3 +253,18 @@ const Action = ({ venueId, onDelete, onEdit, onView }) => {
     </div>
   );
 };
+
+
+function Search({ setQuery, placeholder = "Search..." }) {
+  return (
+    <div className="relative min-w-[25%] dark:bg-darkCard">
+      <input
+        type="text"
+        placeholder={placeholder}
+        className="border w-full dark:border-gray-500 rounded dark:bg-darkCard px-4 py-2 pl-10" // Add left padding to make space for the icon
+        onChange={setQuery}
+      />
+      <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
+    </div>
+  );
+}
