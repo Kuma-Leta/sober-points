@@ -152,7 +152,7 @@ export default function Venues() {
   const user = useSelector((state) => state.auth.user);
   useEffect(() => {
     if (user?.role !== "admin") {
-      // navigate("/");
+      navigate("/venues/nearby");
     }
   }, [user]);
   return (
