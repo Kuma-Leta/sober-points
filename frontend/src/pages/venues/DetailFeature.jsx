@@ -1,5 +1,5 @@
 import React from "react";
-import RatingStars from "../landing/RatingStars";
+import RatingStars from "../landing/venuedetail/RatingStars";
 import {
   FaMapMarkerAlt,
   FaPhone,

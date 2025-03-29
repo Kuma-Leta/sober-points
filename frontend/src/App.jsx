@@ -25,9 +25,11 @@ import MyVenueDetail from "./pages/venues/myVenueDetail";
 import AdminAnalytics from "./pages/venues/AdminAnalytics";
 import BottomNavBar from "./pages/venues/BottomNavBar"; // Import the BottomNavBar
 import Profile from "./pages/users/profile";
+
 import VenueList from "./pages/landing/VenueList";
 import PrivacyPolicy from "./pages/landing/privacyPolicy";
-import NotFound from "./pages/404";
+import NotFound from "./pages/404";;
+import NewsletterManager from "./pages/newsletter/NewsletterManager";
 function Pages() {
   const user = useSelector((state) => state.auth.user);
 
@@ -81,6 +83,15 @@ function Pages() {
         element={
           <ProtectedRoute>
             <Venues />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/newsletter"
+        element={
+          <ProtectedRoute>
+            <NewsletterManager />
           </ProtectedRoute>
         }
       />
