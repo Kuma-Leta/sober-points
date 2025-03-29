@@ -35,7 +35,7 @@ const BlogList = () => {
     const fetchBlogs = async () => {
       try {
         setLoading(true);
-        const response = await axiosInstance.get(`/blogs?q=${searchQuery}`);
+        const response = await axiosInstance.get(`/blogs`);
 
         setBlogs(response.data.blogs);
         setTotalPages(response.data.totalPages);
@@ -175,7 +175,7 @@ const BlogList = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {blogs.map((blog, index) => (
                 <motion.div
-                  key={blog._id}
+                  key={index}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.1 }}
@@ -240,16 +240,20 @@ const BlogList = () => {
                     </div>
 
                     <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
-                      <div className="flex items-center">
-                        <img
-                          src={`http://localhost:5000/${blog.author.profilePicture}`}
-                          alt={blog.author.name}
-                          className="w-8 h-8 rounded-full object-cover mr-2"
-                        />
-                        <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                          {blog.author.name}
-                        </span>
-                      </div>
+                      {blog.author &&
+                        blog.author.profilePicture &&
+                        blog.author.name && (
+                          <div className="flex items-center">
+                            <img
+                              src={`http://localhost:5000/${blog.author.profilePicture}`}
+                              alt={blog.author.name}
+                              className="w-8 h-8 rounded-full object-cover mr-2"
+                            />
+                            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                              {blog.author.name}
+                            </span>
+                          </div>
+                        )}
                     </div>
                   </div>
                 </motion.div>
