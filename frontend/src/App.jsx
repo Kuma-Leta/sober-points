@@ -33,6 +33,7 @@ import ContactUs from "./pages/landing/ContactUs";
 // import NewsletterManager from "./pages/newsletter/NewsletterManager";
 import BlogAdmin from "./pages/blog/admin";
 import BlogForm from "./pages/blog/admin/form";
+import BlogList from "./pages/blog";
 function Pages() {
   const user = useSelector((state) => state.auth.user);
 
@@ -87,6 +88,14 @@ function Pages() {
         element={
           <ProtectedRoute>
             <BlogAdmin />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/blogs"
+        element={
+          <ProtectedRoute>
+            <BlogList />
           </ProtectedRoute>
         }
       />
