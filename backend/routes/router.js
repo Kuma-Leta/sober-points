@@ -11,6 +11,7 @@ const ratingRoutes = require("./rating");
 const favouritesRoutes = require("./favourites");
 const subscriberRoutes = require("./subscriber");
 const newsletterRoutes = require("./newsletter");
+const blogRoutes = require("./blog");
 // Authentication route
 router.post("/login", authController.login);
 router.get("/logout", authController.logoutUser);

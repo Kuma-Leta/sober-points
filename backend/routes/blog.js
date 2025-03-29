@@ -31,10 +31,10 @@ router.post("/:id/comments", addComment);
 router.delete("/:blogId/comments/:commentId", deleteComment);
 
 // Author & admin protected routes
-router.post("/", authorize("author", "admin"), createBlog);
+router.post("/", authorize(["author", "admin"]), createBlog);
 router
   .route("/:id")
-  .put(authorize("author", "admin"), updateBlog)
-  .delete(authorize("author", "admin"), deleteBlog);
+  .put(authorize(["author", "admin"]), updateBlog)
+  .delete(authorize(["author", "admin"]), deleteBlog);
 
 module.exports = router;

@@ -30,6 +30,8 @@ import VenueList from "./pages/landing/VenueList";
 import PrivacyPolicy from "./pages/landing/privacyPolicy";
 import NotFound from "./pages/404";
 import NewsletterManager from "./pages/newsletter/NewsletterManager";
+import BlogAdmin from "./pages/blog/admin";
+import BlogForm from "./pages/blog/admin/form";
 function Pages() {
   const user = useSelector((state) => state.auth.user);
 
@@ -78,7 +80,22 @@ function Pages() {
           </ProtectedRoute>
         }
       />
-
+      <Route
+        path="/admin/blogs"
+        element={
+          <ProtectedRoute>
+            <BlogAdmin />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin/blogs/new"
+        element={
+          <ProtectedRoute>
+            <BlogForm />
+          </ProtectedRoute>
+        }
+      />
       <Route
         path="/venues"
         element={
