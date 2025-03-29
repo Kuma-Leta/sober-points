@@ -107,7 +107,7 @@ export default function Users({ role }) {
   };
   const user = useSelector((state) => state.auth.user);
   return (
-    <div className="w-full mt-20">
+    <div className="w-full max-w-7xl mx-auto px-6  mt-20">
       <div className="flex gap-2 items-center mb-4 justify-between">
         <Search setQuery={handleSearchChange} />
         <button
