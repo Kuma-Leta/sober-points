@@ -35,7 +35,7 @@ const BlogList = () => {
     const fetchBlogs = async () => {
       try {
         setLoading(true);
-        const response = await axiosInstance.get(`/blogs`);
+        const response = await axiosInstance.get(`/blogs?q=${searchQuery}`);
 
         setBlogs(response.data.blogs);
         setTotalPages(response.data.totalPages);
