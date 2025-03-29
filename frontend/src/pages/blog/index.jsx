@@ -126,7 +126,7 @@ const BlogList = () => {
         </div>
 
         <div className="mb-8 w-max mx-auto">
-          <div className="flex items-center justify-end">
+          <div className="flex border-b items-center gap-5 justify-end">
             <div className="relative mx-auto w-max mb-6">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <FaSearch className="text-gray-400" />
@@ -134,7 +134,7 @@ const BlogList = () => {
               <input
                 type="text"
                 placeholder="Search articles..."
-                className="block pl-10 pr-3 py-3 border border-gray-300 dark:border-gray-700 rounded-full bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                className="block pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-700 rounded-full bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
