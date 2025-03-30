@@ -1,6 +1,6 @@
 const Venue = require("../models/Venue");
 // const User = require("../models/User");
-const User = require("../models/user");
+const User = require("../models/User");
 const APIfeatures = require("../utils/APIfeatures");
 const multer = require("multer");
 const fs = require("fs");

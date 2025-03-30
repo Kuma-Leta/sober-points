@@ -184,7 +184,7 @@ const Profile = () => {
                         src={
                           selectedFile
                             ? URL.createObjectURL(selectedFile)
-                            : `http://localhost:5000/${user.profilePicture}`
+                            : `${import.meta.env.VITE_API_URL}/${user.profilePicture}`
                         }
                         alt="Profile"
                         className="w-full h-full object-cover"

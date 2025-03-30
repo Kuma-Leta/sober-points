@@ -1,13 +1,13 @@
 // routes/routes.js
 const express = require("express");
 const router = express.Router();
-
+const ratingRoutes = require("./rating");
 const userController = require("../controllers/userController");
 const authController = require("../controllers/authController");
 const { authenticate } = require("../middleware/authMiddleware");
 const { authorize } = require("../middleware/authMiddleware");
 const venueRoutes = require("./venue");
-const ratingRoutes = require("./rating");
+
 const favouritesRoutes = require("./favourites");
 const subscriberRoutes = require("./subscriber");
 const newsletterRoutes = require("./newsletter");

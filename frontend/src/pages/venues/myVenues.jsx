@@ -98,7 +98,7 @@ const MyVenues = () => {
                 >
                   {venue.image ? (
                     <img
-                      src={`http://localhost:5000/${venue.image.replace(
+                      src={`${import.meta.env.VITE_API_URL}/${venue.image.replace(
                         /\\/g,
                         "/"
                       )}`}

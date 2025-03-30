@@ -202,7 +202,7 @@ const FavoritesList = () => {
                 {venue?.images?.length > 0 && (
                   <div className="relative h-56 overflow-hidden">
                     <img
-                      src={`http://localhost:5000/${venue?.images[0]?.replace(
+                      src={`${import.meta.env.VITE_API_URL}/${venue?.images[0]?.replace(
                         /\\/g,
                         "/"
                       )}`}

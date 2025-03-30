@@ -10,7 +10,7 @@ export default function ImageUploader({
   const fileInputRef = useRef(null); // Ref for the file input
 
   // Base URL for backend images
-  const backendBaseUrl = "http://localhost:5000";
+  const backendBaseUrl = import.meta.env.VITE_API_URL;
 
   // Handle file upload
   const handleFileChange = (e) => {

@@ -7,7 +7,7 @@ export const fetchVenues = createAsyncThunk(
   "venues/fetchAll",
   async (_, thunkAPI) => {
     try {
-      const response = await axios.get("http://localhost:5000/api/venues/");
+      const response = await axiosInstance.get("/venues/");
       return response.data.venues;
     } catch (error) {
       return thunkAPI.rejectWithValue(
@@ -22,8 +22,8 @@ export const fetchNearbyVenues = createAsyncThunk(
   "venues/fetchNearby",
   async ({ lat, lng, query = "", page = 1 }, thunkAPI) => {
     try {
-      const response = await axios.get(
-        `http://localhost:5000/api/venues/nearby?lat=${lat}&lng=${lng}&query=${query}&page=${page}`
+      const response = await axiosInstance.get(
+        `venues/nearby?lat=${lat}&lng=${lng}&query=${query}&page=${page}`
       );
       return response.data;
     } catch (error) {
@@ -39,9 +39,7 @@ export const searchVenues = createAsyncThunk(
   "venues/search",
   async (query, thunkAPI) => {
     try {
-      const response = await axiosInstance.get(
-        `http://localhost:5000/api/venues/search?query=${query}`
-      );
+      const response = await axiosInstance.get(`/venues/search?query=${query}`);
       return response.data.venues;
     } catch (error) {
       return thunkAPI.rejectWithValue(
@@ -54,10 +52,8 @@ export const fetchMostRatedVenues = createAsyncThunk(
   "venues/fetchMostRated",
   async (_, thunkAPI) => {
     try {
-      const response = await axios.get(
-        "http://localhost:5000/api/venues/most-rated"
-      );
-      console.log(response)
+      const response = await axiosInstance.get("/venues/most-rated");
+      console.log(response);
       return response.data.venues;
     } catch (error) {
       return thunkAPI.rejectWithValue(
@@ -72,9 +68,7 @@ export const fetchNewestVenues = createAsyncThunk(
   "venues/fetchNewest",
   async (_, thunkAPI) => {
     try {
-      const response = await axios.get(
-        "http://localhost:5000/api/venues/newest"
-      );
+      const response = await axiosInstance.get("/venues/newest");
       return response.data.venues;
     } catch (error) {
       return thunkAPI.rejectWithValue(
@@ -89,8 +83,8 @@ export const fetchNearestVenues = createAsyncThunk(
   "venues/fetchNearest",
   async ({ lat, lng }, thunkAPI) => {
     try {
-      const response = await axios.get(
-        `http://localhost:5000/api/venues/nearest?lat=${lat}&lng=${lng}`
+      const response = await axiosInstance.get(
+        `/venues/nearest?lat=${lat}&lng=${lng}`
       );
       return response.data.venues;
     } catch (error) {
@@ -106,7 +100,7 @@ export const updateVenueRating = createAsyncThunk(
   async ({ ratingId, rating, review }, thunkAPI) => {
     try {
       const response = await axiosInstance.put(
-        `http://localhost:5000/api/ratings/${ratingId}`,
+        `/ratings/${ratingId}`,
         { rating, review }
       );
       return response.data; // Should return the updated venue data
@@ -123,10 +117,12 @@ export const addVenueRating = createAsyncThunk(
   "venues/addRating",
   async ({ venueId, serviceRating, locationRating, review }, thunkAPI) => {
     try {
-      const response = await axiosInstance.post(
-        "http://localhost:5000/api/ratings/addRatings",
-        { serviceRating, locationRating, review, venueId }
-      );
+      const response = await axiosInstance.post("/ratings/addRatings", {
+        serviceRating,
+        locationRating,
+        review,
+        venueId,
+      });
       return response.data; // Should return the updated venue data
     } catch (error) {
       return thunkAPI.rejectWithValue(
@@ -174,7 +170,7 @@ export const fetchFavorites = createAsyncThunk(
   async (_, thunkAPI) => {
     try {
       const response = await axiosInstance.get("/favorites");
-    
+
       return response.data; // Ensure this returns an array of favorites
     } catch (error) {
       return thunkAPI.rejectWithValue(

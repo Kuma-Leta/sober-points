@@ -218,7 +218,7 @@ const DetailFeature = ({
                   {venue.images.map((image, index) => (
                     <img
                       key={index}
-                      src={`http://localhost:5000/${image.replace(/\\/g, "/")}`}
+                      src={`${import.meta.env.VITE_API_URL}/${image.replace(/\\/g, "/")}`}
                       alt={`Venue Image ${index + 1}`}
                       loading="lazy"
                       className="w-full h-48 object-cover  shadow-md"

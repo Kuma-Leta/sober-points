@@ -107,7 +107,7 @@ const Header = () => {
                   className="w-8 h-8 sm:w-9 sm:h-9 rounded-full object-cover border border-grayColor dark:border-darkText"
                   src={
                     user?.profilePicture
-                      ? `http://localhost:5000/${user.profilePicture}`
+                      ? `${import.meta.env.VITE_API_URL}/${user.profilePicture}`
                       : defaultUserProfile
                   }
                   alt="User"
