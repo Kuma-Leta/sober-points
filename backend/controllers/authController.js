@@ -61,6 +61,8 @@ exports.logoutUser = (req, res) => {
   res.cookie("access_token", "", {
     expires: new Date(0),
     httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: process.env.NODE_ENV === "production"?"None":"Lax",
   });
   res.status(200).json({ status: "success" });
 };
