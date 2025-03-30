@@ -131,7 +131,7 @@ const VenueDetail = () => {
           {venue.images.slice(0, 3).map((image, index) => (
             <div
               key={index}
-              className="relative flex-shrink-0 w-full sm:w-1/2 lg:w-1/3 aspect-square overflow-hidden rounded-lg cursor-pointer"
+              className="relative flex-shrink-0 w-full sm:w-1/2 lg:w-1/3 aspect-square overflow-hidden rounded cursor-pointer"
               onClick={() => handleImageClick(index)}
             >
               <img
