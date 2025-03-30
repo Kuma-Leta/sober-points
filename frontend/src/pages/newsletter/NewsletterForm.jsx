@@ -162,7 +162,7 @@ export default function NewsletterForm({
           <label className="block mb-2 text-sm font-bold text-gray-700 dark:text-green-100">
             Content
           </label>
-          <div className="border rounded-lg dark:bg-darkBg dark:border-gray-700">
+          <div className=" dark:bg-darkBg dark:border-gray-700">
             <ReactQuill
               value={editorContent}
               onChange={handleContentChange}

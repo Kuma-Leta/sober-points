@@ -7,7 +7,7 @@ import ToastNotifications, {
   showSuccess,
   showError,
 } from "./ToastNotifications";
-import VenueInputs from "./VenueInputs"; // Import the new component
+import VenueInputs from "./VenueInputs";
 import ContactInfo from "./PhoneWebsite";
 
 export default function VenueForm({
@@ -24,7 +24,9 @@ export default function VenueForm({
     longitude: null,
     description: "",
     menu: "",
-    website: "", // New website field
+    website: "",
+    alcoholFreeBeersOnTap: [], // New field
+    alcoholFreeDrinkBrands: [], // New field
     images: [],
   });
 
@@ -32,15 +34,12 @@ export default function VenueForm({
   const [error, setError] = useState(null);
   const navigate = useNavigate();
   const formRef = useRef(null);
-  const [removedImages, setRemovedImages] = useState([]); // Track removed images
-  const userRole = localStorage.getItem("userRole"); // Fetch user role from local storage
-  // State for search query
+  const [removedImages, setRemovedImages] = useState([]);
+  const userRole = localStorage.getItem("userRole");
   const [searchQuery, setSearchQuery] = useState("");
 
-  // Debugging: Log mode and venueId changes
   useEffect(() => {}, [mode, venueId]);
 
-  // Reset form when switching from "edit" to "create" mode
   useEffect(() => {
     if (mode === "create") {
       setFormData({
@@ -52,13 +51,14 @@ export default function VenueForm({
         description: "",
         menu: "",
         website: "",
+        alcoholFreeBeersOnTap: [],
+        alcoholFreeDrinkBrands: [],
         images: [],
       });
       setRemovedImages([]);
     }
   }, [mode]);
 
-  // Fetch venue data if in edit mode
   useEffect(() => {
     if (mode === "edit" && venueId) {
       const fetchVenueData = async () => {
@@ -75,6 +75,8 @@ export default function VenueForm({
             description: venueData.description,
             menu: venueData.menu,
             website: venueData.website || "",
+            alcoholFreeBeersOnTap: venueData.alcoholFreeBeersOnTap || [],
+            alcoholFreeDrinkBrands: venueData.alcoholFreeDrinkBrands || [],
             images: venueData.images || [],
           });
         } catch (error) {
@@ -93,25 +95,33 @@ export default function VenueForm({
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  const handleArrayChange = (fieldName, value) => {
+    // Convert comma-separated string to array
+    const arrayValue = value
+      .split(",")
+      .map((item) => item.trim())
+      .filter((item) => item);
+    setFormData({ ...formData, [fieldName]: arrayValue });
+  };
+
   const validatePhone = (phone) => {
-    // Basic phone number validation (e.g., +1234567890 or 123-456-7890)
     const phoneRegex =
       /^\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}$/;
     return phoneRegex.test(phone);
   };
-  // Handle cancel button click
+
   const handleCancel = () => {
     if (typeof onClose === "function") {
-      onClose(); // Call onClose if provided
+      onClose();
     } else {
-      navigate(-1); // Navigate back one step if onClose is not provided
+      navigate(-1);
     }
   };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
 
-    // Validate required fields
     if (
       !formData.name ||
       !formData.address ||
@@ -127,7 +137,6 @@ export default function VenueForm({
       return;
     }
 
-    // Validate phone number
     if (!validatePhone(formData.phone)) {
       setError("Please provide a valid phone number.");
       return;
@@ -135,15 +144,21 @@ export default function VenueForm({
 
     setLoading(true);
 
-    // Construct FormData
     const formDataToSend = new FormData();
     formDataToSend.append("name", formData.name);
     formDataToSend.append("address", formData.address);
     formDataToSend.append("phone", formData.phone);
     formDataToSend.append("description", formData.description);
     formDataToSend.append("menu", formData.menu);
+    formDataToSend.append(
+      "alcoholFreeBeersOnTap",
+      JSON.stringify(formData.alcoholFreeBeersOnTap)
+    );
+    formDataToSend.append(
+      "alcoholFreeDrinkBrands",
+      JSON.stringify(formData.alcoholFreeDrinkBrands)
+    );
 
-    // Append website only if it's not empty
     if (formData.website.trim() !== "") {
       formDataToSend.append("website", formData.website);
     }
@@ -151,7 +166,6 @@ export default function VenueForm({
     formDataToSend.append("location[coordinates][0]", formData.longitude);
     formDataToSend.append("location[coordinates][1]", formData.latitude);
 
-    // Append removed images
     if (removedImages.length > 0) {
       formDataToSend.append("removedImages", JSON.stringify(removedImages));
     }
@@ -182,34 +196,24 @@ export default function VenueForm({
         );
       }
 
-      console.log("API Response main:", response.data); // Debuggin
-
       showSuccess(
         `Venue ${mode === "create" ? "created" : "updated"} successfully!`
       );
 
-      // Wait for 4 seconds before closing the form
       setTimeout(() => {
         handleFormReset();
-        setSearchQuery(""); // Reset the search query
+        setSearchQuery("");
         if (typeof onUpdate === "function") {
-          console.log(
-            "Passing updated venue data to onUpdate:",
-            response.data.venue
-          );
-          // onUpdate(); // Trigger update in parent component (if provided)
           onUpdate(response.data.venue);
-
-          console.log("prop:", response.data.venue);
         }
         if (typeof onClose === "function") {
-          onClose(); // Close the modal (if provided)
+          onClose();
         }
 
         if (mode === "create" && userRole !== "admin") {
-          navigate(`/venues/my-venue/${response.data.venue._id}`); // Navigate to the detail page for non-admin users
+          navigate(`/venues/my-venue/${response.data.venue._id}`);
         }
-      }, 4000); // 4000 ms = 4 seconds
+      }, 4000);
     } catch (error) {
       console.error(
         "Error saving venue:",
@@ -233,14 +237,16 @@ export default function VenueForm({
       longitude: null,
       description: "",
       menu: "",
-      website: "", // Reset website field
+      website: "",
+      alcoholFreeBeersOnTap: [],
+      alcoholFreeDrinkBrands: [],
       images: [],
     });
-    setRemovedImages([]); // Reset removedImages
+    setRemovedImages([]);
   };
 
   return (
-    <div className="p-4 mt-4 w-full max-w-6xl mx-auto  bg-white dark:bg-darkCard rounded-md ">
+    <div className="p-4 mt-4 w-full max-w-6xl mx-auto bg-white dark:bg-darkCard rounded-md">
       <ToastNotifications />
       <div className="flex flex-col gap-4">
         <div className="flex flex-col md:flex-row gap-4">
@@ -251,8 +257,23 @@ export default function VenueForm({
             </h2>
             {error && <div className="text-red-500 mb-4">{error}</div>}
             <form ref={formRef} onSubmit={handleSubmit} className="space-y-4">
-              {/* Render the VenueInputs component */}
               <VenueInputs formData={formData} handleChange={handleChange} />
+
+              {/* Alcohol-Free Beers on Tap (Left Side) */}
+              <div className="form-group">
+                <label className="block text-sm font-medium mb-1">
+                  Alcohol-Free Beers on Tap (comma separated)
+                </label>
+                <input
+                  type="text"
+                  className="w-full p-2 border rounded"
+                  value={formData.alcoholFreeBeersOnTap.join(", ")}
+                  onChange={(e) =>
+                    handleArrayChange("alcoholFreeBeersOnTap", e.target.value)
+                  }
+                  placeholder="e.g., Heineken 0.0, Budweiser Zero"
+                />
+              </div>
 
               <ImageUploader
                 formData={formData}
@@ -266,6 +287,23 @@ export default function VenueForm({
           {/* Right Section */}
           <div className="w-full pt-12 md:w-1/2">
             <ContactInfo formData={formData} handleChange={handleChange} />
+
+            {/* Alcohol-Free Drink Brands (Right Side) */}
+            <div className="form-group mb-4">
+              <label className="block text-sm font-medium mb-1">
+                Alcohol-Free Drink Brands (comma separated)
+              </label>
+              <input
+                type="text"
+                className="w-full p-2 border rounded"
+                value={formData.alcoholFreeDrinkBrands.join(", ")}
+                onChange={(e) =>
+                  handleArrayChange("alcoholFreeDrinkBrands", e.target.value)
+                }
+                placeholder="e.g., Seedlip, Ritual Zero Proof"
+              />
+            </div>
+
             <p className="text-left dark:bg-darkBg font-medium text-base mb-1 p-1">
               Select Venue Location from Map
             </p>
@@ -274,8 +312,8 @@ export default function VenueForm({
                 setFormData={setFormData}
                 initialLatitude={formData.latitude}
                 initialLongitude={formData.longitude}
-                searchQuery={searchQuery} // Pass searchQuery
-                setSearchQuery={setSearchQuery} // Pass setSearchQuery
+                searchQuery={searchQuery}
+                setSearchQuery={setSearchQuery}
               />
             </div>
           </div>
@@ -285,8 +323,8 @@ export default function VenueForm({
         <div className="w-full flex justify-center mt-6">
           <button
             type="button"
-            className="bg-gray-400 px-4 py-2 mr-2 rounded text-white hover:bg-gray-500 transition "
-            onClick={handleCancel} // Handle cancel button click // Use onClose from props
+            className="bg-gray-400 px-4 py-2 mr-2 rounded text-white hover:bg-gray-500 transition"
+            onClick={handleCancel}
           >
             Cancel
           </button>
