@@ -55,21 +55,26 @@ exports.createBlog = async (req, res) => {
       let parsedTags = [];
 
       try {
-        parsedCategories = typeof categories === 'string' ? 
-          (categories.startsWith('[') ? JSON.parse(categories) : categories.split(',').map(cat => cat.trim())) : 
-          categories;
+        parsedCategories =
+          typeof categories === "string"
+            ? categories.startsWith("[")
+              ? JSON.parse(categories)
+              : categories.split(",").map((cat) => cat.trim())
+            : categories;
       } catch (e) {
-        parsedCategories = categories.split(',').map(cat => cat.trim());
+        parsedCategories = categories.split(",").map((cat) => cat.trim());
       }
 
       try {
-        parsedTags = tags ? 
-          (typeof tags === 'string' ? 
-            (tags.startsWith('[') ? JSON.parse(tags) : tags.split(',').map(tag => tag.trim())) : 
-            tags) : 
-          [];
+        parsedTags = tags
+          ? typeof tags === "string"
+            ? tags.startsWith("[")
+              ? JSON.parse(tags)
+              : tags.split(",").map((tag) => tag.trim())
+            : tags
+          : [];
       } catch (e) {
-        parsedTags = tags ? tags.split(',').map(tag => tag.trim()) : [];
+        parsedTags = tags ? tags.split(",").map((tag) => tag.trim()) : [];
       }
 
       const blog = new Blog({
@@ -124,12 +129,11 @@ exports.getAllBlogs = async (req, res) => {
     // Start with base query and populate author info
     let query = Blog.find()
       .populate("author", "name profilePicture")
-      .populate("likes", "name profilePicture")
       .populate("comments.user", "name profilePicture");
 
     // Use APIfeatures for filtering, searching, etc.
     const features = new APIfeatures(query, req.query)
-      .multfilter(["title", "excerpt", "content", "tags"])
+      .multfilter(["title", "excerpt", "categories", "content", "tags"])
       .filter()
       .sort()
       .limiting()
@@ -182,7 +186,6 @@ exports.getBlogBySlug = async (req, res) => {
   try {
     const blog = await Blog.findOne({ slug: req.params.slug })
       .populate("author", "name profilePicture")
-      .populate("likes", "name profilePicture")
       .populate("comments.user", "name profilePicture");
 
     if (!blog) {
@@ -204,7 +207,6 @@ exports.getBlogBySlug = async (req, res) => {
   }
 };
 
-// Update a blog
 exports.updateBlog = async (req, res) => {
   upload(req, res, async (err) => {
     if (err) {
@@ -214,8 +216,7 @@ exports.updateBlog = async (req, res) => {
     try {
       const { title, excerpt, content, categories, tags } = req.body;
       const blogId = req.params.id;
-
-      // Find existing blog
+      const existingImages = req.body.featuredImage || [];
       const existingBlog = await Blog.findById(blogId);
       if (!existingBlog) {
         return res.status(404).json({
@@ -224,7 +225,6 @@ exports.updateBlog = async (req, res) => {
         });
       }
 
-      // Check if user is author or admin
       if (
         existingBlog.author.toString() !== req.user._id.toString() &&
         req.user.role !== "admin"
@@ -235,48 +235,58 @@ exports.updateBlog = async (req, res) => {
         });
       }
 
-      // Calculate new read time if content changed
+      // Calculate read time if content changed
       let readTime = existingBlog.readTime;
       if (content && content !== existingBlog.content) {
         const wordCount = content.split(/\s+/).length;
         readTime = Math.ceil(wordCount / 200);
       }
 
-      // Handle images - keep existing if no new ones uploaded
-      let images = existingBlog.featuredImage || [];
-      if (req.files && req.files.length > 0) {
-        // Delete old images if they're being replaced
-        if (existingBlog.featuredImage && existingBlog.featuredImage.length > 0) {
-          existingBlog.featuredImage.forEach((image) => {
-            const filePath = path.join(__dirname, "../", image);
-            if (fs.existsSync(filePath)) {
-              fs.unlinkSync(filePath);
-            }
-          });
-        }
+      // Parse existingImages (frontend sends what should be kept)
+      const keptExistingImages = Array.isArray(existingImages)
+        ? existingImages
+        : JSON.parse(existingImages || "[]");
 
-        images = req.files.map(
-          (file) => `uploads/blog-images/${file.filename}`
-        );
-      }
+      // Process new uploads
+      const newUploads =
+        req.files?.map((file) => `uploads/blog-images/${file.filename}`) || [];
+
+      // Combine kept existing images with new uploads
+      const finalFeaturedImages = [...keptExistingImages, ...newUploads];
+
+      // Determine which images to delete (present in DB but not in final list)
+      const imagesToDelete = existingBlog.featuredImage.filter(
+        (dbImage) => !finalFeaturedImages.includes(dbImage)
+      );
+
+      // Delete unused images from server
+      imagesToDelete.forEach((imagePath) => {
+        const fullPath = path.join(__dirname, "../", imagePath);
+        if (fs.existsSync(fullPath)) {
+          fs.unlinkSync(fullPath);
+        }
+      });
 
       const updateData = {
         title: title || existingBlog.title,
         excerpt: excerpt || existingBlog.excerpt,
         content: content || existingBlog.content,
-        categories: categories ? 
-          (typeof categories === 'string' ? 
-            (categories.startsWith('[') ? JSON.parse(categories) : categories.split(',').map(cat => cat.trim())) : 
-            categories) : 
-          existingBlog.categories,
-        tags: tags ? 
-          (typeof tags === 'string' ? 
-            (tags.startsWith('[') ? JSON.parse(tags) : tags.split(',').map(tag => tag.trim())) : 
-            tags) : 
-          existingBlog.tags,
+        categories: categories
+          ? typeof categories === "string"
+            ? categories.startsWith("[")
+              ? JSON.parse(categories)
+              : categories.split(",").map((cat) => cat.trim())
+            : categories
+          : existingBlog.categories,
+        tags: tags
+          ? typeof tags === "string"
+            ? tags.startsWith("[")
+              ? JSON.parse(tags)
+              : tags.split(",").map((tag) => tag.trim())
+            : tags
+          : existingBlog.tags,
         readTime,
-        featuredImage: images && images.length > 0 ? [...(existingBlog.featuredImage || []), ...images] : (existingBlog.featuredImage || []),
-        images: images && images.length > 0 ? images : (existingBlog.images || []),
+        featuredImage: finalFeaturedImages,
         updatedAt: Date.now(),
       };
 
@@ -290,7 +300,7 @@ exports.updateBlog = async (req, res) => {
         blog: updatedBlog,
       });
     } catch (error) {
-      console.log(error)
+      console.error(error);
       res.status(500).json({
         success: false,
         message: error.message,

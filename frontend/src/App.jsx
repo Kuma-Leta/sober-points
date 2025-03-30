@@ -33,6 +33,9 @@ import ContactUs from "./pages/landing/ContactUs";
 // import NewsletterManager from "./pages/newsletter/NewsletterManager";
 import BlogAdmin from "./pages/blog/admin";
 import BlogForm from "./pages/blog/admin/form";
+import BlogList from "./pages/blog";
+import BlogRead from "./pages/blog/read";
+import ScrollToTopOnNavigation from "./scroltop";
 import NewsletterManager from "./pages/newsletter/NewsletterManager";
 
 function Pages() {
@@ -89,6 +92,22 @@ function Pages() {
         element={
           <ProtectedRoute>
             <BlogAdmin />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/blogs"
+        element={
+          <ProtectedRoute>
+            <BlogList />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/blog/:slug"
+        element={
+          <ProtectedRoute>
+            <BlogRead />
           </ProtectedRoute>
         }
       />
@@ -251,6 +270,7 @@ const Routing = () => {
 
 const App = () => (
   <BrowserRouter>
+     <ScrollToTopOnNavigation />
     <Routing />
   </BrowserRouter>
 );
