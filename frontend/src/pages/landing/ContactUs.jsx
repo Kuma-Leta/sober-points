@@ -58,7 +58,7 @@ const ContactUs = () => {
   };
 
   return (
-    <div className="max-w-lg mx-auto mt-10 p-6 bg-white shadow-lg rounded">
+    <div className="max-w-3xl mx-auto mt-10 p-6 space-y-4 py-8">
       <h2 className="text-2xl font-semibold text-center">Get in Touch</h2>
       <p className="text-center text-gray-600">
         We'd love to hear from you! Reach out today.
