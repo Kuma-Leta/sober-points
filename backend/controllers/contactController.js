@@ -21,12 +21,23 @@ exports.sendContactEmail = async (req, res) => {
       from: email,
       to: process.env.SYSTEM_OWNER_EMAIL, // Admin email
       subject: `New Contact Form Submission: ${topic}`,
-      text: `
-        Name: ${firstName} ${lastName}
-        Email: ${email}
-        Phone: ${phone}
-        Topic: ${topic}
-        Message: ${message}
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; border: 1px solid #ddd; padding: 20px; border-radius: 8px;">
+          <h2 style="text-align: center; color: #333;">📩 New Contact Request</h2>
+          <hr style="border: none; height: 1px; background-color: #ddd;">
+          <p style="font-size: 16px;"><strong>Name:</strong> ${firstName} ${lastName}</p>
+          <p style="font-size: 16px;"><strong>Email:</strong> <a href="mailto:${email}" style="color: #007BFF;">${email}</a></p>
+          <p style="font-size: 16px;"><strong>Phone:</strong> ${
+            phone || "N/A"
+          }</p>
+          <p style="font-size: 16px;"><strong>Topic:</strong> ${topic}</p>
+          <div style="background-color: #f9f9f9; padding: 10px; border-left: 4px solid #007BFF; margin: 10px 0;">
+            <p style="font-size: 16px; margin: 0;"><strong>Message:</strong></p>
+            <p style="font-size: 15px; margin: 0; color: #555;">${message}</p>
+          </div>
+          <hr style="border: none; height: 1px; background-color: #ddd;">
+          <p style="text-align: center; color: #777; font-size: 14px;">This email was sent automatically from the contact form.</p>
+        </div>
       `,
     };
 
