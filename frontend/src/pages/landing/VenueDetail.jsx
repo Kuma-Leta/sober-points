@@ -19,6 +19,7 @@ import { useNavigate } from "react-router-dom";
 import VenueDetailMap from "./venuedetail/VenueDetailMap";
 import VenueReviews from "./venuedetail/VenueReviews";
 import SearchBar from "../../components/search";
+import Tags from "./Tags";
 
 const VenueDetail = () => {
   const { id } = useParams();
@@ -40,9 +41,7 @@ const VenueDetail = () => {
   useEffect(() => {
     const fetchVenueById = async () => {
       try {
-        const response = await axiosInstance.get(
-          `/venues/${id}`
-        );
+        const response = await axiosInstance.get(`/venues/${id}`);
         setVenue(response.data);
         setLoading(false);
       } catch (error) {
@@ -124,26 +123,7 @@ const VenueDetail = () => {
       <div className="pl-6 sm:pl-8 lg:pl-12 py-4">
         <SearchBar />
       </div>
-
-      {/* Responsive Image Row */}
-      {venue.images.length > 0 && (
-        <div className="flex gap-4 overflow-hidden">
-          {venue.images.slice(0, 3).map((image, index) => (
-            <div
-              key={index}
-              className="relative flex-shrink-0 w-full sm:w-1/2 lg:w-1/3 aspect-square overflow-hidden rounded cursor-pointer"
-              onClick={() => handleImageClick(index)}
-            >
-              <img
-                src={`${import.meta.env.VITE_API_URL}/${image.replace(/\\/g, "/")}`}
-                alt={`Venue ${index + 1}`}
-                className="w-full h-full object-cover"
-              />
-            </div>
-          ))}
-        </div>
-      )}
-
+      <Tags />
       {/* Venue Details */}
       <div className="w-full mx-auto bg-white dark:bg-darkCard p-6 sm:p-8 rounded my-2 border border-gray-200 dark:border-gray-700">
         <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-darkText leading-tight">
@@ -166,6 +146,27 @@ const VenueDetail = () => {
           </span>
         </div>
       </div>
+      {/* Responsive Image Row */}
+      {venue.images.length > 0 && (
+        <div className="flex gap-4 overflow-hidden">
+          {venue.images.slice(0, 3).map((image, index) => (
+            <div
+              key={index}
+              className="relative flex-shrink-0 w-full sm:w-1/2 lg:w-1/3 aspect-square overflow-hidden rounded cursor-pointer"
+              onClick={() => handleImageClick(index)}
+            >
+              <img
+                src={`${import.meta.env.VITE_API_URL}/${image.replace(
+                  /\\/g,
+                  "/"
+                )}`}
+                alt={`Venue ${index + 1}`}
+                className="w-full h-full object-cover"
+              />
+            </div>
+          ))}
+        </div>
+      )}
 
       {/* Image Popup */}
       {isImagePopupOpen && (
