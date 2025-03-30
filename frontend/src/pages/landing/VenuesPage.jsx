@@ -90,13 +90,13 @@ const VenuesPage = () => {
         } gap-4 h-screen`}
       >
         {/* VenueLists (Scrollable) */}
-        <div className={`overflow-y-auto ${showMap ? "h-screen" : ""}`}>
+        <div className={`overflow-y-auto ${showMap ? "min-h-screen" : ""}`}>
           <VenueLists isSideBySide={showMap} loading={loading} error={error} />
         </div>
 
         {/* VenueMap (Full Height & Sticky) */}
         {showMap && (
-          <div className="w-full min-h-screen sticky top-0 ">
+          <div className="w-full  min-h-screen sticky top-0 ">
             <VenueMap
               venues={
                 searchResults.length > 0
