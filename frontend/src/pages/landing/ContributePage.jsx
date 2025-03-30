@@ -10,7 +10,7 @@ const ContributePage = () => {
           <h3 className=" flex flex-start font-bold text-gray-900 mb-6">
             Contribute
           </h3>
-          <h2 className="text-2xl sm:text-3xl font-semibold text-justify text-gray-800 mb-4">
+          <h2 className="text-2xl sm:text-3xl font-semibold  text-gray-800 mb-4">
             Join Us in Mapping Alcohol-Free Locations
           </h2>
         </div>

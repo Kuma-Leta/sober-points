@@ -1,80 +1,161 @@
-import React from "react";
+import React, { useState } from "react";
+import axios from "axios";
 
 const ContactUs = () => {
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: "",
+    topic: "",
+    inquiryType: "",
+    message: "",
+    acceptTerms: false,
+  });
+
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(null);
+  const [error, setError] = useState(null);
+
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setFormData({
+      ...formData,
+      [name]: type === "checkbox" ? checked : value,
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!formData.acceptTerms) {
+      setError("You must accept the terms.");
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+    setSuccess(null);
+
+    try {
+      const response = await axios.post(
+        "http://localhost:5000/api/contact",
+        formData
+      );
+      setSuccess(response.data.message);
+      setFormData({
+        firstName: "",
+        lastName: "",
+        email: "",
+        phone: "",
+        topic: "",
+        inquiryType: "",
+        message: "",
+        acceptTerms: false,
+      });
+    } catch (err) {
+      setError(err.response?.data?.error || "Something went wrong.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <section id="contactus" className="py-12 px-4 bg-white dark:bg-darkBg">
-      <div className="max-w-5xl mx-auto text-center">
-        <h2 className="text-3xl font-bold text-dark dark:text-darkText mb-6">
-          Contact Us
-        </h2>
-        <p className="text-lg text-grayColor dark:text-darkText mb-10">
-          We’d love to hear from you. Fill out the form below to get in touch.
-        </p>
+    <div className="max-w-lg mx-auto mt-10 p-6 bg-white shadow-lg rounded">
+      <h2 className="text-2xl font-semibold text-center">Get in Touch</h2>
+      <p className="text-center text-gray-600">
+        We'd love to hear from you! Reach out today.
+      </p>
 
-        <form className="space-y-6">
-          {/* Name */}
-          <div className="flex flex-col">
-            <label
-              htmlFor="name"
-              className="text-lg font-medium text-dark dark:text-darkText mb-2"
-            >
-              Full Name
-            </label>
-            <input
-              type="text"
-              id="name"
-              placeholder="Enter your full name"
-              className="px-4 py-3 border border-gray-300 rounded-lg dark:bg-darkCard dark:border-darkText dark:text-darkText focus:outline-none focus:ring-2 focus:ring-primary"
-              required
-            />
-          </div>
+      {error && <p className="text-red-500">{error}</p>}
+      {success && <p className="text-green-500">{success}</p>}
 
-          {/* Email */}
-          <div className="flex flex-col">
-            <label
-              htmlFor="email"
-              className="text-lg font-medium text-dark dark:text-darkText mb-2"
-            >
-              Email Address
-            </label>
-            <input
-              type="email"
-              id="email"
-              placeholder="Enter your email address"
-              className="px-4 py-3 border border-gray-300 rounded-lg dark:bg-darkCard dark:border-darkText dark:text-darkText focus:outline-none focus:ring-2 focus:ring-primary"
-              required
-            />
-          </div>
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="flex gap-4">
+          <input
+            type="text"
+            name="firstName"
+            value={formData.firstName}
+            onChange={handleChange}
+            placeholder="First Name"
+            className="w-1/2 p-2 border rounded"
+            required
+          />
+          <input
+            type="text"
+            name="lastName"
+            value={formData.lastName}
+            onChange={handleChange}
+            placeholder="Last Name"
+            className="w-1/2 p-2 border rounded"
+            required
+          />
+        </div>
 
-          {/* Message */}
-          <div className="flex flex-col">
-            <label
-              htmlFor="message"
-              className="text-lg font-medium text-dark dark:text-darkText mb-2"
-            >
-              Message
-            </label>
-            <textarea
-              id="message"
-              placeholder="Write your message here"
-              className="px-4 py-3 border border-gray-300 rounded-lg dark:bg-darkCard dark:border-darkText dark:text-darkText focus:outline-none focus:ring-2 focus:ring-primary"
-              rows="4"
-              required
-            />
-          </div>
+        <div className="flex gap-4">
+          <input
+            type="email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            placeholder="Email"
+            className="w-1/2 p-2 border rounded"
+            required
+          />
+          <input
+            type="text"
+            name="phone"
+            value={formData.phone}
+            onChange={handleChange}
+            placeholder="Phone Number"
+            className="w-1/2 p-2 border rounded"
+            required
+          />
+        </div>
 
-          {/* Submit Button */}
-          <div className="text-center">
-            <button
-              type="submit"
-              className="px-6 py-3 mt-4 text-white bg-primary rounded-lg hover:bg-primaryLight focus:outline-none focus:ring-2 focus:ring-primary"
-            >
-              Send Message
-            </button>
-          </div>
-        </form>
-      </div>
-    </section>
+        <select
+          name="topic"
+          value={formData.topic}
+          onChange={handleChange}
+          className="w-full p-2 border rounded"
+          required
+        >
+          <option value="">Select One...</option>
+          <option value="Partnership">Partnership Opportunity</option>
+          <option value="Venue Listing">I want to get my venue listed</option>
+          <option value="General">General Question</option>
+          <option value="Other">Other Inquiry</option>
+        </select>
+
+        <textarea
+          name="message"
+          value={formData.message}
+          onChange={handleChange}
+          placeholder="Type your message..."
+          className="w-full p-2 border rounded h-28"
+          required
+        />
+
+        <div className="flex items-center">
+          <input
+            type="checkbox"
+            name="acceptTerms"
+            checked={formData.acceptTerms}
+            onChange={handleChange}
+            className="mr-2"
+            required
+          />
+          <label>I accept the Terms</label>
+        </div>
+
+        <button
+          type="submit"
+          className="w-full bg-black text-white py-2 rounded hover:bg-gray-800"
+          disabled={loading}
+        >
+          {loading ? "Submitting..." : "Submit"}
+        </button>
+      </form>
+    </div>
   );
 };
 

@@ -68,10 +68,10 @@ const Header = () => {
                 Map
               </Link>
 
-              <Link to="/" className="hover:text-primary transition">
+              <Link to="/a" className="hover:text-primary transition">
                 About
               </Link>
-              <Link to="#features" className="hover:text-primary transition">
+              <Link to="/" className="hover:text-primary transition">
                 Blog
               </Link>
               <Link to="/contact" className="hover:text-primary transition">

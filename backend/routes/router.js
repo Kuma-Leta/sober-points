@@ -12,6 +12,7 @@ const favouritesRoutes = require("./favourites");
 const subscriberRoutes = require("./subscriber");
 const newsletterRoutes = require("./newsletter");
 const blogRoutes = require("./blog");
+const contactRoutes=require("./contact")
 // Authentication route
 router.post("/login", authController.login);
 router.get("/logout", authController.logoutUser);
@@ -90,6 +91,8 @@ router.use("/venues", venueRoutes); // <-- Add this line
 router.use("/ratings", ratingRoutes);
 router.use("/favorites", favouritesRoutes);
 router.use("/subscriber", subscriberRoutes);
+router.use("/newsletter", newsletterRoutes);
+router.use("/contact",contactRoutes)
 router.use("/newsletters", newsletterRoutes);
 // Venues
 
