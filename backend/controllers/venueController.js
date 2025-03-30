@@ -90,8 +90,8 @@ exports.createVenue = async (req, res) => {
         images: imageUrls,
         menu,
         website: website && website.trim() !== "" ? website : null, // Handle optional website field
-        alcoholFreeBeersOnTap: alcoholFreeBeersOnTap || [], // Handle optional field
-        alcoholFreeDrinkBrands: alcoholFreeDrinkBrands || [], // Handle optional field
+        alcoholFreeBeersOnTap: alcoholFreeBeersOnTap, // Handle optional field
+        alcoholFreeDrinkBrands: alcoholFreeDrinkBrands , // Handle optional field
         createdBy,
         isVerified, // Set isVerified based on the user's role
       });
@@ -218,6 +218,8 @@ exports.getVenueDetails = async (req, res) => {
       rating: venue.rating,
       createdAt: venue.createdAt,
       updatedAt: venue.updatedAt,
+      alcoholFreeBeersOnTap: venue.alcoholFreeBeersOnTap,
+      alcoholFreeDrinkBrands: venue.alcoholFreeDrinkBrands,
     };
 
     // console.log("location:", venue.location);
@@ -456,7 +458,7 @@ exports.getNearbyVenues = async (req, res) => {
       ];
     }
 
-    const venues = await Venue.find(filter).limit(10).populate("reviews");
+    const venues = await Venue.find(filter).limit(15).populate("reviews");
 
     res.status(200).json(venues);
   } catch (error) {

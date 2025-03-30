@@ -83,15 +83,15 @@ function VenueDetailMap({ venue }) {
   const mapHeight = useDynamicHeight();
 
   return (
-    <div className="mt-6 w-full px-4 sm:px-6 lg:px-8">
-      <div className="w-full h-full bg-white shadow-lg rounded-xl overflow-hidden">
+    <div className="mt-6 w-full px-4">
+      <div className="w-full h-full bg-white shadow-lg rounded overflow-hidden">
         <MapContainer
           center={[latitude, longitude]}
           zoom={15}
           style={{
             height: mapHeight,
             width: "100%",
-            borderRadius: "12px",
+            borderRadius: "5px",
             zIndex: "0",
           }}
           zoomControl={false}

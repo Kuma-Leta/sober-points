@@ -58,7 +58,7 @@ const ContactUs = () => {
   };
 
   return (
-    <div className="max-w-lg mx-auto mt-10 p-6 bg-white shadow-lg rounded">
+    <div className="max-w-3xl mx-auto mt-10 p-6 space-y-4 py-8">
       <h2 className="text-2xl font-semibold text-center">Get in Touch</h2>
       <p className="text-center text-gray-600">
         We'd love to hear from you! Reach out today.
@@ -110,19 +110,59 @@ const ContactUs = () => {
           />
         </div>
 
-        <select
-          name="topic"
-          value={formData.topic}
-          onChange={handleChange}
-          className="w-full p-2 border rounded"
-          required
-        >
-          <option value="">Select One...</option>
-          <option value="Partnership">Partnership Opportunity</option>
-          <option value="Venue Listing">I want to get my venue listed</option>
-          <option value="General">General Question</option>
-          <option value="Other">Other Inquiry</option>
-        </select>
+        <div className="space-y-2">
+          <p className="font-medium">What would you like to discuss?</p>
+          <div className="space-y-2">
+            <div className="flex items-center">
+              <input
+                type="radio"
+                id="partnership"
+                name="topic"
+                value="Partnership"
+                onChange={handleChange}
+                className="mr-2"
+                required
+              />
+              <label htmlFor="partnership">Partnership Opportunity</label>
+            </div>
+            <div className="flex items-center">
+              <input
+                type="radio"
+                id="venueListing"
+                name="topic"
+                value="Venue Listing"
+                onChange={handleChange}
+                className="mr-2"
+                required
+              />
+              <label htmlFor="venueListing">I want to get my venue listed</label>
+            </div>
+            <div className="flex items-center">
+              <input
+                type="radio"
+                id="general"
+                name="topic"
+                value="General"
+                onChange={handleChange}
+                className="mr-2"
+                required
+              />
+              <label htmlFor="general">General Question</label>
+            </div>
+            <div className="flex items-center">
+              <input
+                type="radio"
+                id="other"
+                name="topic"
+                value="Other"
+                onChange={handleChange}
+                className="mr-2"
+                required
+              />
+              <label htmlFor="other">Other Inquiry</label>
+            </div>
+          </div>
+        </div>
 
         <textarea
           name="message"

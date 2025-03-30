@@ -19,6 +19,7 @@ import { useNavigate } from "react-router-dom";
 import VenueDetailMap from "./venuedetail/VenueDetailMap";
 import VenueReviews from "./venuedetail/VenueReviews";
 import SearchBar from "../../components/search";
+import Tags from "./Tags";
 
 const VenueDetail = () => {
   const { id } = useParams();
@@ -40,9 +41,7 @@ const VenueDetail = () => {
   useEffect(() => {
     const fetchVenueById = async () => {
       try {
-        const response = await axiosInstance.get(
-          `/venues/${id}`
-        );
+        const response = await axiosInstance.get(`/venues/${id}`);
         setVenue(response.data);
         setLoading(false);
       } catch (error) {
@@ -119,33 +118,14 @@ const VenueDetail = () => {
   const [longitude, latitude] = venue.location.coordinates;
 
   return (
-    <div className=" sm:p-1   bg-white dark:bg-darkBg min-h-screen">
+    <div className=" sm:p-1 max-w-7xl mx-auto   bg-white dark:bg-darkBg min-h-screen">
       <ToastContainer />
       <div className="pl-6 sm:pl-8 lg:pl-12 py-4">
         <SearchBar />
       </div>
-
-      {/* Responsive Image Row */}
-      {venue.images.length > 0 && (
-        <div className="flex gap-4 overflow-hidden">
-          {venue.images.slice(0, 3).map((image, index) => (
-            <div
-              key={index}
-              className="relative flex-shrink-0 w-full sm:w-1/2 lg:w-1/3 aspect-square overflow-hidden rounded-lg cursor-pointer"
-              onClick={() => handleImageClick(index)}
-            >
-              <img
-                src={`${import.meta.env.VITE_API_URL}/${image.replace(/\\/g, "/")}`}
-                alt={`Venue ${index + 1}`}
-                className="w-full h-full object-cover"
-              />
-            </div>
-          ))}
-        </div>
-      )}
-
+      <Tags />
       {/* Venue Details */}
-      <div className="w-full mx-auto bg-white dark:bg-darkCard p-6 sm:p-8 rounded-2xl border border-gray-200 dark:border-gray-700">
+      <div className="w-full mx-auto bg-white dark:bg-darkCard p-6 sm:p-8 rounded my-2 border border-gray-200 dark:border-gray-700">
         <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-darkText leading-tight">
           {venue.name}
         </h1>
@@ -166,6 +146,27 @@ const VenueDetail = () => {
           </span>
         </div>
       </div>
+      {/* Responsive Image Row */}
+      {venue.images.length > 0 && (
+        <div className="flex gap-4 overflow-hidden">
+          {venue.images.slice(0, 3).map((image, index) => (
+            <div
+              key={index}
+              className="relative flex-shrink-0 w-full sm:w-1/2 lg:w-1/3 aspect-square overflow-hidden rounded cursor-pointer"
+              onClick={() => handleImageClick(index)}
+            >
+              <img
+                src={`${import.meta.env.VITE_API_URL}/${image.replace(
+                  /\\/g,
+                  "/"
+                )}`}
+                alt={`Venue ${index + 1}`}
+                className="w-full h-full object-cover"
+              />
+            </div>
+          ))}
+        </div>
+      )}
 
       {/* Image Popup */}
       {isImagePopupOpen && (
@@ -214,7 +215,7 @@ const VenueDetail = () => {
       </div>
 
       {/* Reviews Section */}
-      <div className="mt-6 sm:mt-8">
+      <div className="mt-6 max-w-6xl mx-auto  sm:mt-8">
         <h3 className="text-xl sm:text-2xl font-semibold text-gray-800 dark:text-darkText">
           Reviews:
         </h3>
@@ -222,7 +223,7 @@ const VenueDetail = () => {
       </div>
 
       {/* Nearby Venues Section */}
-      <div className="mt-6 sm:mt-8">
+      <div className="mt-6 max-w-6xl mx-auto sm:mt-8">
         <h2 className="text-xl sm:text-2xl font-semibold text-gray-800 dark:text-darkText">
           Nearby Venues
         </h2>

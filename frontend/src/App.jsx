@@ -21,7 +21,7 @@ import VenuesPage from "./pages/landing/VenuesPage";
 import VenueDetail from "./pages/landing/VenueDetail";
 import Venues from "./pages/venues/venues";
 import MyVenues from "./pages/venues/myVenues";
-import MyVenueDetail from "./pages/venues/myVenueDetail";
+import MyVenueDetail, { UpdateVenue } from "./pages/venues/myVenueDetail";
 import AdminAnalytics from "./pages/venues/AdminAnalytics";
 import BottomNavBar from "./pages/venues/BottomNavBar"; // Import the BottomNavBar
 import Profile from "./pages/users/profile";
@@ -76,6 +76,14 @@ function Pages() {
         element={
           <ProtectedRoute>
             <Profile />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/my-venue/:venueId/edit"
+        element={
+          <ProtectedRoute>
+            <UpdateVenue />
           </ProtectedRoute>
         }
       />
@@ -152,6 +160,8 @@ function Pages() {
       <Route path="/venue/form" element={<VenueForm />} />
       <Route path="/my-venue" element={<MyVenues />} />
       <Route path="/venues/my-venue/:venueId" element={<MyVenueDetail />} />
+      <Route path="/my-venue/:venueId" element={<MyVenueDetail />} />
+      <Route path="/venues/my-venue/:venueId/edit" element={<UpdateVenue />} />
       <Route path="/auth/register" element={<Register />} />
       <Route path="/check-in" element={<ProtectedRoute></ProtectedRoute>} />
       <Route path="/auth/login" element={<Login />} />
@@ -270,7 +280,7 @@ const Routing = () => {
 
 const App = () => (
   <BrowserRouter>
-     <ScrollToTopOnNavigation />
+    <ScrollToTopOnNavigation />
     <Routing />
   </BrowserRouter>
 );

@@ -44,11 +44,11 @@ const useAuth = () => {
       if (response.status === 200) {
         dispatch(loginSuccess(data.token, data.data.user));
         setLoading(false);
-        console.log(data.data.user.role)
+        console.log(data.data.user.role);
         if (data.data.user.role === "customer") {
-          window.location.href = "/my-venue";
+          window.location.href = redirectPath || "/my-venue";
         } else {
-          window.location.href = redirectPath || "/";
+          window.location.href = "/admin-analytics";
         }
       } else {
         dispatch(loginFailure("an authorized"));
