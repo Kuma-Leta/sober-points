@@ -23,7 +23,7 @@ export const fetchNearbyVenues = createAsyncThunk(
   async ({ lat, lng, query = "", page = 1 }, thunkAPI) => {
     try {
       const response = await axiosInstance.get(
-        `venues/nearby?lat=${lat}&lng=${lng}&query=${query}&page=${page}`
+        `venues/nearby?lat=${lat}&lng=${lng}&query=${query}&page=${page}&limit=15`
       );
       return response.data;
     } catch (error) {
