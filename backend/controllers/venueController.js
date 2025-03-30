@@ -90,8 +90,8 @@ exports.createVenue = async (req, res) => {
         images: imageUrls,
         menu,
         website: website && website.trim() !== "" ? website : null, // Handle optional website field
-        alcoholFreeBeersOnTap: alcoholFreeBeersOnTap || [], // Handle optional field
-        alcoholFreeDrinkBrands: alcoholFreeDrinkBrands || [], // Handle optional field
+        alcoholFreeBeersOnTap: alcoholFreeBeersOnTap, // Handle optional field
+        alcoholFreeDrinkBrands: alcoholFreeDrinkBrands , // Handle optional field
         createdBy,
         isVerified, // Set isVerified based on the user's role
       });
