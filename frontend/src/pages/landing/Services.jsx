@@ -20,7 +20,7 @@ const Features = () => {
 
       {/* Main Content - Centered */}
       <section id="aboutUs" className="container mx-auto px-4 sm:px-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[48px]">
+        <div className="grid grid-cols-1 w-full md:grid-cols-2 lg:grid-cols-3 gap-[48px]">
           {/* Section 1: Best AF Bars */}
           <div className="bg-white rounded shadow transition-shadow">
             <img
