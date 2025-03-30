@@ -61,16 +61,7 @@ const VenueSchema = new mongoose.Schema(
     website: {
       type: String,
       trim: true,
-      validate: {
-        validator: function (value) {
-          // Allow empty string or valid URL
-          if (value === "" || value === null) return true; // Allow empty or null
-          return /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/.test(
-            value
-          );
-        },
-        message: "Please provide a valid website URL",
-      },
+      default:"",
     },
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
@@ -95,6 +86,14 @@ const VenueSchema = new mongoose.Schema(
       type: Number,
       max: 5,
       default: 0, // Average location rating (will be updated dynamically)
+    },
+    alcoholFreeBeersOnTap: {
+      type: String,
+      default: "",
+    },
+    alcoholFreeDrinkBrands: {
+      type: String,
+      default: "",
     },
     reviews: [
       {

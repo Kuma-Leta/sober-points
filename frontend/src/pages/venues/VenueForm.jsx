@@ -25,8 +25,8 @@ export default function VenueForm({
     description: "",
     menu: "",
     website: "",
-    alcoholFreeBeersOnTap: [], // New field
-    alcoholFreeDrinkBrands: [], // New field
+    alcoholFreeBeersOnTap: "", // Changed to string
+    alcoholFreeDrinkBrands: "", // Changed to string
     images: [],
   });
 
@@ -51,8 +51,8 @@ export default function VenueForm({
         description: "",
         menu: "",
         website: "",
-        alcoholFreeBeersOnTap: [],
-        alcoholFreeDrinkBrands: [],
+        alcoholFreeBeersOnTap: "",
+        alcoholFreeDrinkBrands: "",
         images: [],
       });
       setRemovedImages([]);
@@ -75,8 +75,8 @@ export default function VenueForm({
             description: venueData.description,
             menu: venueData.menu,
             website: venueData.website || "",
-            alcoholFreeBeersOnTap: venueData.alcoholFreeBeersOnTap || [],
-            alcoholFreeDrinkBrands: venueData.alcoholFreeDrinkBrands || [],
+            alcoholFreeBeersOnTap: venueData.alcoholFreeBeersOnTap || "",
+            alcoholFreeDrinkBrands: venueData.alcoholFreeDrinkBrands || "",
             images: venueData.images || [],
           });
         } catch (error) {
@@ -93,15 +93,6 @@ export default function VenueForm({
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleArrayChange = (fieldName, value) => {
-    // Convert comma-separated string to array
-    const arrayValue = value
-      .split(",")
-      .map((item) => item.trim())
-      .filter((item) => item);
-    setFormData({ ...formData, [fieldName]: arrayValue });
   };
 
   const validatePhone = (phone) => {
@@ -150,14 +141,8 @@ export default function VenueForm({
     formDataToSend.append("phone", formData.phone);
     formDataToSend.append("description", formData.description);
     formDataToSend.append("menu", formData.menu);
-    formDataToSend.append(
-      "alcoholFreeBeersOnTap",
-      JSON.stringify(formData.alcoholFreeBeersOnTap)
-    );
-    formDataToSend.append(
-      "alcoholFreeDrinkBrands",
-      JSON.stringify(formData.alcoholFreeDrinkBrands)
-    );
+    formDataToSend.append("alcoholFreeBeersOnTap", formData.alcoholFreeBeersOnTap);
+    formDataToSend.append("alcoholFreeDrinkBrands", formData.alcoholFreeDrinkBrands);
 
     if (formData.website.trim() !== "") {
       formDataToSend.append("website", formData.website);
@@ -238,8 +223,8 @@ export default function VenueForm({
       description: "",
       menu: "",
       website: "",
-      alcoholFreeBeersOnTap: [],
-      alcoholFreeDrinkBrands: [],
+      alcoholFreeBeersOnTap: "",
+      alcoholFreeDrinkBrands: "",
       images: [],
     });
     setRemovedImages([]);
@@ -266,11 +251,10 @@ export default function VenueForm({
                 </label>
                 <input
                   type="text"
+                  name="alcoholFreeBeersOnTap"
                   className="w-full p-2 border rounded"
-                  value={formData.alcoholFreeBeersOnTap.join(", ")}
-                  onChange={(e) =>
-                    handleArrayChange("alcoholFreeBeersOnTap", e.target.value)
-                  }
+                  value={formData.alcoholFreeBeersOnTap}
+                  onChange={handleChange}
                   placeholder="e.g., Heineken 0.0, Budweiser Zero"
                 />
               </div>
@@ -295,17 +279,16 @@ export default function VenueForm({
               </label>
               <input
                 type="text"
+                name="alcoholFreeDrinkBrands"
                 className="w-full p-2 border rounded"
-                value={formData.alcoholFreeDrinkBrands.join(", ")}
-                onChange={(e) =>
-                  handleArrayChange("alcoholFreeDrinkBrands", e.target.value)
-                }
+                value={formData.alcoholFreeDrinkBrands}
+                onChange={handleChange}
                 placeholder="e.g., Seedlip, Ritual Zero Proof"
               />
             </div>
 
             <p className="text-left dark:bg-darkBg font-medium text-base mb-1 p-1">
-              Select Venue Location from Map
+              Select Venue Location from Map (double click on the point)
             </p>
             <div className="relative h-80 w-full rounded-md border">
               <MapComponent

@@ -36,11 +36,10 @@ router.get("/suggestions", getVenueSuggestions);
 // 📌 Get Nearby Venues
 router.get("/nearby", getNearbyVenues);
 
-router.get("/my-venues", authenticate, authorize(["customer"]), getUserVenues);
+router.get("/my-venues", authenticate,  getUserVenues);
 router.get(
   "/my-venue/:venueId",
   authenticate,
-  authorize(["customer"]),
   getVenueDetails
 );
 
@@ -62,7 +61,6 @@ router.get("/:id", getVenueById);
 router.put(
   "/:venueId",
   authenticate,
-  authorize(["admin", "customer"]),
   updateVenue
 );
 
@@ -70,7 +68,6 @@ router.put(
 router.delete(
   "/:id",
   authenticate,
-  authorize(["admin", "customer"]),
   deleteVenue
 );
 
