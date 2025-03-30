@@ -261,8 +261,8 @@ export default function VenueForm({
                   type="text"
                   name="alcoholFreeBeersOnTap"
                   className="w-full p-2 border rounded"
-                  value={formData.alcoholFreeBeersOnTap}
-                  onChange={handleChange}
+                  // value={formData.alcoholFreeBeersOnTap}
+                  // onChange={handleChange}
                   value={
                     Array.isArray(formData.alcoholFreeBeersOnTap)
                       ? formData.alcoholFreeBeersOnTap.join(", ")
