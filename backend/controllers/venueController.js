@@ -43,8 +43,17 @@ exports.createVenue = async (req, res) => {
     }
 
     try {
-      const { name, description, address, phone, location, menu, website } =
-        req.body; // Include website field
+      const {
+        name,
+        description,
+        address,
+        phone,
+        location,
+        menu,
+        website,
+        alcoholFreeBeersOnTap,
+        alcoholFreeDrinkBrands,
+      } = req.body; // Include all fields
       const createdBy = req.user._id; // Assuming user ID is available in the request
       const userRole = req.user.role; // Assuming the user's role is stored in req.user.role
 
@@ -81,6 +90,8 @@ exports.createVenue = async (req, res) => {
         images: imageUrls,
         menu,
         website: website && website.trim() !== "" ? website : null, // Handle optional website field
+        alcoholFreeBeersOnTap: alcoholFreeBeersOnTap || [], // Handle optional field
+        alcoholFreeDrinkBrands: alcoholFreeDrinkBrands || [], // Handle optional field
         createdBy,
         isVerified, // Set isVerified based on the user's role
       });
@@ -245,8 +256,17 @@ exports.updateVenue = async (req, res) => {
 
     try {
       const { venueId } = req.params; // Get the venue ID from the request parameters
-      const { name, description, address, phone, location, menu, website } =
-        req.body;
+      const {
+        name,
+        description,
+        address,
+        phone,
+        location,
+        menu,
+        website,
+        alcoholFreeBeersOnTap,
+        alcoholFreeDrinkBrands,
+      } = req.body;
 
       // Parse removedImages from the request body
       let removedImages = [];
@@ -303,6 +323,14 @@ exports.updateVenue = async (req, res) => {
       venue.images = imageUrls;
       venue.menu = menu;
       venue.website = website && website.trim() !== "" ? website : null;
+
+      // Update alcohol-free fields if they are provided
+      if (alcoholFreeBeersOnTap !== undefined) {
+        venue.alcoholFreeBeersOnTap = alcoholFreeBeersOnTap;
+      }
+      if (alcoholFreeDrinkBrands !== undefined) {
+        venue.alcoholFreeDrinkBrands = alcoholFreeDrinkBrands;
+      }
 
       // Save the updated venue to the database
       await venue.save();
