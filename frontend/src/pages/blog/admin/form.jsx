@@ -11,16 +11,18 @@ const BlogForm = () => {
   const [formData, setFormData] = useState({
     title: "",
     excerpt: "",
-    content: "",
+    content: "", 
     categories: [],
     tags: "",
     isFeatured: false,
     images: [],
+    featuredImage: [],
   });
   const [id, setId] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [imagePreview, setImagePreview] = useState([]);
+  const [existingImages, setExistingImages] = useState([]);
 
   const categories = ["Nightlife", "Food", "Culture", "Wellness", "Travel"];
 
@@ -44,8 +46,10 @@ const BlogForm = () => {
         tags: blog.tags.join(", "),
         isFeatured: blog.isFeatured,
         images: [],
+        featuredImage: blog.featuredImage,
       });
-      setImagePreview(blog.images || []);
+      setExistingImages(blog.featuredImage || []);
+      setImagePreview(blog.featuredImage || []);
     } catch (error) {
       setError("Failed to fetch blog data");
     } finally {
@@ -72,21 +76,34 @@ const BlogForm = () => {
 
   const handleImageChange = (e) => {
     const files = Array.from(e.target.files);
-    setFormData((prev) => ({
+    
+    // Create preview URLs for new files
+    const newPreviews = files.map(file => URL.createObjectURL(file));
+    
+    setFormData(prev => ({
       ...prev,
-      images: [...prev.images, ...files],
+      images: [...prev.images, ...files]
     }));
 
-    const newPreviews = files.map((file) => URL.createObjectURL(file));
-    setImagePreview((prev) => [...prev, ...newPreviews]);
+    setImagePreview(prev => [...prev, ...newPreviews]);
   };
 
   const removeImage = (index) => {
-    setFormData((prev) => ({
-      ...prev,
-      images: prev.images.filter((_, i) => i !== index),
-    }));
-    setImagePreview((prev) => prev.filter((_, i) => i !== index));
+    const isExistingImage = index < existingImages.length;
+
+    if (isExistingImage) {
+      // Remove from existing images
+      setExistingImages(prev => prev.filter((_, i) => i !== index));
+      setImagePreview(prev => prev.filter((_, i) => i !== index));
+    } else {
+      // Remove from new images
+      const adjustedIndex = index - existingImages.length;
+      setFormData(prev => ({
+        ...prev,
+        images: prev.images.filter((_, i) => i !== adjustedIndex)
+      }));
+      setImagePreview(prev => prev.filter((_, i) => i !== index));
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -101,12 +118,15 @@ const BlogForm = () => {
       if (key === "tags") {
         const tags = formData.tags.split(",").map((tag) => tag.trim());
         formDataToSend.append("tags", JSON.stringify(tags));
+      } else if (key === "featuredImage") {
+        // Only append existing images that weren't removed
+        formDataToSend.append("featuredImage", JSON.stringify(existingImages));
       } else if (key !== "images") {
         formDataToSend.append(key, formData[key]);
       }
     });
 
-    // Append files
+    // Append new files
     formData.images.forEach((image) => {
       formDataToSend.append("images", image);
     });
@@ -254,7 +274,11 @@ const BlogForm = () => {
             {imagePreview.map((url, index) => (
               <div key={index} className="relative">
                 <img
-                  src={url}
+                  src={
+                    url.startsWith("http") || url.startsWith("blob")
+                      ? url
+                      : `${import.meta.env.VITE_API_URL}/${url}`
+                  }
                   alt={`Preview ${index + 1}`}
                   className="h-24 w-24 object-cover rounded"
                 />

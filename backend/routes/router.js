@@ -93,6 +93,7 @@ router.use("/favorites", favouritesRoutes);
 router.use("/subscriber", subscriberRoutes);
 router.use("/newsletter", newsletterRoutes);
 router.use("/contact",contactRoutes)
+router.use("/newsletters", newsletterRoutes);
 // Venues
 
 // blog

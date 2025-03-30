@@ -114,12 +114,12 @@ export default function Users({ role }) {
     }
   }, [user]);
   return (
-    <div className="w-full max-w-7xl mx-auto px-6  mt-20">
+    <div className="w-full max-w-7xl mx-auto px-6  mt-4">
       <div className="flex gap-2 items-center mb-4 justify-between">
         <Search setQuery={handleSearchChange} />
         <button
           onClick={handleCreate}
-          className="bg-ternary h-min text-white px-4 py-2 rounded"
+          className="bg-primary h-min text-white px-4 py-2 rounded"
         >
           Add User
         </button>
