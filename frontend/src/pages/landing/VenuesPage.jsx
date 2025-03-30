@@ -84,18 +84,18 @@ const VenuesPage = () => {
       {/* Main Content Section */}
       <hr className="w-full text-gray-200" />
       <div
-        className={`grid ${
+        className={`grid min-h-screen ${
           showMap ? "md:grid-cols-2" : "grid-cols-1"
-        } gap-4 h-screen`}
+        } gap-4`}
       >
         {/* VenueLists (Scrollable) */}
-        <div className={`overflow-y-auto ${showMap ? "min-h-screen" : ""}`}>
+        <div className={``}>
           <VenueLists isSideBySide={showMap} loading={loading} error={error} />
         </div>
 
         {/* VenueMap (Full Height & Sticky) */}
         {showMap && (
-          <div className="w-full  min-h-screen sticky top-0 ">
+          <div className="w-[94%] md:w-full mx-auto  h-screen md:sticky top-0 ">
             <VenueMap
               venues={
                 searchResults.length > 0

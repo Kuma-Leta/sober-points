@@ -218,7 +218,9 @@ exports.getVenueDetails = async (req, res) => {
       rating: venue.rating,
       createdAt: venue.createdAt,
       updatedAt: venue.updatedAt,
-    };
+      alcoholFreeBeersOnTap: venue.alcoholFreeBeersOnTap,
+      alcoholFreeDrinkBrands: venue.alcoholFreeDrinkBrands,
+    }; 
 
     // console.log("location:", venue.location);
 
@@ -456,7 +458,7 @@ exports.getNearbyVenues = async (req, res) => {
       ];
     }
 
-    const venues = await Venue.find(filter).limit(10).populate("reviews");
+    const venues = await Venue.find(filter).limit(15).populate("reviews");
 
     res.status(200).json(venues);
   } catch (error) {

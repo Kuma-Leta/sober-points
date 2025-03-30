@@ -19,12 +19,10 @@ const LandingPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white dark:bg-darkBg text-gray-900 dark:text-darkText">
+    <div className="min-h-screen bg-white mx-auto dark:bg-darkBg text-gray-900 dark:text-darkText">
       <HeroSection setQuery={setQuery} onSearch={handleSearch} />
 
       <Features />
-      {/* <FAQ /> */}
-      {/* <ContactUs /> */}
       <VenueSubmissionPage />
       <NewsLetter />
     </div>

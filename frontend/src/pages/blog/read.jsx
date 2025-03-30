@@ -94,14 +94,6 @@ const BlogRead = () => {
         >
           {/* Header */}
           <header className="mb-8">
-            <div className="relative h-96 rounded-xl overflow-hidden mb-8">
-              <img
-                src={`${import.meta.env.VITE_API_URL}/${blog.featuredImage}`}
-                alt={blog.title}
-                className="w-full h-full object-cover"
-              />
-            </div>
-
             <div className="flex items-center gap-4 mb-4">
               <span className="px-3 py-1 text-sm font-semibold text-white bg-primary rounded-full">
                 {blog.categories[0]}
@@ -134,6 +126,71 @@ const BlogRead = () => {
                   </p>
                 </div>
               </div>
+            </div>
+            <div className="relative h-96 rounded-xl overflow-hidden mb-8">
+              {blog.featuredImage && blog.featuredImage.length > 0 ? (
+                <div className="relative w-full h-full">
+                  {/* Image Carousel */}
+                  <div className="carousel w-full h-full">
+                    {blog.featuredImage.map((image, index) => (
+                      <div
+                        key={index}
+                        id={`slide-${index}`}
+                        className="carousel-item relative w-full h-full"
+                      >
+                        <img
+                          src={`${import.meta.env.VITE_API_URL}/${image}`}
+                          alt={`${blog.title} - image ${index + 1}`}
+                          className="w-full h-full object-cover"
+                        />
+
+                        {/* Navigation Arrows */}
+                        <div className="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
+                          <a
+                            href={`#slide-${
+                              index === 0
+                                ? blog.featuredImage.length - 1
+                                : index - 1
+                            }`}
+                            className="btn btn-circle bg-black/30 border-none text-white hover:bg-black/50"
+                          >
+                            ❮
+                          </a>
+                          <a
+                            href={`#slide-${
+                              index === blog.featuredImage.length - 1
+                                ? 0
+                                : index + 1
+                            }`}
+                            className="btn btn-circle bg-black/30 border-none text-white hover:bg-black/50"
+                          >
+                            ❯
+                          </a>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Indicator Dots */}
+                  <div className="absolute bottom-4 left-0 right-0">
+                    <div className="flex items-center justify-center gap-2">
+                      {blog.featuredImage.map((_, index) => (
+                        <a
+                          key={index}
+                          href={`#slide-${index}`}
+                          className="w-3 h-3 rounded-full bg-white/70 hover:bg-white transition-colors"
+                        />
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className="w-full h-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
+                  <span className="text-gray-500 dark:text-gray-400">
+                    No images available
+                  </span>
+                </div>
+              )}
             </div>
           </header>
 

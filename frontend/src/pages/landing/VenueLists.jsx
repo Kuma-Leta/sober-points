@@ -139,14 +139,13 @@ const VenueLists = ({ isSideBySide = false, error }) => {
             className="block border rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 bg-white dark:bg-darkCard dark:border-gray-700"
           >
             {venue.images.length > 0 && (
-              <div className="relative w-full pb-[80%] rounded-t-md overflow-hidden">
+              <div className="relative max-h-[200px] h-max  w-full  rounded-t-md overflow-hidden">
                 <img
-                  src={`${import.meta.env.VITE_API_URL}/${venue.images[0].replace(
-                    /\\/g,
-                    "/"
-                  )}`}
+                  src={`${
+                    import.meta.env.VITE_API_URL
+                  }/${venue.images[0].replace(/\\/g, "/")}`}
                   alt={venue.name}
-                  className="absolute inset-0 w-full h-full object-cover"
+                  className="flex w-full h- h-[200px]  object-cover"
                 />
                 {/* Heart Icon */}
                 <button
