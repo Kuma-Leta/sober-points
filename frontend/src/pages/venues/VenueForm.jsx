@@ -61,6 +61,7 @@ export default function VenueForm({
 
   useEffect(() => {
     if (mode === "edit" && venueId) {
+      // In the fetchVenueData function within the useEffect for edit mode:
       const fetchVenueData = async () => {
         setLoading(true);
         try {
@@ -75,6 +76,7 @@ export default function VenueForm({
             description: venueData.description,
             menu: venueData.menu,
             website: venueData.website || "",
+            // Ensure these fields are properly set from the API response
             alcoholFreeBeersOnTap: venueData.alcoholFreeBeersOnTap || [],
             alcoholFreeDrinkBrands: venueData.alcoholFreeDrinkBrands || [],
             images: venueData.images || [],
@@ -267,7 +269,11 @@ export default function VenueForm({
                 <input
                   type="text"
                   className="w-full p-2 border rounded"
-                  value={formData.alcoholFreeBeersOnTap.join(", ")}
+                  value={
+                    Array.isArray(formData.alcoholFreeBeersOnTap)
+                      ? formData.alcoholFreeBeersOnTap.join(", ")
+                      : ""
+                  }
                   onChange={(e) =>
                     handleArrayChange("alcoholFreeBeersOnTap", e.target.value)
                   }
@@ -296,7 +302,11 @@ export default function VenueForm({
               <input
                 type="text"
                 className="w-full p-2 border rounded"
-                value={formData.alcoholFreeDrinkBrands.join(", ")}
+                value={
+                  Array.isArray(formData.alcoholFreeDrinkBrands)
+                    ? formData.alcoholFreeDrinkBrands.join(", ")
+                    : ""
+                }
                 onChange={(e) =>
                   handleArrayChange("alcoholFreeDrinkBrands", e.target.value)
                 }
