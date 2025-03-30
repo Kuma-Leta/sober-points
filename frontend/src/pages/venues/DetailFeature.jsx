@@ -124,14 +124,14 @@ const DetailFeature = ({
                           Alcohol-Free Drink Brands
                         </h4>
                       </div>
-                      {venue.alcoholFreeDrinkBrands && venue.alcoholFreeDrinkBrands.length > 0 ? (
+                      {venue.alcoholFreeDrinkBrands && venue.alcoholFreeDrinkBrands.trim() !== "" ? (
                         <div className="flex flex-wrap gap-2 ml-7">
-                          {venue.alcoholFreeDrinkBrands.map((brand, index) => (
+                          {venue.alcoholFreeDrinkBrands.split(',').map((brand, index) => (
                             <span 
                               key={index} 
                               className="px-3 py-1 bg-purple-100 dark:bg-purple-900 text-purple-700 dark:text-purple-300 rounded-full text-sm"
                             >
-                              {brand}
+                              {brand.trim()}
                             </span>
                           ))}
                         </div>
@@ -150,14 +150,14 @@ const DetailFeature = ({
                           Alcohol-Free Beers on Tap
                         </h4>
                       </div>
-                      {venue.alcoholFreeBeersOnTap && venue.alcoholFreeBeersOnTap.length > 0 ? (
+                      {venue.alcoholFreeBeersOnTap && venue.alcoholFreeBeersOnTap.trim() !== "" ? (
                         <div className="flex flex-wrap gap-2 ml-7">
-                          {venue.alcoholFreeBeersOnTap.map((beer, index) => (
+                          {venue.alcoholFreeBeersOnTap.split(',').map((beer, index) => (
                             <span 
                               key={index} 
                               className="px-3 py-1 bg-amber-100 dark:bg-amber-900 text-amber-700 dark:text-amber-300 rounded-full text-sm"
                             >
-                              {beer}
+                              {beer.trim()}
                             </span>
                           ))}
                         </div>
