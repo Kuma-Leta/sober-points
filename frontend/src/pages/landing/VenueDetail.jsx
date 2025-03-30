@@ -41,7 +41,7 @@ const VenueDetail = () => {
     const fetchVenueById = async () => {
       try {
         const response = await axiosInstance.get(
-          `http://localhost:5000/api/venues/${id}`
+          `/venues/${id}`
         );
         setVenue(response.data);
         setLoading(false);
@@ -135,7 +135,7 @@ const VenueDetail = () => {
               onClick={() => handleImageClick(index)}
             >
               <img
-                src={`http://localhost:5000/${image.replace(/\\/g, "/")}`}
+                src={`${import.meta.env.VITE_API_URL}/${image.replace(/\\/g, "/")}`}
                 alt={`Venue ${index + 1}`}
                 className="w-full h-full object-cover"
               />
@@ -178,7 +178,7 @@ const VenueDetail = () => {
               &times;
             </button>
             <img
-              src={`http://localhost:5000/${venue.images[
+              src={`${import.meta.env.VITE_API_URL}/${venue.images[
                 selectedImageIndex
               ].replace(/\\/g, "/")}`}
               alt={`Venue ${selectedImageIndex + 1}`}

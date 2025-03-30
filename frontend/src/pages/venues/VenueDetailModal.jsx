@@ -8,7 +8,7 @@ export default function VenueDetailModal({
   selectedVenueDetails,
   onVerify,
 }) {
-  const backendBaseUrl = "http://localhost:5000"; // Replace with your backend URL
+  const backendBaseUrl = import.meta.env.VITE_API_URL; // Replace with your backend URL
   const [showConfirmation, setShowConfirmation] = useState(false); // State for confirmation modal
 
   // Handle Verify button click

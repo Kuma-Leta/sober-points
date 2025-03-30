@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { searchVenues, fetchNearbyVenues } from "../redux/venue/venueSlice";
 import axios from "axios";
+import axiosInstance from "../api/api";
 
 const SearchBar = ({ setQuery, onSearch }) => {
   const navigate = useNavigate();
@@ -19,10 +20,8 @@ const SearchBar = ({ setQuery, onSearch }) => {
     const fetchSuggestions = async () => {
       if (searchTerm.length > 2) {
         try {
-          const response = await axios.get(
-            `http://localhost:5000/api/venues/suggestions?query=${encodeURIComponent(
-              searchTerm
-            )}`
+          const response = await axiosInstance.get(
+            `/venues/suggestions?query=${encodeURIComponent(searchTerm)}`
           );
           setSuggestions(response.data.suggestions);
         } catch (error) {

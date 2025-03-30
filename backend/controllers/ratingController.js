@@ -1,4 +1,4 @@
-const Rating = require("../models/rating");
+const Rating = require("../models/Rating");
 const Venue = require("../models/Venue");
 
 // ✅ Add or update a rating and review

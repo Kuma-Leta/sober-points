@@ -68,10 +68,10 @@ const Header = () => {
                 Map
               </Link>
 
-              <Link to="/" className="hover:text-primary transition">
+              <Link to="/a" className="hover:text-primary transition">
                 About
               </Link>
-              <Link to="#features" className="hover:text-primary transition">
+              <Link to="/" className="hover:text-primary transition">
                 Blog
               </Link>
               <Link to="/contact" className="hover:text-primary transition">
@@ -107,7 +107,7 @@ const Header = () => {
                   className="w-8 h-8 sm:w-9 sm:h-9 rounded-full object-cover border border-grayColor dark:border-darkText"
                   src={
                     user?.profilePicture
-                      ? `http://localhost:5000/${user.profilePicture}`
+                      ? `${import.meta.env.VITE_API_URL}/${user.profilePicture}`
                       : defaultUserProfile
                   }
                   alt="User"

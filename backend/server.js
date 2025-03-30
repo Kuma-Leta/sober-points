@@ -15,7 +15,11 @@ app.use(bodyParser.json());
 require("./config/db");
 app.use(
   cors({
-    origin: ["http://localhost:5173", "http://localhost:5174"],
+    origin: [
+      "http://localhost:5173",
+      "http://localhost:5174",
+      "https://sober-frontend.onrender.com",
+    ],
     credentials: true,
   })
 );

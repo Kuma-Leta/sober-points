@@ -1,4 +1,4 @@
-const User = require("../models/user");
+const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 const APIfeatures = require("../utils/APIfeatures");
 const { v4: uuidv4 } = require("uuid");

@@ -96,7 +96,7 @@ const VenuesPage = () => {
 
         {/* VenueMap (Full Height & Sticky) */}
         {showMap && (
-          <div className="w-full min-h-screen md:sticky top-0">
+          <div className="w-full min-h-screen sticky top-0 ">
             <VenueMap
               venues={
                 searchResults.length > 0
