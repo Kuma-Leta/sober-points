@@ -23,8 +23,6 @@ const LandingPage = () => {
       <HeroSection setQuery={setQuery} onSearch={handleSearch} />
 
       <Features />
-      {/* <FAQ /> */}
-      {/* <ContactUs /> */}
       <VenueSubmissionPage />
       <NewsLetter />
     </div>
