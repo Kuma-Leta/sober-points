@@ -62,7 +62,7 @@ const VenueSubmissionPage = () => {
       {/* Call to Action */}
       <div className="flex justify-center mt-10">
         <Link
-          to="/auth/login"
+          to="/auth/register"
           className="flex items-center gap-2 text-lg font-semibold text-white bg-primary px-6 py-3 rounded-lg shadow-md hover:bg-primaryLight transition duration-300"
         >
           Sign In <FaAngleRight />

@@ -169,10 +169,9 @@ const VenueMap = () => {
                 <div className="max-w-[200px]">
                   {venue.images.length > 0 && (
                     <img
-                      src={`${import.meta.env.VITE_API_URL}/${venue.images[0].replace(
-                        /\\/g,
-                        "/"
-                      )}`}
+                      src={`${
+                        import.meta.env.VITE_API_URL
+                      }/${venue.images[0].replace(/\\/g, "/")}`}
                       alt={venue.name}
                       className="w-full h-24 object-cover rounded-lg mb-2"
                     />

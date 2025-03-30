@@ -3,24 +3,38 @@ import { Link } from "react-router-dom";
 
 const ContributePage = () => {
   return (
-    <div className="max-w-6xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
+    <div className="max-w-6xl mx-auto px-4 py-12 z-50 sm:px-6 lg:px-8">
       {/* Hero Section */}
-      <div className="text-center mb-16 grid grid-cols-1 gap-3 md:grid-cols-2">
-        <div>
-          <h3 className=" flex flex-start font-bold text-gray-900 mb-6">
-            Contribute
-          </h3>
-          <h2 className="text-2xl sm:text-3xl font-semibold  text-gray-800 mb-4">
-            Join Us in Mapping Alcohol-Free Locations
-          </h2>
+      <div className="relative text-center mb-16 px-6 sm:px-8 lg:px-16">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+          {/* Left Content */}
+          <div className="space-y-4 md:space-y-6 text-left">
+            <span className="inline-block text-sm font-semibold text-primary uppercase tracking-wide bg-indigo-100 px-3 py-1 rounded-full">
+              Community Contribution
+            </span>
+            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 leading-snug">
+              Help Expand Our <span className="text-primary">Alcohol-Free</span>{" "}
+              Map
+            </h2>
+          </div>
+
+          {/* Right Content (Info Box) */}
+          <div className="bg-white shadow-md p-8 rounded-xl border border-gray-200">
+            <p className="text-lg text-gray-700 leading-relaxed">
+              The <span className="font-medium text-primary">Sober Map</span> is
+              a <strong>community-driven initiative</strong> that showcases the
+              best alcohol-free venues worldwide. By contributing your favorite
+              spots, you help others discover amazing places to socialize
+              without alcohol.
+            </p>
+
+            <p className="mt-4 text-gray-700 leading-relaxed">
+              Together, we're building a{" "}
+              <span className="font-medium">comprehensive guide</span> that
+              celebrates and normalizes sober living, one venue at a time.
+            </p>
+          </div>
         </div>
-        <p className=" text-gray-600 max-w-3xl text-justify mx-auto">
-          The Sober Map is a community-driven initiative that showcases the best
-          alcohol-free offerings around you. By contributing your favorite
-          spots, you help others discover places where they can enjoy
-          socializing without alcohol. Together, we can create a comprehensive
-          guide that celebrates sober living.
-        </p>
       </div>
 
       {/* Features Grid */}
@@ -64,7 +78,7 @@ const ContributePage = () => {
       {/* CTA Buttons */}
       <div className="flex flex-col sm:flex-row justify-center gap-4">
         <Link
-          to="/about"
+          to="/howToContribute"
           className="bg-white hover:bg-gray-50 text-gray-800 font-medium py-3 px-8 rounded-lg border border-primary hover:bg-primary hover:text-white text-center transition duration-300"
         >
           Learn More
