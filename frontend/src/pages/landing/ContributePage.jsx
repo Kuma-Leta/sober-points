@@ -8,14 +8,14 @@ const ContributePage = () => {
       <div className="relative text-center ">
         <div className="max-w-7xl my-8 mx-auto flex flex-col md:flex-row items-center">
           {/* Left Content */}
-          <div className="w-1/2 text-left">
+          <div className="w-full md:w-1/2 text-left">
             <h2 className="text-3xl sm:text-[48px] font-bold text-black leading-[120%] tracking-[0%] font-['Helvetica Neue']">
               Join Us in Mapping Alcohol-Free Locations
             </h2>
           </div>
 
           {/* Right Content (Info Box) */}
-          <div className="bg-white w-1/2 text-left  border-gray-200">
+          <div className="bg-white w-full md:w-1/2 text-left  border-gray-200">
             <p className="text-[18px] text-gray-700 leading-relaxed">
               The Sober Map is a community-driven initiative that showcases the
               best alcohol-free offerings around you. By contributing your
