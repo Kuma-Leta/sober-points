@@ -50,7 +50,7 @@ const DetailFeature = ({
           {/* Update & Delete Icons */}
           <div className="flex space-x-4">
             <button
-              onClick={() => setIsUpdateModalOpen(true)}
+              onClick={() => navigate(`/my-venue/${venue._id}/edit`)}
               className="text-blue-500 hover:text-blue-700 transition-colors duration-200"
             >
               <FaEdit className="w-6 h-6" />

@@ -124,24 +124,25 @@ const MyVenueDetail = () => {
           </div>
         </div>
       </Modal>
-
-      {/* Update Venue Modal */}
-      <Modal
-        isOpen={isUpdateModalOpen}
-        onRequestClose={() => setIsUpdateModalOpen(false)}
-        className="fixed inset-0 flex items-center dark:bg-darkBg justify-center p-4 bg-black bg-opacity-50"
-      >
-        <div className="bg-white dark:bg-darkBg p-6 z-51 rounded-lg shadow-lg max-w-6xl w-full max-h-[95vh] overflow-y-auto relative">
-          <VenueForm
-            mode="edit"
-            venueId={venueId}
-            onUpdate={handleUpdate}
-            onClose={() => setIsUpdateModalOpen(false)}
-          />
-        </div>
-      </Modal>
     </>
   );
 };
 
 export default MyVenueDetail;
+
+export function UpdateVenue() {
+  const { venueId } = useParams();
+  const handleUpdate = () => {
+    window.location.href = `/my-venue/${venueId}`;
+  };
+  return (
+    <>
+      <VenueForm
+        mode="edit"
+        venueId={venueId}
+        onUpdate={handleUpdate}
+        onClose={handleUpdate}
+      />
+    </>
+  );
+}
