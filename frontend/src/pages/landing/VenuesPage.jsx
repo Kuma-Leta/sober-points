@@ -54,7 +54,6 @@ const VenuesPage = () => {
     const lat = parseFloat(searchParams.get("lat"));
     const lng = parseFloat(searchParams.get("lng"));
     const query = searchParams.get("query");
-
     if (lat && lng) {
       setMapCenter({ lat, lng });
       dispatch(fetchNearbyVenues({ lat, lng }));
