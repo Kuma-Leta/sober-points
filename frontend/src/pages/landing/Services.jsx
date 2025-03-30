@@ -20,13 +20,13 @@ const Features = () => {
 
       {/* Main Content - Centered */}
       <section id="aboutUs" className="container mx-auto px-4 sm:px-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[48px]">
           {/* Section 1: Best AF Bars */}
-          <div className="bg-white rounded-lg shadow hover:shadow-md transition-shadow">
+          <div className="bg-white rounded shadow transition-shadow">
             <img
               src={afBarImage}
               alt="AF Bar"
-              className="w-full h-48 object-cover rounded-t-lg"
+              className="w-full h-48 object-cover rounded"
             />
             <div className="p-6 text-center">
               <h2 className="text-xl sm:text-2xl font-semibold text-gray-800">
@@ -39,11 +39,11 @@ const Features = () => {
           </div>
 
           {/* Section 2: How We Score */}
-          <div className="bg-white rounded-lg shadow hover:shadow-md transition-shadow">
+          <div className="bg-white rounded shadow  transition-shadow">
             <img
               src={score}
               alt="Scoring Method"
-              className="w-full h-48 object-cover rounded-t-lg"
+              className="w-full h-48 object-cover rounded"
             />
             <div className="p-6 text-center">
               <h2 className="text-xl sm:text-2xl font-semibold text-gray-800">
@@ -56,11 +56,11 @@ const Features = () => {
           </div>
 
           {/* Section 3: Expert Reviews */}
-          <div className="bg-white rounded-lg shadow hover:shadow-md transition-shadow">
+          <div className="bg-white rounded shadow transition-shadow">
             <img
               src={expertReviewImage}
               alt="Expert Review"
-              className="w-full h-48 object-cover rounded-t-lg"
+              className="w-full h-48 object-cover rounded"
             />
             <div className="p-6 text-center">
               <h2 className="text-xl sm:text-2xl font-semibold text-gray-800">
