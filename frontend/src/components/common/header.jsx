@@ -71,7 +71,7 @@ const Header = () => {
               <Link to="/a" className="hover:text-primary transition">
                 About
               </Link>
-              <Link to="/" className="hover:text-primary transition">
+              <Link to="/blogs" className="hover:text-primary transition">
                 Blog
               </Link>
               <Link to="/contact" className="hover:text-primary transition">
