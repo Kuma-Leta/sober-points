@@ -220,7 +220,7 @@ exports.getVenueDetails = async (req, res) => {
       updatedAt: venue.updatedAt,
       alcoholFreeBeersOnTap: venue.alcoholFreeBeersOnTap,
       alcoholFreeDrinkBrands: venue.alcoholFreeDrinkBrands,
-    };
+    }; 
 
     // console.log("location:", venue.location);
 
