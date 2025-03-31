@@ -54,7 +54,6 @@ const VenuesPage = () => {
     const lat = parseFloat(searchParams.get("lat"));
     const lng = parseFloat(searchParams.get("lng"));
     const query = searchParams.get("query");
-
     if (lat && lng) {
       setMapCenter({ lat, lng });
       dispatch(fetchNearbyVenues({ lat, lng }));
@@ -96,7 +95,7 @@ const VenuesPage = () => {
 
         {/* VenueMap (Full Height & Sticky) */}
         {showMap && (
-          <div className="w-[94%] mx-auto  h-screen md:sticky top-0 ">
+          <div className="w-[94%] md:w-full mx-auto  h-screen md:sticky top-0 ">
             <VenueMap
               venues={
                 searchResults.length > 0

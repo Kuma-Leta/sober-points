@@ -7,6 +7,8 @@ import {
   FaHeart,
   FaRegComment,
   FaSearch,
+  FaArrowLeft,
+  FaAngleRight,
 } from "react-icons/fa";
 import { motion } from "framer-motion";
 import { useSelector } from "react-redux";
@@ -57,14 +59,14 @@ const BlogList = () => {
       // Initialize liked blogs based on user data
       if (user) {
         const userLikedBlogs = response.data.blogs
-          .filter(blog => blog.likes.includes(user._id))
-          .map(blog => blog._id);
+          .filter((blog) => blog.likes.includes(user._id))
+          .map((blog) => blog._id);
         setLikedBlogs(userLikedBlogs);
       }
     } catch (err) {
       setError(
-        err.response?.data?.message || 
-        "Failed to fetch blogs. Please try again later."
+        err.response?.data?.message ||
+          "Failed to fetch blogs. Please try again later."
       );
       console.error("Fetch error:", err);
     } finally {
@@ -116,26 +118,26 @@ const BlogList = () => {
     }
 
     try {
-      setIsLiking(prev => ({ ...prev, [blogId]: true }));
-      
+      setIsLiking((prev) => ({ ...prev, [blogId]: true }));
+
       await axiosInstance.post(`/blogs/${blogId}/like`);
-      
-      setBlogs(prevBlogs =>
+
+      setBlogs((prevBlogs) =>
         prevBlogs.map((blog) => {
           if (blog._id === blogId) {
             const wasLiked = likedBlogs.includes(blogId);
             return {
               ...blog,
-              likes: wasLiked 
-                ? blog.likes.filter(id => id !== user._id)
-                : [...blog.likes, user._id]
+              likes: wasLiked
+                ? blog.likes.filter((id) => id !== user._id)
+                : [...blog.likes, user._id],
             };
           }
           return blog;
         })
       );
 
-      setLikedBlogs(prev =>
+      setLikedBlogs((prev) =>
         prev.includes(blogId)
           ? prev.filter((id) => id !== blogId)
           : [...prev, blogId]
@@ -146,7 +148,7 @@ const BlogList = () => {
         navigate("/auth/login");
       }
     } finally {
-      setIsLiking(prev => ({ ...prev, [blogId]: false }));
+      setIsLiking((prev) => ({ ...prev, [blogId]: false }));
     }
   };
 
@@ -154,7 +156,7 @@ const BlogList = () => {
   const renderSkeletons = () => (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
       {[...Array(6)].map((_, index) => (
-        <div 
+        <div
           key={index}
           className="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden"
         >
@@ -238,7 +240,7 @@ const BlogList = () => {
               ))}
             </div>
           </div>
-          <div className="flex justify-center">
+          {/* <div className="flex justify-center">
             <div className="inline-flex rounded-md shadow-sm">
               <button
                 onClick={() => setSortOption("newest")}
@@ -271,7 +273,7 @@ const BlogList = () => {
                 Popular
               </button>
             </div>
-          </div>
+          </div> */}
         </div>
 
         {loading ? (
@@ -309,7 +311,9 @@ const BlogList = () => {
                     <div className="relative h-48 w-full overflow-hidden">
                       {blog.featuredImage?.length > 0 ? (
                         <img
-                          src={`${import.meta.env.VITE_API_URL}/${blog.featuredImage[0]}`}
+                          src={`${import.meta.env.VITE_API_URL}/${
+                            blog.featuredImage[0]
+                          }`}
                           alt={blog.title}
                           className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
                           loading="lazy"
@@ -319,15 +323,19 @@ const BlogList = () => {
                           <span className="text-gray-400">No Image</span>
                         </div>
                       )}
-                      <div className="absolute top-4 left-4">
-                        <span className="px-3 py-1 text-xs font-semibold text-white bg-primary rounded-full">
-                          {blog.categories[0] || "Uncategorized"}
-                        </span>
-                      </div>
                     </div>
                   </Link>
 
                   <div className="p-6">
+                    <div className="top-4 left-4">
+                      <span className="px-3 py-1 text-xs font-semibold text-white bg-primary rounded-full">
+                        {blog.categories[0] || "Uncategorized"}
+                      </span>
+                      <div className="flex items-center">
+                        <FaRegClock className="mr-1" />
+                        <span>{blog.readTime} min read</span>
+                      </div>
+                    </div>
                     <div className="flex justify-between items-start mb-2">
                       <Link to={`/blog/${blog.slug}`}>
                         <h3 className="text-xl font-bold text-gray-900 dark:text-white line-clamp-2">
@@ -341,11 +349,9 @@ const BlogList = () => {
                     </p>
 
                     <div className="flex items-center justify-between text-sm text-gray-500 dark:text-gray-400">
-                      <div className="flex items-center">
-                        <FaRegClock className="mr-1" />
-                        <span>{blog.readTime} min read</span>
-                      </div>
-
+                      <Link className="text-black underline flex items-center" to={`/blog/${blog.slug}`}>
+                        Read more <FaAngleRight className="ml-1" />
+                      </Link>
                       <div className="flex items-center space-x-4">
                         <button
                           onClick={(e) => {
@@ -354,7 +360,9 @@ const BlogList = () => {
                           }}
                           disabled={isLiking[blog._id]}
                           className="flex items-center hover:text-primary-500 transition-colors disabled:opacity-50"
-                          aria-label={likedBlogs.includes(blog._id) ? "Unlike" : "Like"}
+                          aria-label={
+                            likedBlogs.includes(blog._id) ? "Unlike" : "Like"
+                          }
                         >
                           {likedBlogs.includes(blog._id) ? (
                             <FaHeart className="text-red-500 mr-1" />
@@ -375,7 +383,9 @@ const BlogList = () => {
                       {blog.author && (
                         <div className="flex items-center">
                           <img
-                            src={`${import.meta.env.VITE_API_URL}/${blog.author.profilePicture}`}
+                            src={`${import.meta.env.VITE_API_URL}/${
+                              blog.author.profilePicture
+                            }`}
                             alt={blog.author.name}
                             className="w-8 h-8 rounded-full object-cover mr-2"
                             loading="lazy"
