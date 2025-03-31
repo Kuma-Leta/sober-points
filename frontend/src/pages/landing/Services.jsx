@@ -5,7 +5,7 @@ import score from "../../assets/images/sober2.jfif";
 
 const Features = () => {
   return (
-    <div className=" flex flex-col items-start p-8 md:p-16 lg:p-[82px] gap-10 md:gap-16 lg:gap-[40px] w-full max-w-[1440px] h-auto bg-white">
+    <div className=" flex flex-col items-start p-8 md:p-16 lg:p-[82px] gap-10 md:gap-16 lg:gap-[40px] w-full mx-auto max-w-[1440px] h-auto bg-white">
       {/* Header - Left-aligned with same padding as content */}
       <header className="text-left px-4 sm:px-6 md:px-[calc((100%-min(1200px,90vw))/2)] mb-10 md:mb-12">
         <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 leading-tight">
