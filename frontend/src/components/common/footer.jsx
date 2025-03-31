@@ -37,7 +37,7 @@ export default function Footer() {
         isAuthenticated ? "pb-20 md:pb-12" : "pb-12"
       }`}
     >
-      <div className="max-w-7xl mx-auto px-6 sm:px-16">
+      <div className="max-w-[1312px] mx-auto px-6 sm:px-6">
         <div
           className=" mx-auto py-12 grid gap-8 grid-cols-1 lg:grid-cols-[2fr_1fr_1fr]"
         
