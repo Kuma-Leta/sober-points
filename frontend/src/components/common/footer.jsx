@@ -33,15 +33,12 @@ export default function Footer() {
 
   return (
     <footer
-      className={`bg-gray-100 w-full text-black font-sans ${
-        isAuthenticated ? "pb-20 md:pb-12" : "pb-12"
+      className={`bg-gray-100  w-full text-black font-sans ${
+        isAuthenticated ? "p-[32px] md:p-[64px]" : "p-[32px] md:p-[64px]"
       }`}
     >
-      <div className="max-w-[1312px] mx-auto px-6 sm:px-6">
-        <div
-          className=" mx-auto py-12 grid gap-8 grid-cols-1 lg:grid-cols-[2fr_1fr_1fr]"
-        
-        >
+      <div className="max-w-[1312px] mx-auto">
+        <div className=" mx-auto px-[20px] py-[48px] sm:p-[48px] w-full grid gap-[128px] grid-cols-1 lg:grid-cols-[3fr_1fr_1fr]">
           {/* Left Column: Logo & Navigation */}
           <div className="flex w-full flex-col gap-4">
             <h3 className="text-2xl sm:text-3xl font-extrabold cursor-pointer tracking-wide">
@@ -91,7 +88,7 @@ export default function Footer() {
             </p>
           </div>
 
-          <div >
+          <div>
             <h3 className="text-lg font-medium mb-1">Quick Links</h3>
             <ul className="mt-4 text-sm grid gap-2 md:grid-cols-1 sm:text-base text-black">
               <li>
@@ -143,9 +140,9 @@ export default function Footer() {
           </div>
         </div>
 
-        <hr className="border-gray-600 my-2 w-full" />
+        <hr className="border-gray-600 my-[32px] w-full" />
 
-        <div className="py-6 flex flex-col sm:flex-row justify-between items-start text-xs sm:text-sm text-gray-600 text-left">
+        <div className="flex-col-reverse flex sm:flex-row justify-between items-start text-xs sm:text-sm text-gray-600 text-left">
           <p className="mt-2 sm:mt-0">
             &copy; 2025 Sober Points. All rights reserved.
           </p>
