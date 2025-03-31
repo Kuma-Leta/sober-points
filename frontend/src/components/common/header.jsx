@@ -242,8 +242,14 @@ const Header = () => {
                 <div className="mt-6">
                   <div className="flex items-center space-x-2">
                     <img
-                      className="w-8 h-8 rounded-full object-cover border border-grayColor dark:border-darkText"
-                      src={user?.profilePicture || defaultUserProfile}
+                      className="w-8 h-8 sm:w-9 sm:h-9 rounded-full object-cover border border-grayColor dark:border-darkText"
+                      src={
+                        user?.profilePicture
+                          ? `${import.meta.env.VITE_API_URL}/${
+                              user.profilePicture
+                            }`
+                          : defaultUserProfile
+                      }
                       alt="User"
                     />
                     <span className="text-sm text-grayColor dark:text-darkText">
@@ -357,7 +363,11 @@ function Avatar() {
       >
         <img
           className="w-8 h-8 sm:w-9 sm:h-9 rounded-full object-cover border border-grayColor dark:border-darkText"
-          src={user?.profilePicture || defaultUserProfile}
+          src={
+            user?.profilePicture
+              ? `${import.meta.env.VITE_API_URL}/${user.profilePicture}`
+              : defaultUserProfile
+          }
           alt="User"
         />
         <span className="text-sm text-grayColor dark:text-darkText">

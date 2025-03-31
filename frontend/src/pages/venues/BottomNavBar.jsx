@@ -1,6 +1,14 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { FaPlus, FaHeart, FaSearch, FaMapMarkerAlt, FaUser, FaRegHeart, FaHome } from "react-icons/fa";
+import {
+  FaPlus,
+  FaHeart,
+  FaSearch,
+  FaMapMarkerAlt,
+  FaUser,
+  FaRegHeart,
+  FaHome,
+} from "react-icons/fa";
 import { useSelector } from "react-redux";
 import useAuth from "../../hooks/useAuth";
 
@@ -76,11 +84,15 @@ function Avatar() {
       >
         <img
           className="w-8 h-8 sm:w-9 sm:h-9 rounded-full object-cover border border-grayColor dark:border-darkText"
-          src={user?.profilePicture || defaultUserProfile}
+          src={
+            user?.profilePicture
+              ? `${import.meta.env.VITE_API_URL}/${user.profilePicture}`
+              : defaultUserProfile
+          }
           alt="User"
         />
         <span className="text-sm text-grayColor dark:text-darkText">
-          {user?.name.slice(0,6) || user?.username}
+          {user?.name.slice(0, 6) || user?.username}
         </span>
       </button>
       {dropdownOpen && (
