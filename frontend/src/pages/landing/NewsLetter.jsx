@@ -26,8 +26,8 @@ function NewsLetter() {
   };
 
   return (
-    <div className="bg-white text-white px-4 xs:px-5 sm:px-6 py-8 sm:py-10 md:py-12 lg:py-16">
-      <div className="bg-black px-5 xs:px-6 sm:px-8 md:px-10 py-8 sm:py-10 md:py-12 lg:py-16 mx-auto max-w-7xl rounded-lg shadow-lg">
+    <div className=" bg-white text-white px-4 p-8 md:p-16 lg:p-[82px]">
+      <div className="flex flex-col flex-start bg-black px-5 xs:px-6 sm:px-8 md:px-10 py-8 sm:py-10 md:py-12 lg:py-16  max-w-7xl rounded-lg shadow-lg">
         <h2 className="text-2xl xs:text-2.5xl sm:text-3xl md:text-4xl font-bold leading-tight mb-4 px-3 xs:px-4 sm:px-5">
           Stay Updated with Our Newsletter
         </h2>

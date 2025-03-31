@@ -5,7 +5,7 @@ import score from "../../assets/images/sober2.jfif";
 
 const Features = () => {
   return (
-    <div className="bg-gray-50 py-10 sm:py-12 md:py-16 font-sans">
+    <div className=" flex flex-col items-start p-8 md:p-16 lg:p-[82px] gap-10 md:gap-16 lg:gap-[40px] w-full max-w-[1440px] h-auto bg-white">
       {/* Header - Left-aligned with same padding as content */}
       <header className="text-left px-4 sm:px-6 md:px-[calc((100%-min(1200px,90vw))/2)] mb-10 md:mb-12">
         <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 leading-tight">
@@ -19,7 +19,7 @@ const Features = () => {
       </header>
 
       {/* Main Content - Centered */}
-      <section id="aboutUs" className="container mx-auto px-4 sm:px-6">
+      <section id="aboutUs" className="container mx-auto ">
         <div className="grid grid-cols-1 w-full md:grid-cols-2 lg:grid-cols-3 gap-[48px]">
           {/* Section 1: Best AF Bars */}
           <div className="bg-white rounded shadow transition-shadow">

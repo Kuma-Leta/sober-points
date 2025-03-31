@@ -14,7 +14,7 @@ const HeroSection = () => {
   };
 
   return (
-    <section className="w-full h-[70vh] xs:h-[80vh] sm:h-[80vh] md:h-[85vh] lg:h-[90vh] xl:h-screen flex flex-col justify-center items-center text-center relative bg-[#1A1A1A]">
+    <section className="w-full h-[70vh] font-sans xs:h-[80vh] sm:h-[80vh] md:h-[85vh] lg:h-[90vh] xl:h-screen flex flex-col justify-center items-center text-center relative bg-[#1A1A1A]">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: -30 }}
@@ -30,7 +30,7 @@ const HeroSection = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3, duration: 0.8 }}
-          className="text-base sm:text-lg md:text-xl text-gray-200 mx-autopx-4 leading-relaxed"
+          className="text-base sm:text-lg md:text-xl text-gray-200 mx-autopx-4 font-sans font-normal leading-relaxed"
         >
           Welcome to your ultimate guide for exploring top-notch alcohol-free
           venues. Join us in celebrating a vibrant lifestyle filled with

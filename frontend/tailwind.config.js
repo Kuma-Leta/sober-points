@@ -6,9 +6,9 @@ export default {
   theme: {
     extend: {
       colors: {
-        primary: "#DC2626", // Red 600 - Consistent with the header & buttons
+        primary: "#1A1A1A", // Red 600 - Consistent with the header & buttons
         primaryDark: "#B91C1C", // Darker red for dark mode contrast
-        primaryLight: "#EF4444", // Lighter red for hover effects
+        primaryLight: "##333333", // Lighter red for hover effects
         secondary: "#F59E0B", // Amber 500
         ternary: "#14B8A6", // Teal 500
         ternaryLight: "#2DD4BF", // Teal 400

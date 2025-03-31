@@ -60,7 +60,7 @@ const Header = () => {
 
           {/* Navigation Links (Desktop) - Conditionally rendered for non-admin users */}
           {user?.role !== "admin" && (
-            <nav className="hidden sm:flex space-x-4  dark:text-darkText text-sm font-bold">
+            <nav className="hidden sm:flex space-x-4  dark:text-darkText text-sm font-semi-bold">
               <Link
                 to="/venues/nearby"
                 className="hover:text-primary transition"
@@ -166,7 +166,7 @@ const Header = () => {
               </Link>
               <Link
                 to="/auth/login"
-                className="border border-primary text-primary px-4 py-2 rounded-md text-sm font-semibold hover:bg-primary hover:text-white transition"
+                className="border border-primary text-primary px-2 py-2 rounded-md text-sm font-semibold hover:bg-primary hover:text-white transition"
               >
                 Sign In
               </Link>
