@@ -42,7 +42,7 @@ const Header = () => {
         {/* Mobile Menu Button */}
 
         {/* Logo */}
-        <div className="flex items-center space-x-3">
+        <div className="flex items-center space-x-3 lg:space-x-10">
           {/* Logo */}
           <Link to="/">
             {/* Black logo for light mode, white logo for dark mode */}
