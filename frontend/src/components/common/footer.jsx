@@ -33,98 +33,137 @@ export default function Footer() {
 
   return (
     <footer
-      className={`bg-gray-100 text-black font-sans ${
+      className={`bg-gray-100 w-full text-black font-sans ${
         isAuthenticated ? "pb-20 md:pb-12" : "pb-12"
       }`}
     >
-      <div
-        className={`max-w-[1440px] mx-auto px-6 md:px-16 py-4 flex flex-col md:py-12 md:flex-row justify-between text-sm`}
-      >
-        {/* Left Column: Logo & Navigation */}
-        <div className="flex flex-start flex-col gap-4">
-          <h3 className="text-2xl sm:text-3xl font-extrabold cursor-pointer tracking-wide">
-            <img
-              src={MobileLogo}
-              alt="Sober Points Logo"
-              className="h-10 dark:hidden"
-            />
-          </h3>
-          <nav className="grid md:flex flex-wrap gap-6 text-sm font-medium">
-            <a href="/venues/nearby" className="hover:underline">
-              Sober Map
-            </a>
-            <a href="/contact" className="hover:underline">
-              About Us
-            </a>
-            <a href="/blogs" className="hover:underline">
-              Our Blog
-            </a>
-            <a href="/howToContribute" className="hover:underline">
-              Join us
-            </a>
-            <a href="/contact" className="hover:underline">
-              Contact Us
-            </a>
-          </nav>
-        </div>
-
-        <div className="flex py-2 flex-col gap-2 max-w-md">
-          <p className="text-base sm:text-lg text-black">
-            <p className=" font-medium">Sign up to our newsletter</p>
-          </p>
-          <form
-            onSubmit={handleSubmit}
-            className="mt-4 flex flex-col sm:flex-row items-center  overflow-hidden max-w-md"
-          >
-            <input
-              type="email"
-              placeholder="Enter your email"
-              className="p-2 w-full outline-none text-black text-base sm:text-lg border-b sm:border-b-0 sm:border-r border-gray-400"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-            <button
-              type="submit"
-              className="bg-primary text-white px-5 py-2  transition text-base sm:text-lg font-medium  sm:ml-3 mt-3 sm:mt-0 w-full sm:w-auto"
-            >
-              Subscribe
-            </button>
-          </form>
-
-          {message && (
-            <p
-              className={`mt-2 text-sm ${
-                isError ? "text-red-500" : "text-green-500"
-              }`}
-            >
-              {message}
+      <div className="max-w-7xl mx-auto px-6 sm:px-16">
+        <div
+          className=" mx-auto py-12 grid gap-8 grid-cols-1 lg:grid-cols-[2fr_1fr_1fr]"
+        
+        >
+          {/* Left Column: Logo & Navigation */}
+          <div className="flex w-full flex-col gap-4">
+            <h3 className="text-2xl sm:text-3xl font-extrabold cursor-pointer tracking-wide">
+              <img
+                src={MobileLogo}
+                alt="Sober Points Logo"
+                className="h-10 dark:hidden"
+              />
+            </h3>
+            <p className="text-base sm:text-lg  text-black">
+              Subscribe to our newsletter for the latest updates on features and
+              releases.
             </p>
-          )}
+            <form
+              onSubmit={handleSubmit}
+              className="mt-4 flex sm:flex-row items-center overflow-hidden"
+            >
+              <input
+                type="email"
+                placeholder="Enter your email"
+                className="p-2 border w-full outline-none text-black text-base  border-gray-400"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+              <button
+                type="submit"
+                className="bg-primary text-white px-5 py-2 hover:bg-primaryLight transition text-base sm:text-lg font-medium sm:ml-3 mt-3 sm:mt-0 w-full sm:w-auto"
+              >
+                Subscribe
+              </button>
+            </form>
 
-          <p className="text-base text-black">
-            By subscribing you agree to our Privacy Policy
+            {message && (
+              <p
+                className={`mt-2 text-sm ${
+                  isError ? "text-red-500" : "text-green-500"
+                }`}
+              >
+                {message}
+              </p>
+            )}
+
+            <p className="text-base text-black">
+              By subscribing, you consent to our Privacy Policy and agree to
+              receive updates.
+            </p>
+          </div>
+
+          <div >
+            <h3 className="text-lg font-medium mb-1">Quick Links</h3>
+            <ul className="mt-4 text-sm grid gap-2 md:grid-cols-1 sm:text-base text-black">
+              <li>
+                <a
+                  href="/venues/nearby"
+                  className="hover:text-black transition"
+                >
+                  Sober Map
+                </a>
+              </li>
+              <li>
+                <a href="/contact" className="hover:text-black transition">
+                  About
+                </a>
+              </li>
+              <li>
+                <a href="/blogs" className="hover:text-black transition">
+                  Our Blog
+                </a>
+              </li>
+              <li>
+                <a href="/contact" className="hover:text-black transition">
+                  Contact
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          <div className="mt-2 flex flex-col gap-3">
+            <h3 className="text-lg font-medium mb-1">Stay Connected</h3>
+            <div className="flex flex-col gap-2">
+              <a
+                href="https://www.instagram.com/wearesoberpoints/"
+                target="_blank"
+                className="flex items-center gap-2 text-black hover:text-black transition-colors text-lg"
+              >
+                <FaInstagram className="w-5 h-5" />
+                <span>Instagram</span>
+              </a>
+              <a
+                href="https://www.facebook.com/profile.php?id=61568414595086"
+                target="_blank"
+                className="flex items-center gap-2 text-black hover:text-black transition-colors text-lg"
+              >
+                <FaFacebook className="w-5 h-5" />
+                <span>Facebook</span>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <hr className="border-gray-600 my-2 w-full" />
+
+        <div className="py-6 flex flex-col sm:flex-row justify-between items-start text-xs sm:text-sm text-gray-600 text-left">
+          <p className="mt-2 sm:mt-0">
+            &copy; 2025 Sober Points. All rights reserved.
           </p>
+          <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4 mt-2 sm:mt-0">
+            <a
+              href="/privacyPolicy"
+              className="hover:text-black underline transition"
+            >
+              Privacy Policy
+            </a>
+            <a href="#" className="hover:text-black underline transition">
+              Terms of Service
+            </a>
+            <a href="#" className="hover:text-black underline transition">
+              Cookies Settings
+            </a>
+          </div>
         </div>
-      </div>
-
-      <hr className="border-black/30 w-[90%] mx-auto my-4" />
-
-      <div className="max-w-[1440px] mx-auto px-6 md:px-16 py-4 flex flex-col md:flex-row justify-between text-sm">
-        <div className="flex flex-wrap gap-6 font-medium">
-          <a href="/privacyPolicy" className="hover:underline">
-            Privacy Policy
-          </a>
-          <a href="#" className="hover:underline">
-            Terms of Service
-          </a>
-          <a href="#" className="hover:underline">
-            Cookies Settings
-          </a>
-        </div>
-        <p className="mt-2 md:mt-0">
-          © 2025 Sober Points. All rights reserved.
-        </p>
       </div>
     </footer>
   );
