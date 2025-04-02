@@ -207,7 +207,7 @@ const Header = () => {
               {/* Rest of the sidebar content remains exactly the same */}
               <nav className="flex flex-col space-y-3">
                 <Link
-                  to="/"
+                  to="/blogs"
                   className="text-grayColor dark:text-darkText hover:text-primary transition"
                   onClick={() => setSidebarOpen(false)}
                 >

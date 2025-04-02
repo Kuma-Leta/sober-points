@@ -9,6 +9,8 @@ import {
   FaSearch,
   FaArrowLeft,
   FaAngleRight,
+  FaChevronDown,
+  FaChevronUp,
 } from "react-icons/fa";
 import { motion } from "framer-motion";
 import { useSelector } from "react-redux";
@@ -26,6 +28,7 @@ const BlogList = () => {
   const [likedBlogs, setLikedBlogs] = useState([]);
   const [isLiking, setIsLiking] = useState({});
   const [searchTimeout, setSearchTimeout] = useState(null);
+  const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] = useState(false);
 
   const categories = [
     "All",
@@ -152,6 +155,12 @@ const BlogList = () => {
     }
   };
 
+  // Add this function to handle category selection
+  const handleCategorySelect = (category) => {
+    setActiveCategory(category);
+    setIsCategoryDropdownOpen(false);
+  };
+
   // Loading skeleton
   const renderSkeletons = () => (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -210,70 +219,54 @@ const BlogList = () => {
           </p>
         </div>
 
-        <div className="mb-8 w-max mx-auto">
-          <div className="flex border-b items-center gap-5 justify-end">
-            <div className="relative mx-auto w-max mb-6">
+        <div className="mb-8 w-full mx-auto">
+          <div className="flex flex-col md:flex-row items-center gap-5 justify-between border-b pb-4">
+            <div className="relative w-full md:w-auto mb-4 md:mb-0">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <FaSearch className="text-gray-400" />
               </div>
               <input
                 type="text"
                 placeholder="Search articles..."
-                className="block w-64 pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-700 rounded-full bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                className="block w-full md:w-64 pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-700 rounded-full bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
             </div>
-            <div className="flex flex-wrap gap-2 mb-6 justify-center">
-              {categories.map((category) => (
-                <button
-                  key={category}
-                  onClick={() => setActiveCategory(category)}
-                  className={`px-4 py-2 text-sm font-medium transition-colors rounded-lg ${
-                    activeCategory === category
-                      ? "bg-primary text-white"
-                      : "bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
-                  }`}
-                >
-                  {category}
-                </button>
-              ))}
+            
+            {/* Category Dropdown */}
+            <div className="relative w-full md:w-auto">
+              <button
+                onClick={() => setIsCategoryDropdownOpen(!isCategoryDropdownOpen)}
+                className="w-full md:w-auto flex items-center justify-between px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+              >
+                <span>{activeCategory}</span>
+                {isCategoryDropdownOpen ? (
+                  <FaChevronUp className="ml-2" />
+                ) : (
+                  <FaChevronDown className="ml-2" />
+                )}
+              </button>
+              
+              {isCategoryDropdownOpen && (
+                <div className="absolute z-10 mt-1 w-full bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg shadow-lg overflow-hidden">
+                  {categories.map((category) => (
+                    <button
+                      key={category}
+                      onClick={() => handleCategorySelect(category)}
+                      className={`w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors ${
+                        activeCategory === category
+                          ? "bg-primary text-white hover:bg-primaryDark"
+                          : "text-gray-700 dark:text-gray-300"
+                      }`}
+                    >
+                      {category}
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
-          {/* <div className="flex justify-center">
-            <div className="inline-flex rounded-md shadow-sm">
-              <button
-                onClick={() => setSortOption("newest")}
-                className={`px-4 py-2 text-sm font-medium rounded-l-lg ${
-                  sortOption === "newest"
-                    ? "bg-primary text-white"
-                    : "bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
-                }`}
-              >
-                Newest
-              </button>
-              <button
-                onClick={() => setSortOption("oldest")}
-                className={`px-4 py-2 text-sm font-medium ${
-                  sortOption === "oldest"
-                    ? "bg-primary text-white"
-                    : "bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
-                }`}
-              >
-                Oldest
-              </button>
-              <button
-                onClick={() => setSortOption("popular")}
-                className={`px-4 py-2 text-sm font-medium rounded-r-lg ${
-                  sortOption === "popular"
-                    ? "bg-primary text-white"
-                    : "bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
-                }`}
-              >
-                Popular
-              </button>
-            </div>
-          </div> */}
         </div>
 
         {loading ? (
