@@ -30,7 +30,7 @@ const ContributePage = () => {
       {/* Features Grid */}
       <div className="grid md:grid-cols-3 gap-8 mb-12">
         {/* Feature 1 */}
-        <div className="bg-white p-8 rounded-xl shadow-lg border border-gray-100">
+        <div className="bg-white p-8 rounded shadow border border-gray-50">
           <img src="/location.png" alt="location" className="w-16 h-16" />
           <h3 className="text-xl font-bold text-gray-800 mb-3">
             How to Add Your Favorite Locations
@@ -41,7 +41,7 @@ const ContributePage = () => {
         </div>
 
         {/* Feature 2 */}
-        <div className="bg-white p-8 rounded-xl shadow-lg border border-gray-100">
+        <div className="bg-white p-8 rounded shadow border border-gray-50">
           <img src="/visualize.png" alt="location" className="w-16 h-16" />
 
           <h3 className="text-xl font-bold text-gray-800 mb-3">
@@ -53,7 +53,7 @@ const ContributePage = () => {
         </div>
 
         {/* Feature 3 */}
-        <div className="bg-white p-8 rounded-xl shadow-lg border border-gray-100">
+        <div className="bg-white p-8 rounded shadow border border-gray-50">
           <img src="/community.png" alt="location" className="w-16 h-16" />
 
           <h3 className="text-xl font-bold text-gray-800 mb-3">
