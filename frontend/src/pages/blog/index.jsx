@@ -220,7 +220,7 @@ const BlogList = () => {
         </div>
 
         <div className="mb-8 w-full mx-auto">
-          <div className="flex items-center flex-row gap-2 justify-between pb-4 border-b ">
+          <div className="flex items-center flex-row gap-2 md:gap-4 justify-between pb-4 border-b ">
             <div className="relative w-full md:w-auto md:mb-0">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <FaSearch className="text-gray-400" />
@@ -235,7 +235,7 @@ const BlogList = () => {
             </div>
             
             {/* Category Dropdown */}
-            <div className="relative w-full md:w-auto">
+            <div className="relative w-max md:w-auto">
               <button
                 onClick={() => setIsCategoryDropdownOpen(!isCategoryDropdownOpen)}
                 className="w-full md:w-auto flex items-center justify-between px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
