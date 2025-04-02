@@ -14,8 +14,8 @@ import {
   fetchFavorites,
 } from "../../redux/venue/venueSlice";
 
-const VenueLists = ({ isSideBySide = false, error }) => {
-  const { venues, loading, favorites, pagination } = useSelector((state) => state.venues.venues);
+const VenueLists = ({ isSideBySide = false, error, onPageChange }) => {
+  const { venues, loading, favorites, pagination } = useSelector((state) => state.venues);
   const { isAuthenticated } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -41,9 +41,9 @@ const VenueLists = ({ isSideBySide = false, error }) => {
 
   // Handle page change
   const handlePageChange = (newPage) => {
-    // This should trigger a new API call in the parent component
-    // that uses the current location and search parameters
-    // The parent should pass the page as a prop or maintain state
+    if (onPageChange) {
+      onPageChange(newPage);
+    }
   };
 
   if (loading) {

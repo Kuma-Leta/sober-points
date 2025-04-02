@@ -5,10 +5,17 @@ import axiosInstance from "../../api/api";
 // Fetch all venues
 export const fetchVenues = createAsyncThunk(
   "venues/fetchAll",
-  async (_, thunkAPI) => {
+  async ({ page = 1, limit = 15 }, thunkAPI) => {
     try {
-      const response = await axiosInstance.get("/venues/");
-      return response.data.venues;
+      const response = await axiosInstance.get(`/venues/?page=${page}&limit=${limit}`);
+      return {
+        venues: response.data.venues,
+        pagination: {
+          currentPage: page,
+          totalPages: response.data.totalPages,
+          totalRecords: response.data.totalRecords
+        }
+      };
     } catch (error) {
       return thunkAPI.rejectWithValue(
         error.response?.data?.message || "Failed to fetch venues"
@@ -195,9 +202,10 @@ const venueSlice = createSlice({
     venues: [],
     nearbyVenues: [],
     searchResults: [],
-    favorites: [], // Initialize favorites as an empty array
+    favorites: [],
     loading: false,
     error: null,
+    pagination: null
   },
   reducers: {},
   extraReducers: (builder) => {
@@ -209,7 +217,8 @@ const venueSlice = createSlice({
       })
       .addCase(fetchVenues.fulfilled, (state, action) => {
         state.loading = false;
-        state.venues = action.payload;
+        state.venues = action.payload.venues;
+        state.pagination = action.payload.pagination;
       })
       .addCase(fetchVenues.rejected, (state, action) => {
         state.loading = false;
@@ -222,8 +231,9 @@ const venueSlice = createSlice({
         state.error = null;
       })
       .addCase(fetchNearbyVenues.fulfilled, (state, action) => {
-        state.nearbyVenues = action.payload;
-        state.venues = action.payload;
+        state.nearbyVenues = action.payload.venues;
+        state.venues = action.payload.venues;
+        state.pagination = action.payload.pagination;
         state.loading = false;
       })
       .addCase(fetchNearbyVenues.rejected, (state, action) => {

@@ -22,7 +22,7 @@ import ContributePage from "./ContributePage";
 
 const VenuesPage = () => {
   const dispatch = useDispatch();
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const { venues, nearbyVenues, searchResults, loading, error } = useSelector(
     (state) => state.venues
   );
@@ -36,6 +36,9 @@ const VenuesPage = () => {
 
   // Track map visibility
   const [showMap, setShowMap] = useState(true);
+
+  // Track current page
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
     if (navigator.geolocation) {
@@ -54,15 +57,26 @@ const VenuesPage = () => {
     const lat = parseFloat(searchParams.get("lat"));
     const lng = parseFloat(searchParams.get("lng"));
     const query = searchParams.get("query");
+    const page = parseInt(searchParams.get("page")) || 1;
+    setCurrentPage(page);
+
     if (lat && lng) {
       setMapCenter({ lat, lng });
-      dispatch(fetchNearbyVenues({ lat, lng }));
+      dispatch(fetchNearbyVenues({ lat, lng, page }));
     } else if (query) {
       dispatch(searchVenues(query));
     } else {
-      dispatch(fetchVenues());
+      dispatch(fetchVenues({ page }));
     }
   }, [dispatch, searchParams]);
+
+  const handlePageChange = (newPage) => {
+    setCurrentPage(newPage);
+    setSearchParams((prev) => {
+      prev.set("page", newPage.toString());
+      return prev;
+    });
+  };
 
   return (
     <div className="flex flex-col min-h-screen bg-white p-2 dark:bg-darkBg">
@@ -90,7 +104,12 @@ const VenuesPage = () => {
       >
         {/* VenueLists (Scrollable) */}
         <div className={``}>
-          <VenueLists isSideBySide={showMap} loading={loading} error={error} />
+          <VenueLists 
+            isSideBySide={showMap} 
+            loading={loading} 
+            error={error}
+            onPageChange={handlePageChange}
+          />
         </div>
 
         {/* VenueMap (Full Height & Sticky) */}
