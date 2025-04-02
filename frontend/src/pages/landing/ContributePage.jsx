@@ -4,14 +4,14 @@ import { Link } from "react-router-dom";
 
 const ContributePage = () => {
   return (
-    <div className="max-w-[1440px] mx-auto px-4 py-12 z-50 sm:px-6 lg:px-8">
+    <div className="max-w-[1440px] mx-auto px-4 py-12 z-50 ">
       {/* Hero Section */}
       <div className="relative text-center ">
-        <div className="max-w-[1440px] my-8 mx-auto flex flex-col md:flex-row items-center">
+        <div className="max-w-[1440px] my-8 mx-auto flex md:px-6 flex-col md:flex-row items-center">
           {/* Left Content */}
           <div className="w-full md:w-1/2 text-left">
             <h2 className="text-[32px] sm:text-[48px] font-bold text-black leading-[120%] tracking-[0%] font-['Helvetica Neue']">
-              Join Us in Mapping Alcohol-Free Locations
+              Join Us in Mapping <span className="whitespace-nowrap">Alcohol-Free </span>Locations
             </h2>
           </div>
 
