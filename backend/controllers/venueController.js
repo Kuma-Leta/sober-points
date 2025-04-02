@@ -421,7 +421,7 @@ exports.getNearbyVenues = async (req, res) => {
       return res.status(400).json({ message: "Longitude out of range" });
 
     // Base match query (excluding geospatial)
-    const matchQuery = {  }; 
+    const matchQuery = {};
     if (query) {
       matchQuery.$or = [
         { name: { $regex: query, $options: "i" } },
@@ -436,11 +436,10 @@ exports.getNearbyVenues = async (req, res) => {
           near: { type: "Point", coordinates: [longitude, latitude] },
           distanceField: "distance",
           spherical: true,
+          maxDistance: 16093.4, // 10 miles in meters
           query: matchQuery,
         },
       },
-      { $skip: (parseInt(page) - 1) * parseInt(limit) },
-      { $limit: parseInt(limit) },
       {
         $lookup: {
           from: "reviews",
@@ -449,16 +448,26 @@ exports.getNearbyVenues = async (req, res) => {
           as: "reviews",
         },
       },
+      {
+        $facet: {
+          metadata: [{ $count: "total" }],
+          data: [
+            { $skip: (parseInt(page) - 1) * parseInt(limit) },
+            { $limit: parseInt(limit) }
+          ]
+        }
+      }
     ];
 
-    // Get count separately (since countDocuments doesn't work with $geoNear)
-    const count = await Venue.countDocuments(matchQuery);
-    const venues = await Venue.aggregate(aggregation);
+    const result = await Venue.aggregate(aggregation);
+    
+    const venues = result[0].data;
+    const total = result[0].metadata[0]?.total || 0;
 
     res.status(200).json({
       success: true,
-      totalPages: Math.ceil(count / limit),
-      totalRecords: count,
+      totalPages: Math.ceil(total / limit),
+      totalRecords: total,
       count: venues.length,
       venues,
     });
@@ -690,7 +699,7 @@ exports.getNearestVenues = async (req, res) => {
       return res.status(400).json({ message: "Invalid longitude value." });
     }
 
-    // MongoDB Geospatial Query
+    // MongoDB Geospatial Query with max distance of 10 miles
     const venues = await Venue.find({
       isVerified: true,
       location: {
@@ -699,6 +708,7 @@ exports.getNearestVenues = async (req, res) => {
             type: "Point",
             coordinates: [longitude, latitude], // Note: MongoDB expects [longitude, latitude]
           },
+          $maxDistance: 16093.4, // 10 miles in meters
         },
       },
     }).limit(10); // Limit to 10 nearest venues

@@ -68,7 +68,7 @@ const ContributePage = () => {
       </div>
 
       {/* CTA Buttons */}
-      <div className="flex flex-row items-center justify-center sm:justify-left gap-[24px]">
+      <div className="flex flex-row items-center justify-center md:justify-start gap-[24px]">
         <Link
           to="//venue/form"
           className="bg-white  text-gray-800 font-medium px-[24px] py-[12px] rounded border border-primary hover:bg-primary hover:text-white text-center transition duration-300"
