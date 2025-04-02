@@ -1,4 +1,5 @@
 import React from "react";
+import { FaAngleRight } from "react-icons/fa";
 import { Link } from "react-router-dom";
 
 const ContributePage = () => {
@@ -66,12 +67,18 @@ const ContributePage = () => {
       </div>
 
       {/* CTA Buttons */}
-      <div className="flex flex-col sm:flex-row justify-left gap-4">
+      <div className="flex flex-col sm:flex-row items-center justify-left gap-[24px]">
+        <Link
+          to="//venue/form"
+          className="bg-white  text-gray-800 font-medium px-[24px] py-[12px] rounded border border-primary hover:bg-primary hover:text-white text-center transition duration-300"
+        >
+          Contribute
+        </Link>
         <Link
           to="/howToContribute"
-          className="bg-white hover:bg-gray-50 text-gray-800 font-medium py-3 px-8 rounded-lg border border-primary hover:bg-primary hover:text-white text-center transition duration-300"
+          className="bg-white  flex gap-1 items-center text-gray-800 hover:text-black "
         >
-          Learn More
+          Learn More <FaAngleRight className="w-4 h-4" />
         </Link>
       </div>
     </div>
