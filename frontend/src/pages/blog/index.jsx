@@ -210,7 +210,7 @@ const BlogList = () => {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
-        <div className="mb-12 text-center">
+        <div className="mb-4 md:mb-12 text-center">
           <h1 className="text-2xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-4">
             Explore Our Featured Blogs
           </h1>
