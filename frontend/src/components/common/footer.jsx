@@ -38,7 +38,7 @@ export default function Footer() {
       }`}
     >
       <div className="max-w-[1312px] mx-auto">
-        <div className=" mx-auto px-[20px] py-[48px] sm:p-[48px] w-full grid gap-[48px] md:gap-[128px] grid-cols-1 lg:grid-cols-[3fr_1fr_1fr]">
+        <div className=" mx-auto  py-[48px] sm:p-[48px] w-full grid gap-[48px] md:gap-[128px] grid-cols-1 lg:grid-cols-[3fr_1fr_1fr]">
           {/* Left Column: Logo & Navigation */}
           <div className="flex w-full flex-col gap-4">
             <h3 className="text-2xl sm:text-3xl font-extrabold cursor-pointer tracking-wide">
