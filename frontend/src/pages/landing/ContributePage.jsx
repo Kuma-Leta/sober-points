@@ -7,11 +7,12 @@ const ContributePage = () => {
     <div className="max-w-[1440px] mx-auto px-4 py-12 z-50 ">
       {/* Hero Section */}
       <div className="relative text-center ">
-        <div className="max-w-[1440px] my-8 mx-auto flex md:px-6 flex-col md:flex-row items-center">
+        <div className="max-w-[1312px] my-8 mx-auto flex md:px-6 flex-col md:flex-row items-center">
           {/* Left Content */}
           <div className="w-full md:w-1/2 text-left">
             <h2 className="text-[32px] sm:text-[48px] font-bold text-black leading-[120%] tracking-[0%] font-['Helvetica Neue']">
-              Join Us in Mapping <span className="whitespace-nowrap">Alcohol-Free </span>Locations
+              Join Us in Mapping{" "}
+              <span className="whitespace-nowrap">Alcohol-Free </span>Locations
             </h2>
           </div>
 
@@ -29,7 +30,7 @@ const ContributePage = () => {
       </div>
 
       {/* Features Grid */}
-      <div className="grid md:grid-cols-3 gap-8 mb-12">
+      <div className="grid w-full sm:w-[1312px]  mx-auto md:grid-cols-3 gap-8 mb-12">
         {/* Feature 1 */}
         <div className="bg-white p-8 rounded shadow border border-gray-50">
           <img src="/location.png" alt="location" className="w-16 h-16" />
