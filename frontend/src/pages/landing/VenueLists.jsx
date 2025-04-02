@@ -49,7 +49,7 @@ const VenueLists = ({ isSideBySide = false, error, onPageChange }) => {
   if (loading) {
     return (
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-4">
-        {[1, 2, 3, 4].map((skeleton) => (
+        {[1, 2, 3, 4,5,6,7,8].map((skeleton) => (
           <div
             key={skeleton}
             className="animate-pulse p-4 border rounded-lg shadow-md bg-gray-300 dark:bg-gray-700"
