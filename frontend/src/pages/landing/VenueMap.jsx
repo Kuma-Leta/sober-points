@@ -77,7 +77,7 @@ const MapEvents = ({ setMapCenter }) => {
 
 const VenueMap = () => {
   const dispatch = useDispatch();
-  const { venues, searchResults } = useSelector((state) => state.venues.venues);
+  const { venues, searchResults } = useSelector((state) => state.venues);
   const [userLocation, setUserLocation] = useState(null);
   const [mapCenter, setMapCenter] = useState({
     lat: 51.509865,

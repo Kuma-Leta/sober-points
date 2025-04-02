@@ -421,7 +421,7 @@ exports.getNearbyVenues = async (req, res) => {
       return res.status(400).json({ message: "Longitude out of range" });
 
     // Base match query (excluding geospatial)
-    const matchQuery = { isVerified: true }; 
+    const matchQuery = {  }; 
     if (query) {
       matchQuery.$or = [
         { name: { $regex: query, $options: "i" } },
