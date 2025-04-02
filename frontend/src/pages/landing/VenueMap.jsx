@@ -77,7 +77,7 @@ const MapEvents = ({ setMapCenter }) => {
 
 const VenueMap = () => {
   const dispatch = useDispatch();
-  const { venues, searchResults } = useSelector((state) => state.venues);
+  const { venues, searchResults } = useSelector((state) => state.venues.venues);
   const [userLocation, setUserLocation] = useState(null);
   const [mapCenter, setMapCenter] = useState({
     lat: 51.509865,
@@ -108,7 +108,7 @@ const VenueMap = () => {
 
   // Update map center if search results change
   useEffect(() => {
-    if (searchResults.length > 0) {
+    if (searchResults?.length > 0) {
       const firstVenue = searchResults[0];
       if (firstVenue.location && firstVenue.location.coordinates) {
         const [lng, lat] = firstVenue.location.coordinates;
@@ -153,8 +153,7 @@ const VenueMap = () => {
       )}
 
       {/* Venue Markers */}
-      {venues
-        .filter((venue) => venue.isVerified)
+      {venues?.filter((venue) => venue.isVerified)
         .map((venue) => {
           if (!venue.location || !venue.location.coordinates) {
             return null;

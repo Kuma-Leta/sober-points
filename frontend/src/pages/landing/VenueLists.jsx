@@ -15,21 +15,10 @@ import {
 } from "../../redux/venue/venueSlice";
 
 const VenueLists = ({ isSideBySide = false, error }) => {
-  const { venues, loading, favorites } = useSelector((state) => state.venues);
+  const { venues, loading, favorites, pagination } = useSelector((state) => state.venues.venues);
   const { isAuthenticated } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
-  // Pagination state
-  const [currentPage, setCurrentPage] = useState(1);
-  const venuesPerPage = 8; // Number of venues per page
-
-  // Fetch favorites on component mount
-  useEffect(() => {
-    if (isAuthenticated) {
-      dispatch(fetchFavorites());
-    }
-  }, [dispatch, isAuthenticated]);
 
   // Handle favorite button click
   const handleFavoriteClick = (venueId, e) => {
@@ -50,18 +39,11 @@ const VenueLists = ({ isSideBySide = false, error }) => {
     }
   };
 
-  // Pagination logic
-  const indexOfLastVenue = currentPage * venuesPerPage;
-  const indexOfFirstVenue = indexOfLastVenue - venuesPerPage;
-  const currentVenues = venues.slice(indexOfFirstVenue, indexOfLastVenue);
-  const totalPages = Math.ceil(venues.length / venuesPerPage);
-
   // Handle page change
-  const goToNextPage = () => {
-    if (currentPage < totalPages) setCurrentPage(currentPage + 1);
-  };
-  const goToPrevPage = () => {
-    if (currentPage > 1) setCurrentPage(currentPage - 1);
+  const handlePageChange = (newPage) => {
+    // This should trigger a new API call in the parent component
+    // that uses the current location and search parameters
+    // The parent should pass the page as a prop or maintain state
   };
 
   if (loading) {
@@ -81,11 +63,11 @@ const VenueLists = ({ isSideBySide = false, error }) => {
     );
   }
 
-  // if (error) {
-  //   return <p className="text-red-500 text-center">{error}</p>;
-  // }
+  if (error) {
+    return <p className="text-red-500 text-center">{error}</p>;
+  }
 
-  if (!Array.isArray(venues) || venues.length === 0) {
+  if (!venues || venues.length === 0) {
     return (
       <p className="text-gray-500 dark:text-gray-300 text-center">
         No venues found.
@@ -96,33 +78,35 @@ const VenueLists = ({ isSideBySide = false, error }) => {
   return (
     <div className="mt-4">
       {/* Pagination Controls */}
-      <div className="flex justify-center  p-2 items-center mt-3 space-x-4">
-        <button
-          onClick={goToPrevPage}
-          disabled={currentPage === 1}
-          className={`p-2 text-sm font-semibold border rounded-md transition ${
-            currentPage === 1
-              ? "bg-gray-200 dark:bg-gray-700 text-gray-500 cursor-not-allowed"
-              : "bg-gray-800 dark:bg-gray-600 text-white hover:bg-gray-700 dark:hover:bg-gray-500"
-          }`}
-        >
-          <FaChevronLeft />
-        </button>
-        <span className="text-gray-700 dark:text-gray-300">
-          Page {currentPage} of {totalPages}
-        </span>
-        <button
-          onClick={goToNextPage}
-          disabled={currentPage === totalPages}
-          className={`p-2 text-sm font-semibold border rounded-md transition ${
-            currentPage === totalPages
-              ? "bg-gray-200 dark:bg-gray-700 text-gray-500 cursor-not-allowed"
-              : "bg-gray-800 dark:bg-gray-600 text-white hover:bg-gray-700 dark:hover:bg-gray-500"
-          }`}
-        >
-          <FaChevronRight />
-        </button>
-      </div>
+      {pagination && (
+        <div className="flex justify-center p-2 items-center mt-3 space-x-4">
+          <button
+            onClick={() => handlePageChange(pagination.currentPage - 1)}
+            disabled={pagination.currentPage === 1}
+            className={`p-2 text-sm font-semibold border rounded-md transition ${
+              pagination.currentPage === 1
+                ? "bg-gray-200 dark:bg-gray-700 text-gray-500 cursor-not-allowed"
+                : "bg-gray-800 dark:bg-gray-600 text-white hover:bg-gray-700 dark:hover:bg-gray-500"
+            }`}
+          >
+            <FaChevronLeft />
+          </button>
+          <span className="text-gray-700 dark:text-gray-300">
+            Page {pagination.currentPage} of {pagination.totalPages}
+          </span>
+          <button
+            onClick={() => handlePageChange(pagination.currentPage + 1)}
+            disabled={pagination.currentPage === pagination.totalPages}
+            className={`p-2 text-sm font-semibold border rounded-md transition ${
+              pagination.currentPage === pagination.totalPages
+                ? "bg-gray-200 dark:bg-gray-700 text-gray-500 cursor-not-allowed"
+                : "bg-gray-800 dark:bg-gray-600 text-white hover:bg-gray-700 dark:hover:bg-gray-500"
+            }`}
+          >
+            <FaChevronRight />
+          </button>
+        </div>
+      )}
 
       {/* Venue Grid */}
       <div
@@ -132,20 +116,20 @@ const VenueLists = ({ isSideBySide = false, error }) => {
             : "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
         } gap-4 sm:gap-6`}
       >
-        {currentVenues.map((venue) => (
+        {venues?.map((venue) => (
           <Link
             key={venue._id}
             to={`/venue/${venue._id}`}
             className="block border rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 bg-white dark:bg-darkCard dark:border-gray-700"
           >
-            {venue.images.length > 0 && (
-              <div className="relative max-h-[200px] h-max  w-full  rounded-t-md overflow-hidden">
+            {venue.images?.length > 0 && (
+              <div className="relative max-h-[200px] h-max w-full rounded-t-md overflow-hidden">
                 <img
                   src={`${
                     import.meta.env.VITE_API_URL
                   }/${venue.images[0].replace(/\\/g, "/")}`}
                   alt={venue.name}
-                  className="flex w-full h- h-[200px]  object-cover"
+                  className="flex w-full h-[200px] object-cover"
                 />
                 {/* Heart Icon */}
                 <button
@@ -170,10 +154,15 @@ const VenueLists = ({ isSideBySide = false, error }) => {
               <p className="text-sm text-gray-600 dark:text-gray-400">
                 {venue.address}
               </p>
+              {venue.distance && (
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                  {Math.round(venue.distance)} meters away
+                </p>
+              )}
               <div className="flex items-center mt-2">
                 <RatingStars rating={venue.rating || 0} />
                 <span className="ml-2 text-sm text-gray-600 dark:text-gray-400">
-                  ({venue.rating || 0})
+                  ({venue.reviews?.length || 0} reviews)
                 </span>
               </div>
             </div>

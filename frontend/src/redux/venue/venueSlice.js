@@ -20,12 +20,20 @@ export const fetchVenues = createAsyncThunk(
 // Fetch nearby venues
 export const fetchNearbyVenues = createAsyncThunk(
   "venues/fetchNearby",
-  async ({ lat, lng, query = "", page = 1 }, thunkAPI) => {
+  async ({ lat, lng, query = "", page = 1, limit = 15 }, thunkAPI) => {
     try {
       const response = await axiosInstance.get(
-        `venues/nearby?lat=${lat}&lng=${lng}&query=${query}&page=${page}&limit=15`
+        `venues/nearby?lat=${lat}&lng=${lng}&query=${query}&page=${page}&limit=${limit}`
       );
-      return response.data;
+      console.log("response.data.venues: ",response.data.venues)
+      return {
+        venues: response.data.venues,
+        pagination: {
+          currentPage: page,
+          totalPages: response.data.totalPages,
+          totalRecords: response.data.totalRecords
+        }
+      };
     } catch (error) {
       return thunkAPI.rejectWithValue(
         error.response?.data?.message || "Failed to fetch nearby venues"

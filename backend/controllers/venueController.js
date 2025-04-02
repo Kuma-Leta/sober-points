@@ -91,7 +91,7 @@ exports.createVenue = async (req, res) => {
         menu,
         website: website && website.trim() !== "" ? website : null, // Handle optional website field
         alcoholFreeBeersOnTap: alcoholFreeBeersOnTap, // Handle optional field
-        alcoholFreeDrinkBrands: alcoholFreeDrinkBrands , // Handle optional field
+        alcoholFreeDrinkBrands: alcoholFreeDrinkBrands, // Handle optional field
         createdBy,
         isVerified, // Set isVerified based on the user's role
       });
@@ -220,7 +220,7 @@ exports.getVenueDetails = async (req, res) => {
       updatedAt: venue.updatedAt,
       alcoholFreeBeersOnTap: venue.alcoholFreeBeersOnTap,
       alcoholFreeDrinkBrands: venue.alcoholFreeDrinkBrands,
-    }; 
+    };
 
     // console.log("location:", venue.location);
 
@@ -405,64 +405,70 @@ exports.deleteVenue = async (req, res) => {
 
 exports.getNearbyVenues = async (req, res) => {
   try {
-    const { lat, lng, query } = req.query;
+    const { lat, lng, query, page = 1, limit = 10 } = req.query;
 
-    // Validate latitude and longitude
-    if (!lat || !lng) {
-      return res
-        .status(400)
-        .json({ message: "Latitude and longitude are required." });
-    }
-
+    // Validate coordinates
     const latitude = parseFloat(lat);
     const longitude = parseFloat(lng);
 
-    // Check if latitude and longitude are within valid ranges
-    if (isNaN(latitude)) {
-      return res.status(400).json({ message: "Invalid latitude value." });
-    }
-    if (isNaN(longitude)) {
-      return res.status(400).json({ message: "Invalid longitude value." });
-    }
+    if (isNaN(latitude))
+      return res.status(400).json({ message: "Invalid latitude" });
+    if (isNaN(longitude))
+      return res.status(400).json({ message: "Invalid longitude" });
+    if (latitude < -90 || latitude > 90)
+      return res.status(400).json({ message: "Latitude out of range" });
+    if (longitude < -180 || longitude > 180)
+      return res.status(400).json({ message: "Longitude out of range" });
 
-    if (latitude < -90 || latitude > 90) {
-      return res
-        .status(400)
-        .json({ message: "Latitude must be between -90 and 90." });
-    }
-    if (longitude < -180 || longitude > 180) {
-      return res
-        .status(400)
-        .json({ message: "Longitude must be between -180 and 180." });
-    }
-
-    // MongoDB Geospatial Query
-    let filter = {
-      isVerified: true,
-      location: {
-        $near: {
-          $geometry: {
-            type: "Point",
-            coordinates: [longitude, latitude], // Note: MongoDB expects [longitude, latitude]
-          },
-          // $maxDistance: 5000, // 5km radius (optional)
-        },
-      },
-    };
-
-    // If there's a query, search by name or description
+    // Base match query (excluding geospatial)
+    const matchQuery = { };
     if (query) {
-      filter.$or = [
+      matchQuery.$or = [
         { name: { $regex: query, $options: "i" } },
         { description: { $regex: query, $options: "i" } },
       ];
     }
 
-    const venues = await Venue.find(filter).limit(15).populate("reviews");
+    // Using aggregation pipeline for proper geospatial handling
+    const aggregation = [
+      {
+        $geoNear: {
+          near: { type: "Point", coordinates: [longitude, latitude] },
+          distanceField: "distance",
+          spherical: true,
+          query: matchQuery,
+        },
+      },
+      { $skip: (parseInt(page) - 1) * parseInt(limit) },
+      { $limit: parseInt(limit) },
+      {
+        $lookup: {
+          from: "reviews",
+          localField: "_id",
+          foreignField: "venue",
+          as: "reviews",
+        },
+      },
+    ];
 
-    res.status(200).json(venues);
+    // Get count separately (since countDocuments doesn't work with $geoNear)
+    const count = await Venue.countDocuments(matchQuery);
+    const venues = await Venue.aggregate(aggregation);
+
+    res.status(200).json({
+      success: true,
+      totalPages: Math.ceil(count / limit),
+      totalRecords: count,
+      count: venues.length,
+      venues,
+    });
   } catch (error) {
-    res.status(500).json({ message: "Error retrieving venues" });
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: "Error retrieving venues",
+      error: error.message,
+    });
   }
 };
 exports.deleteAllVenues = async (req, res) => {
