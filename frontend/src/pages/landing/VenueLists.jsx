@@ -110,7 +110,7 @@ const VenueLists = ({ isSideBySide = false, error, onPageChange }) => {
 
       {/* Venue Grid */}
       <div
-        className={`grid ${
+        className={`grid w-full ${
           isSideBySide
             ? "grid-cols-1 sm:grid-cols-1 md:grid-cols-2"
             : "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
@@ -120,7 +120,7 @@ const VenueLists = ({ isSideBySide = false, error, onPageChange }) => {
           <Link
             key={venue._id}
             to={`/venue/${venue._id}`}
-            className="block border rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 bg-white dark:bg-darkCard dark:border-gray-700"
+            className="block border rounded shadow-md hover:shadow-lg transition-shadow duration-300 bg-white dark:bg-darkCard dark:border-gray-700"
           >
             {venue.images?.length > 0 && (
               <div className="relative max-h-[200px] h-max w-full rounded-t-md overflow-hidden">

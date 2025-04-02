@@ -12,7 +12,7 @@ const ContributePage = () => {
           <div className="w-full md:w-1/2 text-left">
             <h2 className="text-[32px] sm:text-[48px] font-bold text-black leading-[120%] tracking-[0%] font-['Helvetica Neue']">
               Join Us in Mapping{" "}
-              <span className="whitespace-nowrap">Alcohol-Free </span>Locations
+              <span className="sm:whitespace-nowrap">Alcohol-Free </span>Locations
             </h2>
           </div>
 
@@ -68,7 +68,7 @@ const ContributePage = () => {
       </div>
 
       {/* CTA Buttons */}
-      <div className="flex flex-col sm:flex-row items-center justify-left gap-[24px]">
+      <div className="flex flex-row items-center justify-center sm:justify-left gap-[24px]">
         <Link
           to="//venue/form"
           className="bg-white  text-gray-800 font-medium px-[24px] py-[12px] rounded border border-primary hover:bg-primary hover:text-white text-center transition duration-300"

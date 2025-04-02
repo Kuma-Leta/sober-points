@@ -34,11 +34,11 @@ export default function Footer() {
   return (
     <footer
       className={`bg-gray-100  w-full text-black font-sans ${
-        isAuthenticated ? "p-[32px] md:p-[64px]" : "p-[32px] md:p-[64px]"
+        isAuthenticated ? "p-[32px] pb-32 md:p-[64px]" : "p-[32px] md:p-[64px]"
       }`}
     >
       <div className="max-w-[1312px] mx-auto">
-        <div className=" mx-auto px-[20px] py-[48px] sm:p-[48px] w-full grid gap-[128px] grid-cols-1 lg:grid-cols-[3fr_1fr_1fr]">
+        <div className=" mx-auto px-[20px] py-[48px] sm:p-[48px] w-full grid gap-[48px] md:gap-[128px] grid-cols-1 lg:grid-cols-[3fr_1fr_1fr]">
           {/* Left Column: Logo & Navigation */}
           <div className="flex w-full flex-col gap-4">
             <h3 className="text-2xl sm:text-3xl font-extrabold cursor-pointer tracking-wide">
@@ -54,7 +54,7 @@ export default function Footer() {
             </p>
             <form
               onSubmit={handleSubmit}
-              className="mt-4 flex sm:flex-row items-center overflow-hidden"
+              className="mt-4 flex flex-col w-full sm:flex-row items-center overflow-hidden"
             >
               <input
                 type="email"
