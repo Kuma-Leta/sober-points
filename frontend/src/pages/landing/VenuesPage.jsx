@@ -79,7 +79,7 @@ const VenuesPage = () => {
   };
 
   return (
-    <div className="flex max-w-[1440px] mx-auto flex-col min-h-screen bg-white p-2 dark:bg-darkBg">
+    <div className="flex flex-col min-h-screen bg-white p-2 dark:bg-darkBg">
       {/* Header Section */}
       <div className="flex justify-between p-3 items-center mb-2">
         <SearchBar />
