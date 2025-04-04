@@ -17,7 +17,7 @@ import RatingStars from "./venuedetail/RatingStars";
 // Create custom div elements for markers// Updated createVenueIcon function with larger logo
 const createVenueIcon = (isMobile) => {
   const size = isMobile ? 50 : 60; // Location icon size
-  const logoSize = isMobile ? 22 : 26; // Keep logo smaller than the icon
+  const logoSize = isMobile ? 20 : 22; // Keep logo smaller than the icon
 
   return L.divIcon({
     html: `
@@ -30,7 +30,7 @@ const createVenueIcon = (isMobile) => {
         <!-- Logo centered and not stretched -->
         <img src="${logoMarker}" 
              style="position: absolute; 
-                    top: 50%; 
+                    top: 40%; 
                     left: 50%; 
                     transform: translate(-50%, -50%);
                     width: ${logoSize}px;
