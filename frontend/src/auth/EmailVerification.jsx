@@ -28,7 +28,7 @@ const EmailVerification = () => {
           localStorage.setItem(TOKEN_KEY, data.token);
 
           setTimeout(() => {
-            window.location.href = `/`;
+            // window.location.href = `/`;
           }, 5000);
         })
         .catch((error) => {

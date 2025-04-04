@@ -92,7 +92,7 @@ function Avatar() {
           alt="User"
         />
         <span className="text-sm text-grayColor dark:text-darkText">
-          {user?.name.slice(0, 6) || user?.username}
+          {user?.name?.slice(0, 6) || user?.username}
         </span>
       </button>
       {dropdownOpen && (
