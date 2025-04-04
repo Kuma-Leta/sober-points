@@ -7,7 +7,7 @@ import input from "../../assets/images/input.png";
 
 const VenueSubmissionPage = () => {
   return (
-    <div className=" flex flex-col items-start p-4 md:p-16 lg:p-[82px] gap-10 md:gap-16 lg:gap-[40px] w-full mx-auto max-w-[1440px] h-auto bg-white">
+    <div className=" flex flex-col items-center p-4 md:p-16 lg:p-[82px] gap-10 md:gap-16 lg:gap-[40px] w-full mx-auto max-w-[1440px] h-auto bg-white">
       {/* Hero Section */}
       <div className="text-center mb-14">
         <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 leading-tight">
