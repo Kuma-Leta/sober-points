@@ -436,6 +436,7 @@ exports.getNearbyVenues = async (req, res) => {
           near: { type: "Point", coordinates: [longitude, latitude] },
           distanceField: "distance",
           spherical: true,
+          maxDistance:16000,
           query: matchQuery,
         },
       },
