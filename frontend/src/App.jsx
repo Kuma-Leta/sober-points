@@ -37,6 +37,7 @@ import BlogList from "./pages/blog";
 import BlogRead from "./pages/blog/read";
 import ScrollToTopOnNavigation from "./scroltop";
 import NewsletterManager from "./pages/newsletter/NewsletterManager";
+import EmailVerification from "./auth/EmailVerification";
 
 function Pages() {
   const user = useSelector((state) => state.auth.user);
@@ -143,7 +144,7 @@ function Pages() {
           </ProtectedRoute>
         }
       />
-
+      <Route path="/verify-email" element={<EmailVerification />} />
       <Route path="/newsletter" element={<NewsletterManager />} />
 
       <Route

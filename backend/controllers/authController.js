@@ -109,18 +109,18 @@ exports.register = async (req, res) => {
     const verificationToken = user.createVerificationToken();
     const user1 = await user.save();
 
-    // const userLog = { _id: user._id, role: user.role };
-    // createSendToken(userLog, 200, res);
+    const userLog = { _id: user._id, role: user.role };
+    createSendToken(userLog, 200, res);
 
     // Send verification email (commented out for now)
-    // const verificationUrl = `${process.env.FRONTEND_URL}/verify-email?code=${verificationToken}`;
-    // await sendEmail({
-    //   email: user.email,
-    //   subject: "Verify your email address",
-    //   message: `Thank you for registering with SCIeLAB .To complete your registration, please verify your email address by clicking the link below: ${verificationUrl} \n`,
-    // });
-    const userLog = { _id: user1._id, role: user1.role };
-    createSendToken(userLog, 200, res);
+    const verificationUrl = `${process.env.FRONTEND_URL}/verify-email?code=${verificationToken}`;
+    await sendEmail({
+      email: user.email,
+      subject: "Verify your email address",
+      message: `Thank you for registering with Sober-point .To complete your registration, please verify your email address by clicking the link below: ${verificationUrl} \n`,
+    });
+    // const userLog = { _id: user1._id, role: user1.role };
+    // createSendToken(userLog, 200, res);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
