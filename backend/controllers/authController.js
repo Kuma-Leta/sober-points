@@ -109,8 +109,8 @@ exports.register = async (req, res) => {
     const verificationToken = user.createVerificationToken();
     const user1 = await user.save();
 
-    const userLog = { _id: user._id, role: user.role };
-    createSendToken(userLog, 200, res);
+    // const userLog = { _id: user._id, role: user.role };
+    // createSendToken(userLog, 200, res);
 
     // Send verification email (commented out for now)
     const verificationUrl = `${process.env.FRONTEND_URL}/verify-email?code=${verificationToken}`;
@@ -121,6 +121,7 @@ exports.register = async (req, res) => {
     });
     // const userLog = { _id: user1._id, role: user1.role };
     // createSendToken(userLog, 200, res);
+    return res.status(200).json({ message: "Verification email sent" });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

@@ -81,24 +81,14 @@ const useAuth = () => {
         email,
         name,
         password,
-        ...additionalData, // Spread the additional data for specific user types
+        ...additionalData, 
       });
 
       const data = response.data;
       if (response.status === 200) {
-        setSuccessMessage(
-          "Registration successful! Please check your email to verify your account."
-        );
-        toast.success(
-          "Registration successful! Please check your email to verify your account."
-        );
-        console.log(data.data.user);
-        dispatch(loginSuccess(data.token, data.data.user));
-        if (data.data.user.role === "customer") {
-          window.location.href = redirectPath || "/my-venue";
-        } else {
-          window.location.href = redirectPath || "/";
-        }
+        const verificationMessage = "Registration successful! Please check your email to verify your account before logging in.";
+        setSuccessMessage(verificationMessage);
+        // toast.success(verificationMessage);
       } else {
         dispatch(loginFailure(data?.error?.message || "Registration failed"));
         setError(data?.error?.message || "Registration failed");
@@ -200,7 +190,7 @@ const useAuth = () => {
     error,
     login,
     loading,
-    register,
+    register,successMessage,
     forgotPassword,
     resetPassword,
     logout: logoutUser,
