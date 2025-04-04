@@ -275,7 +275,55 @@ exports.resetPassword = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+exports.verifyEmail = async (req, res) => {
+  const { token } = req.params;
 
+  try {
+    const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
+    const user = await User.findOne({
+      verificationToken: hashedToken,
+      verificationTokenExpires: { $gt: Date.now() },
+    });
+
+    if (!user) {
+      return res
+        .status(400)
+        .json({ message: "Token is invalid or expired" });
+    }
+
+    user.isVerified = true;
+    user.verificationToken = undefined;
+    user.verificationTokenExpires = undefined;
+
+    await user.save();
+    await sendEmail({
+      email: user.email,
+      subject: "Your email address has been verified",
+      message: `
+        Hello ${user.name || "User"},
+
+        Your email address has been successfully verified. We are pleased to welcome you to Shofar.
+
+        If you have any questions or comments, please contact us.
+        We will try to help you as quickly as possible and look forward to your feedback.
+    
+        Best regards  
+        Shofar Team 
+        
+
+        info@shofar.com
+        https://shofar.com/
+        `,
+    });
+
+    const userLog = { _id: user._id, username: user.username, role: user.role };
+    createSendToken(userLog, 200, res);
+    // res.status(200).json({ message: "Erfolgreich verifiziert" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: error.message });
+  }
+};
 exports.resendEmail = async (req, res) => {
   const { email, type } = req.body;
   try {

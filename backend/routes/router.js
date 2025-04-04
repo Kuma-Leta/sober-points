@@ -17,7 +17,7 @@ const contactRoutes=require("./contact")
 router.post("/login", authController.login);
 router.get("/logout", authController.logoutUser);
 router.post("/register", authController.register);
-// router.get('/auth/verify-email/:token', authController.verifyEmail);
+router.get('/auth/verify-email/:token', authController.verifyEmail);
 router.post("/auth/forgot-password", authController.forgotPassword);
 router.post("/auth/reset-password/:token", authController.resetPassword);
 router.post("/auth/resend-email", authController.resendEmail);
