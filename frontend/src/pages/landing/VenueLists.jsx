@@ -72,7 +72,7 @@ const VenueLists = ({ isSideBySide = false, error, onPageChange }) => {
   if (!venues || venues.length === 0) {
     return (
       <p className="text-gray-500 dark:text-gray-300 text-center">
-        No venues found.
+        No venues found in this area.
       </p>
     );
   }
@@ -119,7 +119,7 @@ const VenueLists = ({ isSideBySide = false, error, onPageChange }) => {
         } gap-4 sm:gap-6`}
       >
         {venues
-          ?.filter((venue) => venue.isVerified === true)
+          ?.filter((venue) => venue.isVerified == true)
           .map((venue) => (
             <Link
               key={venue._id}

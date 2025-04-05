@@ -244,9 +244,20 @@ const venueSlice = createSlice({
       })
 
       // Search Venues
+      // .addCase(searchVenues.pending, (state) => {
+      //   state.loading = true;
+      //   state.error = null;
+      // })
       .addCase(searchVenues.fulfilled, (state, action) => {
         state.searchResults = action.payload;
         state.venues = action.payload;
+        console.log("searchResults: ", action.payload);
+      })
+      .addCase(searchVenues.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+        state.searchResults = [];
+        console.log("searchVenues.rejected: ", action.payload);
       })
 
       // Add Rating

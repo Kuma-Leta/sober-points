@@ -361,6 +361,7 @@ exports.searchVenues = async (req, res) => {
     // Case-insensitive search across multiple fields using regex
     const searchQuery = {
       $or: [{ address: { $regex: query, $options: "i" } }],
+      isVerified: true,
     };
 
     // Fetch matching venues
@@ -370,12 +371,12 @@ exports.searchVenues = async (req, res) => {
     );
 
     if (venues.length === 0) {
-      return res.status(404).json({ message: "No matching venues found" });
+      return res.status(404).json({ message: "No venues found in this area" });
     }
 
     res.status(200).json({ success: true, results: venues.length, venues });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ error: "no search results" });
   }
 };
 
@@ -692,17 +693,21 @@ exports.getNearestVenues = async (req, res) => {
     }
 
     // MongoDB Geospatial Query
-    const venues = await Venue.find({
-      isVerified: true,
-      location: {
-        $near: {
-          $geometry: {
-            type: "Point",
-            coordinates: [longitude, latitude], // Note: MongoDB expects [longitude, latitude]
-          },
-        },
-      },
-    }).limit(10); // Limit to 10 nearest venues
+ const venues = await Venue.aggregate([
+   {
+     $geoNear: {
+       near: {
+         type: "Point",
+         coordinates: [longitude, latitude], // [long, lat]
+       },
+       distanceField: "distance", // Adds a field with distance in meters
+       maxDistance: 16000, // 16 km (in meters)
+       query: { isVerified: true }, // Additional filters
+       spherical: true, // Required for 2dsphere index
+     },
+   },
+   { $limit: 10 },
+ ]);// Limit to 10 nearest venues
 
     res.status(200).json({ success: true, venues });
   } catch (error) {

@@ -9,23 +9,15 @@ import {
 import VenueLists from "./VenueLists";
 import VenueMap from "./VenueMap";
 import SearchBar from "../../components/search";
-import {
-  FaBars,
-  FaLocationArrow,
-  FaMap,
-  FaSearchLocation,
-  FaMapMarker,
-  FaMapSigns,
-} from "react-icons/fa";
+import { FaBars, FaMapMarker } from "react-icons/fa";
 import Tags from "./Tags";
 import ContributePage from "./ContributePage";
 
 const VenuesPage = () => {
   const dispatch = useDispatch();
   const [searchParams, setSearchParams] = useSearchParams();
-  const { venues, nearbyVenues, searchResults, loading, error } = useSelector(
-    (state) => state.venues
-  );
+  const { venues, nearbyVenues, searchResults, loading, error, pagination } =
+    useSelector((state) => state.venues);
 
   const [userLocation, setUserLocation] = useState(null);
   const [mapCenter, setMapCenter] = useState({
@@ -34,7 +26,15 @@ const VenuesPage = () => {
   });
   const [showMap, setShowMap] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
+  const [highlightedVenueId, setHighlightedVenueId] = useState(null);
   const venueMapRef = useRef();
+
+  // Hide map if no venues are found in search results
+  useEffect(() => {
+    if (searchResults.length === 0) {
+      setShowMap(false);
+    }
+  }, [searchResults]);
 
   useEffect(() => {
     if (navigator.geolocation) {
@@ -59,10 +59,12 @@ const VenuesPage = () => {
     if (lat && lng) {
       setMapCenter({ lat, lng });
       dispatch(fetchNearbyVenues({ lat, lng, page }));
+      setShowMap(true); // Ensure map is shown for location-based searches
     } else if (query) {
       dispatch(searchVenues(query));
     } else {
       dispatch(fetchVenues({ page }));
+      setShowMap(true); // Ensure map is shown for general venue listing
     }
   }, [dispatch, searchParams]);
 
@@ -74,18 +76,29 @@ const VenuesPage = () => {
     });
   };
 
-  const handleSuggestionSelect = (location) => {
-    setMapCenter(location);
-    if (!showMap) setShowMap(true);
+  const handleSuggestionSelect = ({ lat, lng, venueId }) => {
+    setMapCenter({ lat, lng });
+    setHighlightedVenueId(venueId);
+    setShowMap(true); // Always show map when selecting a suggestion
     setTimeout(() => {
-      venueMapRef.current?.flyToLocation(location);
+      venueMapRef.current?.flyToLocation({ lat, lng }, 18, venueId);
     }, 100);
+  };
+
+  const handleSearchComplete = () => {
+    // This will be called after search completes
+    if (searchResults.length === 0) {
+      setShowMap(false);
+    }
   };
 
   return (
     <div className="flex flex-col min-h-screen max-w-[1440px] mx-auto bg-white p-2 dark:bg-darkBg">
       <div className="flex justify-between p-3 items-center mb-2">
-        <SearchBar onSuggestionSelect={handleSuggestionSelect} />
+        <SearchBar
+          onSuggestionSelect={handleSuggestionSelect}
+          onSearch={handleSearchComplete}
+        />
         <button
           onClick={() => setShowMap(!showMap)}
           title="Toggle Map"
@@ -125,6 +138,7 @@ const VenuesPage = () => {
               }
               center={mapCenter}
               userLocation={userLocation}
+              highlightedVenueId={highlightedVenueId}
             />
           </div>
         )}

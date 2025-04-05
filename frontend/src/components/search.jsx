@@ -38,6 +38,9 @@ const SearchBar = ({ setQuery, onSearch, onSuggestionSelect }) => {
   const handleSearch = () => {
     if (searchTerm.trim()) {
       dispatch(searchVenues(searchTerm));
+      if (location.pathname !== "/venues/nearby") {
+        navigate(`/venues/nearby`);
+      }
       setSuggestions([]);
       if (onSearch) onSearch();
     }
