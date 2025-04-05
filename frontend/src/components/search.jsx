@@ -4,10 +4,10 @@ import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { searchVenues, fetchNearbyVenues } from "../redux/venue/venueSlice";
-import axios from "axios";
+import { useLocation } from "react-router-dom";
 import axiosInstance from "../api/api";
 
-const SearchBar = ({ setQuery, onSearch }) => {
+const SearchBar = ({ setQuery, onSearch, onSuggestionSelect }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [searchTerm, setSearchTerm] = useState("");
@@ -15,7 +15,7 @@ const SearchBar = ({ setQuery, onSearch }) => {
   const [isInputFocused, setIsInputFocused] = useState(false);
   const [locationError, setLocationError] = useState(null);
   const inputRef = useRef(null);
-
+  const location = useLocation();
   useEffect(() => {
     const fetchSuggestions = async () => {
       if (searchTerm.length > 2) {
@@ -48,6 +48,7 @@ const SearchBar = ({ setQuery, onSearch }) => {
       handleSearch();
     }
   };
+
   const handleSuggestionClick = (selectedPlace) => {
     setSearchTerm(selectedPlace.name);
     dispatch(
@@ -57,9 +58,18 @@ const SearchBar = ({ setQuery, onSearch }) => {
       })
     );
     setIsInputFocused(false);
-    navigate(`/venues/nearby`);
+    if (location.pathname !== "/venues/nearby") {
+      navigate(`/venues/nearby`);
+    }
     setSuggestions([]);
     inputRef.current.blur();
+
+    if (onSuggestionSelect) {
+      onSuggestionSelect({
+        lat: selectedPlace.location[1],
+        lng: selectedPlace.location[0],
+      });
+    }
   };
 
   const handleFindNearMe = () => {
@@ -100,12 +110,9 @@ const SearchBar = ({ setQuery, onSearch }) => {
     }, 200);
   };
 
-  // ... (keep other handler functions the same)
-
   return (
     <motion.div id="explore" className="relative w-full max-w-2xl">
       <div className="flex items-center gap-2">
-        {/* Search Input Container */}
         <div className="relative flex-1">
           <input
             id="search"
@@ -123,10 +130,8 @@ const SearchBar = ({ setQuery, onSearch }) => {
             onBlur={handleInputBlur}
           />
 
-          {/* Search Icon (Left inside input) */}
           <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
 
-          {/* Clear Button (Right inside input) */}
           {searchTerm && (
             <FaTimes
               className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 cursor-pointer hover:text-gray-600"
@@ -135,17 +140,15 @@ const SearchBar = ({ setQuery, onSearch }) => {
           )}
         </div>
 
-        {/* Search Button (Outside input) */}
         <button
           onClick={handleSearch}
-          className="bg-primary hidden text-white px-4 py-2 rounded-lg hover:bg-primary-dark  transition duration-300  md:flex items-center gap-2"
+          className="bg-primary hidden text-white px-4 py-2 rounded-lg hover:bg-primary-dark transition duration-300 md:flex items-center gap-2"
         >
           <FaSearch />
           <span>Search</span>
         </button>
       </div>
 
-      {/* Suggestions Dropdown */}
       {suggestions?.length > 0 && isInputFocused && (
         <ul className="absolute w-full bg-white shadow-md rounded-md mt-2 z-10 max-h-60 overflow-y-auto">
           {suggestions.map((suggestion, index) => (
@@ -162,7 +165,6 @@ const SearchBar = ({ setQuery, onSearch }) => {
         </ul>
       )}
 
-      {/* Find Nearby Venues Button */}
       {isInputFocused && (
         <button
           onClick={handleFindNearMe}
@@ -173,7 +175,6 @@ const SearchBar = ({ setQuery, onSearch }) => {
         </button>
       )}
 
-      {/* Location Error Message */}
       {locationError && (
         <p className="text-red-500 text-sm mt-2 text-center">{locationError}</p>
       )}

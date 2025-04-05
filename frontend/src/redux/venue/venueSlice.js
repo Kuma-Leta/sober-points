@@ -200,6 +200,7 @@ const venueSlice = createSlice({
   name: "venues",
   initialState: {
     venues: [],
+    topVenue:null,
     nearbyVenues: [],
     searchResults: [],
     favorites: [],
@@ -233,6 +234,7 @@ const venueSlice = createSlice({
       .addCase(fetchNearbyVenues.fulfilled, (state, action) => {
         state.nearbyVenues = action.payload.venues;
         state.venues = action.payload.venues;
+        state.topVenue = action.payload.venues[0];
         state.pagination = action.payload.pagination;
         state.loading = false;
       })

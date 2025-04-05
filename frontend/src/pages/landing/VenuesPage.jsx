@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -16,7 +16,7 @@ import {
   FaSearchLocation,
   FaMapMarker,
   FaMapSigns,
-} from "react-icons/fa"; // Import icons for toggle button
+} from "react-icons/fa";
 import Tags from "./Tags";
 import ContributePage from "./ContributePage";
 
@@ -27,18 +27,14 @@ const VenuesPage = () => {
     (state) => state.venues
   );
 
-  // Track user's location
   const [userLocation, setUserLocation] = useState(null);
   const [mapCenter, setMapCenter] = useState({
-    lat: 51.509865, // Default to London
+    lat: 51.509865,
     lng: -0.118092,
   });
-
-  // Track map visibility
   const [showMap, setShowMap] = useState(true);
-
-  // Track current page
   const [currentPage, setCurrentPage] = useState(1);
+  const venueMapRef = useRef();
 
   useEffect(() => {
     if (navigator.geolocation) {
@@ -78,11 +74,18 @@ const VenuesPage = () => {
     });
   };
 
+  const handleSuggestionSelect = (location) => {
+    setMapCenter(location);
+    if (!showMap) setShowMap(true);
+    setTimeout(() => {
+      venueMapRef.current?.flyToLocation(location);
+    }, 100);
+  };
+
   return (
     <div className="flex flex-col min-h-screen max-w-[1440px] mx-auto bg-white p-2 dark:bg-darkBg">
-      {/* Header Section */}
       <div className="flex justify-between p-3 items-center mb-2">
-        <SearchBar />
+        <SearchBar onSuggestionSelect={handleSuggestionSelect} />
         <button
           onClick={() => setShowMap(!showMap)}
           title="Toggle Map"
@@ -92,30 +95,27 @@ const VenuesPage = () => {
         </button>
       </div>
 
-      {/* Tags Section */}
       <Tags />
 
-      {/* Main Content Section */}
       <hr className="w-full text-gray-200" />
       <div
         className={`grid min-h-screen ${
           showMap ? "md:grid-cols-2" : "grid-cols-1"
         } gap-4`}
       >
-        {/* VenueLists (Scrollable) */}
-        <div className={``}>
-          <VenueLists 
-            isSideBySide={showMap} 
-            loading={loading} 
+        <div>
+          <VenueLists
+            isSideBySide={showMap}
+            loading={loading}
             error={error}
             onPageChange={handlePageChange}
           />
         </div>
 
-        {/* VenueMap (Full Height & Sticky) */}
         {showMap && (
-          <div className="w-[94%] md:w-full mx-auto  h-screen md:sticky top-0 ">
+          <div className="w-[94%] md:w-full mx-auto h-screen md:sticky top-0">
             <VenueMap
+              ref={venueMapRef}
               venues={
                 searchResults.length > 0
                   ? searchResults

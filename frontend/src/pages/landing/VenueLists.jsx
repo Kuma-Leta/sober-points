@@ -15,7 +15,9 @@ import {
 } from "../../redux/venue/venueSlice";
 
 const VenueLists = ({ isSideBySide = false, error, onPageChange }) => {
-  const { venues, loading, favorites, pagination } = useSelector((state) => state.venues);
+  const { venues, loading, favorites, pagination } = useSelector(
+    (state) => state.venues
+  );
   const { isAuthenticated } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -49,7 +51,7 @@ const VenueLists = ({ isSideBySide = false, error, onPageChange }) => {
   if (loading) {
     return (
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-4">
-        {[1, 2, 3, 4,5,6,7,8].map((skeleton) => (
+        {[1, 2, 3, 4, 5, 6, 7, 8].map((skeleton) => (
           <div
             key={skeleton}
             className="animate-pulse p-4 border rounded-lg shadow-md bg-gray-300 dark:bg-gray-700"
@@ -116,58 +118,60 @@ const VenueLists = ({ isSideBySide = false, error, onPageChange }) => {
             : "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
         } gap-4 sm:gap-6`}
       >
-        {venues?.map((venue) => (
-          <Link
-            key={venue._id}
-            to={`/venue/${venue._id}`}
-            className="block border rounded shadow-md hover:shadow-lg transition-shadow duration-300 bg-white dark:bg-darkCard dark:border-gray-700"
-          >
-            {venue.images?.length > 0 && (
-              <div className="relative max-h-[200px] h-max w-full rounded-t-md overflow-hidden">
-                <img
-                  src={`${
-                    import.meta.env.VITE_API_URL
-                  }/${venue.images[0].replace(/\\/g, "/")}`}
-                  alt={venue.name}
-                  className="flex w-full h-[200px] object-cover"
-                />
-                {/* Heart Icon */}
-                <button
-                  onClick={(e) => handleFavoriteClick(venue._id, e)}
-                  className="absolute top-2 right-2 p-2 bg-white dark:bg-gray-700 rounded-full shadow-md hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors duration-300"
-                  aria-label="Save as favorite"
-                >
-                  {favorites?.some(
-                    (favorite) => favorite.venueId._id === venue._id
-                  ) ? (
-                    <FaHeart className="text-red-500" />
-                  ) : (
-                    <FaRegHeart className="text-gray-600 dark:text-gray-300" />
-                  )}
-                </button>
-              </div>
-            )}
-            <div className="p-3">
-              <h3 className="text-lg font-semibold text-gray-800 dark:text-darkText">
-                {venue.name}
-              </h3>
-              <p className="text-sm text-gray-600 dark:text-gray-400">
-                {venue.address}
-              </p>
-              {venue.distance && (
-                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                  {Math.round(venue.distance)} meters away
-                </p>
+        {venues
+          ?.filter((venue) => venue.isVerified === true)
+          .map((venue) => (
+            <Link
+              key={venue._id}
+              to={`/venue/${venue._id}`}
+              className="block border rounded shadow-md hover:shadow-lg transition-shadow duration-300 bg-white dark:bg-darkCard dark:border-gray-700"
+            >
+              {venue.images?.length > 0 && (
+                <div className="relative max-h-[200px] h-max w-full rounded-t-md overflow-hidden">
+                  <img
+                    src={`${
+                      import.meta.env.VITE_API_URL
+                    }/${venue.images[0].replace(/\\/g, "/")}`}
+                    alt={venue.name}
+                    className="flex w-full h-[200px] object-cover"
+                  />
+                  {/* Heart Icon */}
+                  <button
+                    onClick={(e) => handleFavoriteClick(venue._id, e)}
+                    className="absolute top-2 right-2 p-2 bg-white dark:bg-gray-700 rounded-full shadow-md hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors duration-300"
+                    aria-label="Save as favorite"
+                  >
+                    {favorites?.some(
+                      (favorite) => favorite.venueId._id === venue._id
+                    ) ? (
+                      <FaHeart className="text-red-500" />
+                    ) : (
+                      <FaRegHeart className="text-gray-600 dark:text-gray-300" />
+                    )}
+                  </button>
+                </div>
               )}
-              <div className="flex items-center mt-2">
-                <RatingStars rating={venue.rating || 0} />
-                <span className="ml-2 text-sm text-gray-600 dark:text-gray-400">
-                  ({venue.reviews?.length || 0} reviews)
-                </span>
+              <div className="p-3">
+                <h3 className="text-lg font-semibold text-gray-800 dark:text-darkText">
+                  {venue.name}
+                </h3>
+                <p className="text-sm text-gray-600 dark:text-gray-400">
+                  {venue.address}
+                </p>
+                {venue.distance && (
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                    {Math.round(venue.distance)} meters away
+                  </p>
+                )}
+                <div className="flex items-center mt-2">
+                  <RatingStars rating={venue.rating || 0} />
+                  <span className="ml-2 text-sm text-gray-600 dark:text-gray-400">
+                    ({venue.reviews?.length || 0} reviews)
+                  </span>
+                </div>
               </div>
-            </div>
-          </Link>
-        ))}
+            </Link>
+          ))}
       </div>
     </div>
   );

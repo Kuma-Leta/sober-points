@@ -70,11 +70,11 @@ const ReviewList = ({ venueId, updatedReview, newReview }) => {
               {/* Left Side: Profile Icon + Name */}
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 bg-primary text-white rounded-full flex items-center justify-center text-lg font-semibold">
-                  {review.user.name.charAt(0).toUpperCase()}
+                  {review.user?.name.charAt(0).toUpperCase()}
                 </div>
                 <div>
                   <h4 className="font-semibold text-dark dark:text-darkText">
-                    {review.user.name}
+                    {review.user?.name}
                   </h4>
                   <span className="text-sm text-grayColor dark:text-darkText">
                     {formatDistanceToNow(new Date(review.createdAt))} ago
