@@ -410,7 +410,7 @@ exports.deleteVenue = async (req, res) => {
 
 exports.getNearbyVenues = async (req, res) => {
   try {
-    const { lat, lng, query, page = 1, limit = 10 } = req.query;
+    const { lat, lng, query, page = 1, limit = 20 } = req.query;
 
     // Validate coordinates
     const latitude = parseFloat(lat);
@@ -710,8 +710,8 @@ exports.getNearestVenues = async (req, res) => {
        spherical: true, // Required for 2dsphere index
      },
    },
-   { $limit: 10 },
- ]);// Limit to 10 nearest venues
+   { $limit: 20 },
+ ]);// Limit to 20 nearest venues
 
     res.status(200).json({ success: true, venues });
   } catch (error) {
