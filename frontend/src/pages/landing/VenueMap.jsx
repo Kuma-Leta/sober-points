@@ -55,7 +55,6 @@ const userIcon = new L.Icon.Default();
 
 const UpdateMapView = ({ center, zoom, venueId }) => {
   const map = useMap();
-  const [prevVenueId, setPrevVenueId] = useState(null);
 
   useEffect(() => {
     if (center.lat && center.lng) {
@@ -63,20 +62,8 @@ const UpdateMapView = ({ center, zoom, venueId }) => {
         duration: 1,
         easeLinearity: 0.25,
       });
-
-      if (venueId && venueId !== prevVenueId) {
-        setTimeout(() => {
-          const marker = Object.values(map._layers).find(
-            (layer) => layer.options?.venueId === venueId
-          );
-          if (marker) {
-            marker.openPopup();
-          }
-        }, 500);
-        setPrevVenueId(venueId);
-      }
     }
-  }, [center, zoom, venueId, map]);
+  }, [center, zoom, map]);
 
   return null;
 };
@@ -101,6 +88,7 @@ const VenueMap = forwardRef(
     const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
     const [mapCenter, setMapCenter] = useState(center);
     const mapRef = useRef();
+    const popupRefs = useRef({});
 
     useImperativeHandle(ref, () => ({
       flyToLocation: (location, zoomLevel = 18, venueId) => {
@@ -110,15 +98,15 @@ const VenueMap = forwardRef(
             easeLinearity: 0.25,
           });
 
+          // Highlight the venue but don't open popup automatically
           if (venueId) {
-            setTimeout(() => {
-              const marker = Object.values(mapRef.current._layers).find(
-                (layer) => layer.options?.venueId === venueId
-              );
-              if (marker) {
-                marker.openPopup();
-              }
-            }, 500);
+            const marker = Object.values(mapRef.current._layers).find(
+              (layer) => layer.options?.venueId === venueId
+            );
+            if (marker) {
+              // Just update the marker appearance without opening popup
+              marker.setIcon(createVenueIcon(isMobile, true));
+            }
           }
         }
       },
@@ -134,6 +122,13 @@ const VenueMap = forwardRef(
 
     const handleMapMoveEnd = ({ lat, lng }) => {
       dispatch(fetchNearbyVenues({ lat, lng }));
+    };
+
+    const handleMarkerClick = (venueId) => {
+      const marker = popupRefs.current[venueId];
+      if (marker) {
+        marker.openPopup();
+      }
     };
 
     return (
@@ -184,8 +179,20 @@ const VenueMap = forwardRef(
                 position={[lat, lng]}
                 icon={venueIcon}
                 venueId={venue._id}
+                eventHandlers={{
+                  click: () => handleMarkerClick(venue._id),
+                }}
               >
-                <Popup className={isHighlighted ? "highlighted-popup" : ""}>
+                <Popup
+                  className={isHighlighted ? "highlighted-popup" : ""}
+                  ref={(ref) => {
+                    if (ref) {
+                      popupRefs.current[venue._id] = ref;
+                    } else {
+                      delete popupRefs.current[venue._id];
+                    }
+                  }}
+                >
                   <div className="max-w-[200px]">
                     {venue.images?.length > 0 && (
                       <img

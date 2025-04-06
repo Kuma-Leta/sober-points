@@ -359,10 +359,14 @@ exports.searchVenues = async (req, res) => {
     }
 
     // Case-insensitive search across multiple fields using regex
-    const searchQuery = {
-      $or: [{ address: { $regex: query, $options: "i" } }],
-      isVerified: true,
-    };
+   const searchQuery = {
+     $or: [
+       { name: { $regex: query, $options: "i" } },
+       { address: { $regex: query, $options: "i" } },
+       { description: { $regex: query, $options: "i" } },
+     ],
+     isVerified: true,
+   };
 
     // Fetch matching venues
     const venues = await Venue.find(searchQuery).populate(

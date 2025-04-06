@@ -16,8 +16,15 @@ import ContributePage from "./ContributePage";
 const VenuesPage = () => {
   const dispatch = useDispatch();
   const [searchParams, setSearchParams] = useSearchParams();
-  const { venues, nearbyVenues, searchResults, loading, error, pagination } =
-    useSelector((state) => state.venues);
+  const {
+    venues,
+    topVenue,
+    nearbyVenues,
+    searchResults,
+    loading,
+    error,
+    pagination,
+  } = useSelector((state) => state.venues);
 
   const [userLocation, setUserLocation] = useState(null);
   const [mapCenter, setMapCenter] = useState({
@@ -84,14 +91,25 @@ const VenuesPage = () => {
       venueMapRef.current?.flyToLocation({ lat, lng }, 18, venueId);
     }, 100);
   };
-
-  const handleSearchComplete = () => {
-    // This will be called after search completes
-    if (searchResults.length === 0) {
+  const handleSearchComplete = (searchResults) => {
+    if (searchResults?.length > 0) {
+      // Get the first venue from search results
+      const topVenue = searchResults[0];
+      if (topVenue.location?.coordinates) {
+        const [lng, lat] = topVenue.location.coordinates;
+        setMapCenter({ lat, lng });
+        setHighlightedVenueId(topVenue._id);
+        setShowMap(true);
+        console.log("topVenue coordinates", topVenue.location.coordinates);
+        // Fly to the top venue location
+        setTimeout(() => {
+          venueMapRef.current?.flyToLocation({ lat, lng }, 15, topVenue._id);
+        }, 100);
+      }
+    } else {
       setShowMap(false);
     }
   };
-
   return (
     <div className="flex flex-col min-h-screen max-w-[1440px] mx-auto bg-white p-2 dark:bg-darkBg">
       <div className="flex justify-between p-3 items-center mb-2">

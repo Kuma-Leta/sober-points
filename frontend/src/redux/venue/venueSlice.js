@@ -55,7 +55,7 @@ export const searchVenues = createAsyncThunk(
   async (query, thunkAPI) => {
     try {
       const response = await axiosInstance.get(`/venues/search?query=${query}`);
-      return response.data.venues;
+      return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(
         error.response?.data?.message || "Failed to search venues"
@@ -249,9 +249,11 @@ const venueSlice = createSlice({
       //   state.error = null;
       // })
       .addCase(searchVenues.fulfilled, (state, action) => {
-        state.searchResults = action.payload;
-        state.venues = action.payload;
-        console.log("searchResults: ", action.payload);
+        console.log("results",action.payload)
+     state.searchResults = action.payload.venues;
+     state.venues = action.payload.venues;
+     state.topVenue = action.payload.venues[0]; // Set the top venue
+     state.loading = false;
       })
       .addCase(searchVenues.rejected, (state, action) => {
         state.loading = false;

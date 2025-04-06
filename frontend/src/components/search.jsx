@@ -35,14 +35,19 @@ const SearchBar = ({ setQuery, onSearch, onSuggestionSelect }) => {
     fetchSuggestions();
   }, [searchTerm]);
 
-  const handleSearch = () => {
+  const handleSearch = async () => {
     if (searchTerm.trim()) {
-      dispatch(searchVenues(searchTerm));
-      if (location.pathname !== "/venues/nearby") {
-        navigate(`/venues/nearby`);
+      try {
+        const response = await dispatch(searchVenues(searchTerm));
+        console.log("response", response);
+        if (location.pathname !== "/venues/nearby") {
+          navigate(`/venues/nearby`);
+        }
+        setSuggestions([]);
+        if (onSearch) onSearch(response.payload.venues);
+      } catch (error) {
+        console.error("Search failed:", error);
       }
-      setSuggestions([]);
-      if (onSearch) onSearch();
     }
   };
 
