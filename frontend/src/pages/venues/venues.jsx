@@ -142,6 +142,7 @@ export default function Venues() {
   const handleCreate = () => {
     setSelectedVenueId(null); // Reset selectedVenueId
     setIsCreating(true); // Set isCreating to true
+    navigate("/venue/form");
   };
 
   const handleFilterChange = (e) => {

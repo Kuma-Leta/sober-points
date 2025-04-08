@@ -18,6 +18,7 @@ const VenueLists = ({ isSideBySide = false, error, onPageChange }) => {
   const { venues, loading, favorites, pagination } = useSelector(
     (state) => state.venues
   );
+  console.log("venues", venues);
   const { isAuthenticated } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -123,6 +124,7 @@ const VenueLists = ({ isSideBySide = false, error, onPageChange }) => {
           .map((venue) => (
             <Link
               key={venue._id}
+              // target="_blank"
               to={`/venue/${venue._id}`}
               className="block border rounded shadow-md hover:shadow-lg transition-shadow duration-300 bg-white dark:bg-darkCard dark:border-gray-700"
             >

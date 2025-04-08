@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import axiosInstance from "../../../api/api";
 import RatingStars from "./RatingStars";
 import { formatDistanceToNow } from "date-fns";
 
 const ReviewList = ({ venueId, updatedReview, newReview }) => {
+  const user = useSelector((state) => state.auth.user);
   const [reviews, setReviews] = useState([]);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
@@ -16,7 +18,7 @@ const ReviewList = ({ venueId, updatedReview, newReview }) => {
       );
       if (response.data.ratings.length > 0) {
         setReviews(response.data.ratings);
-
+        console.log("reviews", reviews);
         setTotalReviews(response.data.totalRatings);
       } else {
         setHasMore(false);
@@ -61,42 +63,49 @@ const ReviewList = ({ venueId, updatedReview, newReview }) => {
       </h3>
 
       {reviews.length > 0 ? (
-        reviews.map((review) => (
-          <div
-            key={review._id}
-            className="border-b border-gray-300 dark:border-grayColor py-6 last:border-b-0"
-          >
-            <div className="flex items-center justify-between">
-              {/* Left Side: Profile Icon + Name */}
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-primary text-white rounded-full flex items-center justify-center text-lg font-semibold">
-                  {review.user?.name.charAt(0).toUpperCase()}
+        reviews
+          .filter(
+            (review) =>
+              newReview !== null ||
+              review.user?._id === user._id ||
+              review.isVerified
+          )
+          .map((review) => (
+            <div
+              key={review._id}
+              className="border-b border-gray-300 dark:border-grayColor py-6 last:border-b-0"
+            >
+              <div className="flex items-center justify-between">
+                {/* Left Side: Profile Icon + Name */}
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-primary text-white rounded-full flex items-center justify-center text-lg font-semibold">
+                    {review.user?.name.charAt(0).toUpperCase()}
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-dark dark:text-darkText">
+                      {review.user?.name}
+                    </h4>
+                    <span className="text-sm text-grayColor dark:text-darkText">
+                      {formatDistanceToNow(new Date(review.createdAt))} ago
+                    </span>
+                  </div>
                 </div>
-                <div>
-                  <h4 className="font-semibold text-dark dark:text-darkText">
-                    {review.user?.name}
-                  </h4>
-                  <span className="text-sm text-grayColor dark:text-darkText">
-                    {formatDistanceToNow(new Date(review.createdAt))} ago
-                  </span>
-                </div>
+
+                {/* Right Side: Rating Stars */}
+                <RatingStars
+                  rating={(
+                    (review.serviceRating + review.locationRating) /
+                    2
+                  ).toFixed(1)}
+                />
               </div>
 
-              {/* Right Side: Rating Stars */}
-              <RatingStars
-                rating={(
-                  (review.serviceRating + review.locationRating) /
-                  2
-                ).toFixed(1)}
-              />
+              {/* Review Text */}
+              <p className="mt-3 text-grayColor dark:text-darkText leading-relaxed">
+                {review.review}
+              </p>
             </div>
-
-            {/* Review Text */}
-            <p className="mt-3 text-grayColor dark:text-darkText leading-relaxed">
-              {review.review}
-            </p>
-          </div>
-        ))
+          ))
       ) : (
         <p className="text-grayColor dark:text-darkText mt-4">
           No reviews yet. Be the first to leave one!

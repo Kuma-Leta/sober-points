@@ -29,6 +29,10 @@ const RatingSchema = new mongoose.Schema(
       ref: "Venue",
       required: true,
     },
+    isVerified: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true }
 );

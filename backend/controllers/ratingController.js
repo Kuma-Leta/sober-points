@@ -69,16 +69,50 @@ exports.getVenueRatings = async (req, res) => {
   try {
     const { venueId } = req.params;
     const { page = 1, limit = 5 } = req.query;
-
+    const skip = (page - 1) * limit;
+    
     const ratings = await Rating.find({ venueId })
       .populate("user", "name email")
       .sort({ createdAt: -1 })
-      .skip((page - 1) * limit)
+      .skip(skip)
       .limit(parseInt(limit));
 
-    res.status(200).json({ ratings });
+    const total = await Rating.countDocuments({ venueId });
+    
+    res.status(200).json({ 
+      ratings,
+      totalPages: Math.ceil(total / limit),
+      currentPage: parseInt(page),
+    });
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+exports.verifyRating = async (req, res) => {
+  try {
+  console.log("HERE REQUEST IS COMING")
+    const { ratingId, venueId } = req.params;
+    const { isVerified } = req.body;
+
+    const review = await Rating.findByIdAndUpdate(
+      ratingId,
+      { isVerified },
+      { new: true }
+    ).populate("user", "name email");
+
+    if (!review) {
+      return res.status(404).json({ message: "Review not found" });
+    }
+
+    // Recalculate venue ratings
+    const venue = await Venue.findById(venueId);
+    if (venue) {
+      await venue.calculateAverageRatings();
+    }
+
+    res.json(review);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 };
 

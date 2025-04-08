@@ -80,7 +80,7 @@ const Features = () => {
           className="bg-[#1A1A1A] text-white px-6 py-3 
                      rounded-lg text-base sm:text-lg md:text-xl 
                      hover:bg-black transition duration-300"
-          href="/#explore"
+          href="/blogs"
         >
           Explore
         </a>

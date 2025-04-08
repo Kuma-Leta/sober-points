@@ -124,15 +124,37 @@ const VenueDetail = () => {
         <SearchBar />
       </div>
       <Tags />
+      <div className="mt-6 max-w-6xl mx-auto  sm:mt-8">
+        <h3 className="text-xl sm:text-2xl font-semibold text-gray-800 dark:text-darkText">
+          Reviews:
+        </h3>
+        <VenueReviews venueId={id} venue={venue} />
+      </div>
       {/* Venue Details */}
-      <div className="w-full mx-auto bg-white dark:bg-darkCard p-6 sm:p-8 rounded my-2 border border-gray-200 dark:border-gray-700">
-        <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-darkText leading-tight">
+      <div className="w-full mx-auto bg-white dark:bg-darkCard p-6 sm:p-8 rounded-lg my-4 border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow duration-300">
+        <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-darkText leading-tight mb-2">
           {venue.name}
         </h1>
 
         <p className="text-lg text-gray-600 dark:text-gray-400 mt-2 flex items-center">
-          📍 <span className="ml-1">{venue.address}</span>
+          <span className="mr-2">📍</span>
+          <span className="hover:text-blue-500 transition-colors duration-200">
+            {venue.address}
+          </span>
         </p>
+
+        {venue.website && (
+          <a
+            href={venue.website}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-lg text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 mt-2 flex items-center transition-colors duration-200"
+          >
+            <span className="mr-2">🌐</span>
+            <span className="underline">Visit Website</span>
+            <span className="ml-1 text-sm">↗</span>
+          </a>
+        )}
 
         <p className="text-gray-700 dark:text-gray-300 mt-4 leading-relaxed">
           {venue.description}
@@ -142,8 +164,13 @@ const VenueDetail = () => {
         <div className="flex items-center mt-4">
           <RatingStars rating={venue.rating || 0} />
           <span className="ml-2 text-gray-600 dark:text-gray-400 text-sm font-medium">
-            ({venue.rating || 0})
+            ({venue.rating?.toFixed(1) || "0.0"})
           </span>
+        </div>
+
+        {/* Additional Info */}
+        <div className="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700">
+          {/* You can add more venue details here if needed */}
         </div>
       </div>
       {/* Responsive Image Row */}
@@ -215,12 +242,6 @@ const VenueDetail = () => {
       </div>
 
       {/* Reviews Section */}
-      <div className="mt-6 max-w-6xl mx-auto  sm:mt-8">
-        <h3 className="text-xl sm:text-2xl font-semibold text-gray-800 dark:text-darkText">
-          Reviews:
-        </h3>
-        <VenueReviews venueId={id} venue={venue} />
-      </div>
 
       {/* Nearby Venues Section */}
       <div className="mt-6 max-w-6xl mx-auto sm:mt-8">

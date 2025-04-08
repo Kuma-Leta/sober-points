@@ -1,150 +1,288 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Modal from "../../ui/modal";
-import MapComponent from "./mapComp"; // Assuming you have a MapComponent
-
+import MapComponent from "./mapComp";
+import axiosInstance from "../../api/api";
+import { FaCheck, FaTimes } from "react-icons/fa";
+import Pagination from "../../ui/pagination";
+import RatingStars from "../landing/venuedetail/RatingStars";
 export default function VenueDetailModal({
   isOpen,
   onClose,
   selectedVenueDetails,
   onVerify,
 }) {
-  const backendBaseUrl = import.meta.env.VITE_API_URL; // Replace with your backend URL
-  const [showConfirmation, setShowConfirmation] = useState(false); // State for confirmation modal
+  const backendBaseUrl = import.meta.env.VITE_API_URL;
+  const [showConfirmation, setShowConfirmation] = useState(false);
+  const [reviews, setReviews] = useState([]);
+  const [loadingReviews, setLoadingReviews] = useState(false);
+  const [page, setPage] = useState(1);
+  const [limit] = useState(5);
+  const [totalPages, setTotalPages] = useState(1);
 
-  // Handle Verify button click
+  // Fetch reviews for the venue
+  const fetchReviews = async () => {
+    if (!selectedVenueDetails?._id) return;
+
+    setLoadingReviews(true);
+    try {
+      const res = await axiosInstance.get(
+        `/ratings/${selectedVenueDetails._id}/getRating`,
+        {
+          params: { page, limit },
+        }
+      );
+      setReviews(res.data.ratings);
+      // Assuming you might want to calculate total pages based on total count
+      // You might need to modify your backend to return total count
+      setLoadingReviews(false);
+    } catch (error) {
+      console.error("Error fetching reviews:", error);
+      setLoadingReviews(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchReviews();
+  }, [selectedVenueDetails?._id, page, limit]);
+
   const handleVerifyClick = () => {
-    setShowConfirmation(true); // Show the confirmation modal
+    setShowConfirmation(true);
   };
 
-  // Handle confirmation (Yes, of course)
   const handleConfirmVerify = () => {
-    onVerify(); // Call the onVerify function
-    setShowConfirmation(false); // Close the confirmation modal
+    onVerify();
+    setShowConfirmation(false);
   };
 
-  // Handle cancellation (No)
   const handleCancelVerify = () => {
-    setShowConfirmation(false); // Close the confirmation modal
+    setShowConfirmation(false);
+  };
+
+  // Verify/Unverify a review
+  const handleReviewVerify = async (ratingId, verifyStatus) => {
+    try {
+      await axiosInstance.patch(
+        `/ratings/verify/${ratingId}/${selectedVenueDetails._id}`,
+        {
+          isVerified: verifyStatus,
+        }
+      );
+      fetchReviews(); // Refresh the reviews list
+    } catch (error) {
+      console.error("Error verifying review:", error);
+    }
   };
 
   return (
     <>
       {/* Main Modal */}
       <Modal isOpen={isOpen} onClose={onClose}>
-        <div className="w-[1000px] max-w-[90vw] p-8 dark:bg-darkCard rounded-lg bg-white shadow-lg border border-gray-200 dark:border-gray-700">
+        <div className="w-[1000px] max-w-[90vw]  p-8 dark:bg-darkCard rounded-lg bg-white shadow-lg border border-gray-200 dark:border-gray-700">
           {/* Modal Header */}
-          <h2 className="text-2xl font-bold mb-6 text-gray-800 dark:text-white">
-            Venue Details
-          </h2>
+          <div className="sticky top-0 bg-white dark:bg-darkCard pb-6 z-10">
+            <h2 className="text-2xl font-bold mb-6 text-gray-800 dark:text-white">
+              Venue Details
+            </h2>
+          </div>
 
           {/* Two-Column Layout */}
-          <div className="grid grid-cols-2 gap-6">
-            {/* Left Side: Venue Details */}
-            <div className="space-y-4">
-              <div className="flex">
-                <strong className="w-32 text-gray-700 dark:text-gray-300">
-                  Venue Name:
-                </strong>
-                <span className="text-gray-900 dark:text-white">
-                  {selectedVenueDetails?.name}
-                </span>
+          <div className="max-h-[70vh] overflow-y-auto pr-2 -mr-2">
+            <div className="grid grid-cols-2 gap-6">
+              {/* Left Side: Venue Details */}
+              <div className="space-y-4">
+                <div className="flex">
+                  <strong className="w-32 text-gray-700 dark:text-gray-300">
+                    Venue Name:
+                  </strong>
+                  <span className="text-gray-900 dark:text-white">
+                    {selectedVenueDetails?.name}
+                  </span>
+                </div>
+                <div className="flex">
+                  <strong className="w-32 text-gray-700 dark:text-gray-300">
+                    Created By:
+                  </strong>
+                  <span className="text-gray-900 dark:text-white">
+                    {selectedVenueDetails?.createdBy?.name || "N/A"}
+                  </span>
+                </div>
+                <div className="flex">
+                  <strong className="w-32 text-gray-700 dark:text-gray-300">
+                    Email:
+                  </strong>
+                  <span className="text-gray-900 dark:text-white">
+                    {selectedVenueDetails?.createdBy?.email}
+                  </span>
+                </div>
+                <div className="flex">
+                  <strong className="w-32 text-gray-700 dark:text-gray-300">
+                    Phone:
+                  </strong>
+                  <span className="text-gray-900 dark:text-white">
+                    {selectedVenueDetails?.phone || "N/A"}
+                  </span>
+                </div>
+                <div className="flex">
+                  <strong className="w-32 text-gray-700 dark:text-gray-300">
+                    Website:
+                  </strong>
+                  <span className="text-gray-900 dark:text-white">
+                    {selectedVenueDetails?.website || "N/A"}
+                  </span>
+                </div>
+                <div className="flex">
+                  <strong className="w-32 text-gray-700 dark:text-gray-300">
+                    Status:
+                  </strong>
+                  <span
+                    className="font-medium"
+                    style={{
+                      color: selectedVenueDetails?.isVerified
+                        ? "#14B8A6"
+                        : "#DC2626",
+                    }}
+                  >
+                    {selectedVenueDetails?.isVerified
+                      ? "Verified"
+                      : "Unverified"}
+                  </span>
+                </div>
+                <div className="flex">
+                  <strong className="w-32 text-gray-700 dark:text-gray-300">
+                    Address:
+                  </strong>
+                  <span className="text-gray-900 dark:text-white">
+                    {selectedVenueDetails?.address}
+                  </span>
+                </div>
+                <div className="flex">
+                  <strong className="w-32 text-gray-700 dark:text-gray-300">
+                    Description:
+                  </strong>
+                  <span className="text-gray-900 dark:text-white">
+                    {selectedVenueDetails?.description || "N/A"}
+                  </span>
+                </div>
               </div>
-              <div className="flex">
-                <strong className="w-32 text-gray-700 dark:text-gray-300">
-                  Created By:
-                </strong>
-                <span className="text-gray-900 dark:text-white">
-                  {selectedVenueDetails?.createdBy?.name || "N/A"}
-                </span>
-              </div>
-              <div className="flex">
-                <strong className="w-32 text-gray-700 dark:text-gray-300">
-                  Email:
-                </strong>
-                <span className="text-gray-900 dark:text-white">
-                  {selectedVenueDetails?.createdBy?.email}
-                </span>
-              </div>
-              <div className="flex">
-                <strong className="w-32 text-gray-700 dark:text-gray-300">
-                  Phone:
-                </strong>
-                <span className="text-gray-900 dark:text-white">
-                  {selectedVenueDetails?.phone || "N/A"}
-                </span>
-              </div>
-              <div className="flex">
-                <strong className="w-32 text-gray-700 dark:text-gray-300">
-                  Website:
-                </strong>
-                <span className="text-gray-900 dark:text-white">
-                  {selectedVenueDetails?.website || "N/A"}
-                </span>
-              </div>
-              <div className="flex">
-                <strong className="w-32 text-gray-700 dark:text-gray-300">
-                  Status:
-                </strong>
-                <span
-                  className="font-medium"
-                  style={{
-                    color: selectedVenueDetails?.isVerified
-                      ? "#14B8A6"
-                      : "#DC2626",
-                  }}
-                >
-                  {selectedVenueDetails?.isVerified ? "Verified" : "Unverified"}
-                </span>
-              </div>
-              <div className="flex">
-                <strong className="w-32 text-gray-700 dark:text-gray-300">
-                  Address:
-                </strong>
-                <span className="text-gray-900 dark:text-white">
-                  {selectedVenueDetails?.address}
-                </span>
-              </div>
-              <div className="flex">
-                <strong className="w-32 text-gray-700 dark:text-gray-300">
-                  Description:
-                </strong>
-                <span className="text-gray-900 dark:text-white">
-                  {selectedVenueDetails?.description || "N/A"}
-                </span>
+
+              {/* Right Side: Map and Images */}
+              <div className="space-y-4">
+                {/* Map Component */}
+                <div>
+                  <h3 className="text-lg font-semibold mb-2 text-gray-800 dark:text-white">
+                    Venue Location
+                  </h3>
+                  <div className="h-48 w-full rounded-lg overflow-hidden shadow-sm">
+                    <MapComponent
+                      coordinates={selectedVenueDetails?.location?.coordinates}
+                      isStatic={false}
+                    />
+                  </div>
+                </div>
+
+                {/* Uploaded Images */}
+                <div>
+                  <h3 className="text-lg font-semibold mb-2 text-gray-800 dark:text-white">
+                    Uploaded Images
+                  </h3>
+                  <div className="flex flex-wrap gap-3">
+                    {selectedVenueDetails?.images?.map((image, index) => (
+                      <img
+                        key={index}
+                        src={`${backendBaseUrl}/${image.replace(/\\/g, "/")}`}
+                        alt={`Venue Image ${index + 1}`}
+                        className="w-24 h-24 object-cover rounded-lg shadow-sm hover:shadow-md transition-shadow"
+                      />
+                    ))}
+                  </div>
+                </div>
               </div>
             </div>
 
-            {/* Right Side: Map and Images */}
-            <div className="space-y-4">
-              {/* Map Component */}
-              <div>
-                <h3 className="text-lg font-semibold mb-2 text-gray-800 dark:text-white">
-                  Venue Location
-                </h3>
-                <div className="h-48 w-full rounded-lg overflow-hidden shadow-sm">
-                  <MapComponent
-                    coordinates={selectedVenueDetails?.location?.coordinates}
-                    isStatic={false} // Set to false if you want the map to be interactive
-                  />
-                </div>
-              </div>
+            {/* Reviews Section */}
+            <div className="mt-8">
+              <h3 className="text-xl font-bold mb-4 text-gray-800 dark:text-white">
+                Reviews
+              </h3>
 
-              {/* Uploaded Images */}
-              <div>
-                <h3 className="text-lg font-semibold mb-2 text-gray-800 dark:text-white">
-                  Uploaded Images
-                </h3>
-                <div className="flex flex-wrap gap-3">
-                  {selectedVenueDetails?.images?.map((image, index) => (
-                    <img
-                      key={index}
-                      src={`${backendBaseUrl}/${image.replace(/\\/g, "/")}`} // Fix image path
-                      alt={`Venue Image ${index + 1}`}
-                      className="w-24 h-24 object-cover rounded-lg shadow-sm hover:shadow-md transition-shadow"
-                    />
+              {loadingReviews ? (
+                <div>Loading reviews...</div>
+              ) : reviews.length === 0 ? (
+                <div>No reviews yet</div>
+              ) : (
+                <div className="space-y-4">
+                  {reviews.map((review) => (
+                    <div
+                      key={review._id}
+                      className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg"
+                    >
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <h4 className="font-medium text-gray-800 dark:text-white">
+                            {review.user?.name || "Anonymous"}
+                          </h4>
+                          <p className=" flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+                            Service:
+                            <RatingStars rating={review.serviceRating} />
+                          </p>
+                          <p className=" flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+                            Location:
+                            <RatingStars rating={review.locationRating} />
+                          </p>
+                          {review.review && (
+                            <p className="mt-2 text-gray-700 dark:text-gray-300">
+                              {review.review}
+                            </p>
+                          )}
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span
+                            className={`text-sm font-medium ${
+                              review.isVerified
+                                ? "text-green-500"
+                                : "text-red-500"
+                            }`}
+                          >
+                            {review.isVerified ? "Verified" : "Unverified"}
+                          </span>
+                          {review.isVerified ? (
+                            <button
+                              onClick={() =>
+                                handleReviewVerify(review._id, false)
+                              }
+                              className="text-red-500 hover:text-red-700"
+                              title="Unverify"
+                            >
+                              <FaTimes />
+                            </button>
+                          ) : (
+                            <button
+                              onClick={() =>
+                                handleReviewVerify(review._id, true)
+                              }
+                              className="text-green-500 hover:text-green-700"
+                              title="Verify"
+                            >
+                              <FaCheck />
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    </div>
                   ))}
+
+                  {/* Pagination */}
+                  {totalPages > 1 && (
+                    <div className="mt-4">
+                      <Pagination
+                        currentPage={page}
+                        totalPages={totalPages}
+                        onPageChange={setPage}
+                      />
+                    </div>
+                  )}
                 </div>
-              </div>
+              )}
             </div>
           </div>
 
@@ -153,10 +291,10 @@ export default function VenueDetailModal({
             {/* Verify Button (only for unverified venues) */}
             {!selectedVenueDetails?.isVerified && (
               <button
-                onClick={handleVerifyClick} // Show confirmation modal
+                onClick={handleVerifyClick}
                 className="bg-ternary text-white px-6 py-2 rounded-lg hover:bg-teal-700 transition-colors"
               >
-                Verify
+                Verify Venue
               </button>
             )}
 

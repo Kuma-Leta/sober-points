@@ -24,7 +24,7 @@ const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false); // State for mobile menu
   const dropdownRef = useRef(null);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
-
+  console.log("user", user);
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
