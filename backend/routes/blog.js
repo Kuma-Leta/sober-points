@@ -13,6 +13,7 @@ const {
   deleteComment,
   getBlogsByCategory,
   getBlogsByAuthor,
+  verifyComment,
 } = require("../controllers/blogController");
 
 // Public routes (no authentication required)
@@ -36,5 +37,6 @@ router
   .route("/:id")
   .put(authorize(["author", "admin"]), updateBlog)
   .delete(authorize(["author", "admin"]), deleteBlog);
+router.put("/:blogId/comments/:commentId", authorize(["admin"]), verifyComment);
 
 module.exports = router;

@@ -551,3 +551,30 @@ exports.getBlogsByAuthor = async (req, res) => {
     });
   }
 };
+//verify comment
+exports.verifyComment = async (req, res) => {
+  try {
+    const { blogId, commentId } = req.params;
+    const { isVerified } = req.body;
+
+    const blog = await Blog.findById(blogId);
+    if (!blog) {
+      return res.status(404).json({ message: "Blog not found" });
+    }
+
+    const comment = blog.comments.id(commentId);
+    if (!comment) {
+      return res.status(404).json({ message: "Comment not found" });
+    }
+
+    comment.isVerified = isVerified;
+    await blog.save();
+
+    res.json({
+      message: `Comment ${isVerified ? "verified" : "unverified"} successfully`,
+      comment,
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
