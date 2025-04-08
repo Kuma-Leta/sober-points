@@ -233,11 +233,13 @@ const BlogList = () => {
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
             </div>
-            
+
             {/* Category Dropdown */}
             <div className="relative w-max md:w-auto">
               <button
-                onClick={() => setIsCategoryDropdownOpen(!isCategoryDropdownOpen)}
+                onClick={() =>
+                  setIsCategoryDropdownOpen(!isCategoryDropdownOpen)
+                }
                 className="w-full md:w-auto flex items-center justify-between px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
               >
                 <span>{activeCategory}</span>
@@ -247,7 +249,7 @@ const BlogList = () => {
                   <FaChevronDown className="ml-2" />
                 )}
               </button>
-              
+
               {isCategoryDropdownOpen && (
                 <div className="absolute z-10 mt-1 w-full bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg shadow-lg overflow-hidden">
                   {categories.map((category) => (
@@ -342,7 +344,10 @@ const BlogList = () => {
                     </p>
 
                     <div className="flex items-center justify-between text-sm text-gray-500 dark:text-gray-400">
-                      <Link className="text-black underline flex items-center" to={`/blog/${blog.slug}`}>
+                      <Link
+                        className="text-black underline flex items-center"
+                        to={`/blog/${blog.slug}`}
+                      >
                         Read more <FaAngleRight className="ml-1" />
                       </Link>
                       <div className="flex items-center space-x-4">
@@ -377,7 +382,7 @@ const BlogList = () => {
                         <div className="flex items-center">
                           <img
                             src={`${import.meta.env.VITE_API_URL}/${
-                              blog.author.profilePicture
+                              blog.author?.profilePicture
                             }`}
                             alt={blog.author.name}
                             className="w-8 h-8 rounded-full object-cover mr-2"

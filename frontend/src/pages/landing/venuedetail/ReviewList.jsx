@@ -64,12 +64,7 @@ const ReviewList = ({ venueId, updatedReview, newReview }) => {
 
       {reviews.length > 0 ? (
         reviews
-          .filter(
-            (review) =>
-              newReview !== null ||
-              review.user?._id === user._id ||
-              review.isVerified
-          )
+          
           .map((review) => (
             <div
               key={review._id}

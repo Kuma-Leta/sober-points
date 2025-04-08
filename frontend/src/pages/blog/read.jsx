@@ -16,7 +16,7 @@ const BlogRead = () => {
   const [comment, setComment] = useState("");
   const user = useSelector((state) => state.auth.user);
   useEffect(() => {
-    setIsLiked(blog?.likes?.includes(user._id));
+    setIsLiked(blog?.likes?.includes(user?._id));
   }, [user]);
 
   useEffect(() => {
@@ -243,35 +243,40 @@ const BlogRead = () => {
 
             {/* Comments List */}
             <div className="space-y-6">
-              {blog.comments.map((comment) => (
-                <motion.div
-                  key={comment._id}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow"
-                >
-                  <div className="flex items-center gap-3 mb-3">
-                    <img
-                      src={`${import.meta.env.VITE_API_URL}/${
-                        comment.user.profilePicture
-                      }`}
-                      alt={comment.user.name}
-                      className="h-8 w-8 rounded-full"
-                    />
-                    <div>
-                      <p className="font-medium text-gray-900 dark:text-white">
-                        {comment.user.name}
-                      </p>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">
-                        {format(new Date(comment.createdAt), "MMM d, yyyy")}
-                      </p>
+              {blog.comments
+                .filter(
+                  (comment) =>
+                    comment?.isVerified || user?._id === comment?.user?._id
+                )
+                .map((comment) => (
+                  <motion.div
+                    key={comment._id}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow"
+                  >
+                    <div className="flex items-center gap-3 mb-3">
+                      <img
+                        src={`${import.meta.env.VITE_API_URL}/${
+                          comment.user?.profilePicture
+                        }`}
+                        alt={comment.user?.name}
+                        className="h-8 w-8 rounded-full"
+                      />
+                      <div>
+                        <p className="font-medium text-gray-900 dark:text-white">
+                          {comment.user?.name}
+                        </p>
+                        <p className="text-sm text-gray-600 dark:text-gray-400">
+                          {format(new Date(comment.createdAt), "MMM d, yyyy")}
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                  <p className="text-gray-700 dark:text-gray-300">
-                    {comment.text}
-                  </p>
-                </motion.div>
-              ))}
+                    <p className="text-gray-700 dark:text-gray-300">
+                      {comment.text}
+                    </p>
+                  </motion.div>
+                ))}
             </div>
           </section>
         </motion.div>
