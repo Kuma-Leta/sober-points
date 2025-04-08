@@ -8,29 +8,10 @@ const VenueSchema = new mongoose.Schema(
       trim: true,
       maxlength: [100, "Venue name cannot exceed 100 characters"],
     },
-    description: {
-      type: String,
-      trim: true,
-      maxlength: [500, "Description cannot exceed 500 characters"],
-    },
     address: {
       type: String,
       required: [true, "Address is required"],
       trim: true,
-    },
-    phone: {
-      type: String,
-      required: [true, "Phone number is required"],
-      trim: true,
-      validate: {
-        validator: function (value) {
-          // Basic phone number validation (e.g., +1234567890 or 123-456-7890)
-          return /^\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}$/.test(
-            value
-          );
-        },
-        message: "Please provide a valid phone number",
-      },
     },
     location: {
       type: {
@@ -54,61 +35,63 @@ const VenueSchema = new mongoose.Schema(
       type: [String], // Array of image URLs
       default: [],
     },
-    menu: {
-      type: String, // Optional field for menu details or link
-      trim: true,
+    socialMedia: {
+      website: { type: String, default: "" },
+      instagram: { type: String, default: "" },
+      facebook: { type: String, default: "" },
     },
-    website: {
+    checklist: {
+      type: [Boolean],
+      required: true,
+      validate: {
+        validator: function (v) {
+          return v.length >= 1; // Exactly 6 checklist items
+        },
+        message: "Checklist must contain exactly 6 items",
+      },
+    },
+    additionalInformation: {
       type: String,
-      trim: true,
-      default:"",
+      default: "",
     },
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User", // Reference to User model
+      ref: "User",
       required: true,
     },
     isVerified: {
       type: Boolean,
-      default: false, // Admin can verify venue submissions
+      default: false,
     },
     rating: {
       type: Number,
       max: 5,
-      default: 0, // Overall average rating (will be updated dynamically)
+      default: 0,
     },
     serviceRating: {
       type: Number,
       max: 5,
-      default: 0, // Average service rating (will be updated dynamically)
+      default: 0,
     },
     locationRating: {
       type: Number,
       max: 5,
-      default: 0, // Average location rating (will be updated dynamically)
-    },
-    alcoholFreeBeersOnTap: {
-      type: String,
-      default: "",
-    },
-    alcoholFreeDrinkBrands: {
-      type: String,
-      default: "",
+      default: 0,
     },
     reviews: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Rating", // Reference to Rating model
+        ref: "Rating",
       },
     ],
   },
   { timestamps: true }
 );
 
-// 🔹 Index for geospatial queries
+// Geospatial index
 VenueSchema.index({ location: "2dsphere" });
 
-// 🔹 Function to calculate average ratings when a new review is added
+// Rating calculation method
 VenueSchema.methods.calculateAverageRatings = async function () {
   const venue = this;
   const ratings = await mongoose.model("Rating").find({ venueId: venue._id });
@@ -123,17 +106,13 @@ VenueSchema.methods.calculateAverageRatings = async function () {
       0
     );
 
-    // Calculate average ratings
     venue.serviceRating = (totalServiceRating / ratings.length).toFixed(1);
     venue.locationRating = (totalLocationRating / ratings.length).toFixed(1);
-
-    // Calculate overall rating as the average of service and location ratings
     venue.rating = (
       (parseFloat(venue.serviceRating) + parseFloat(venue.locationRating)) /
       2
     ).toFixed(1);
   } else {
-    // If no reviews, reset all ratings to 0
     venue.serviceRating = 0;
     venue.locationRating = 0;
     venue.rating = 0;

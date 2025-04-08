@@ -33,85 +33,92 @@ const upload = multer({
   },
 }).array("images", 10); // Allow up to 10 images
 
-// 📌 Create Venue
+
+
+
+
+
 exports.createVenue = async (req, res) => {
-  // Handle file uploads using Multer
   upload(req, res, async (err) => {
     if (err) {
-      // Handle Multer errors
       return res.status(400).json({ error: err.message });
     }
 
     try {
       const {
         name,
-        description,
         address,
-        phone,
-        location,
-        menu,
         website,
-        alcoholFreeBeersOnTap,
-        alcoholFreeDrinkBrands,
-      } = req.body; // Include all fields
-      const createdBy = req.user._id; // Assuming user ID is available in the request
-      const userRole = req.user.role; // Assuming the user's role is stored in req.user.role
+        instagram,
+        facebook,
+        location,
+        checklist,
+        additionalInformation,
+      } = req.body;
 
       // Validate required fields
-      if (!name || !address || !phone || !location || !location.coordinates) {
-        return res
-          .status(400)
-          .json({ error: "Please provide all required fields" });
-      }
-
-      // Get uploaded file paths (if any)
-      let imageUrls = [];
-      if (req.files && req.files.length > 0) {
-        req.files.forEach((file) => {
-          // Save file paths in the desired format: uploads\\filename
-          const relativePath = `uploads\\${file.filename}`;
-          imageUrls.push(relativePath);
+      if (
+        !name ||
+        !address ||
+        !location ||
+        !location.coordinates ||
+        !checklist
+      ) {
+        return res.status(400).json({
+          error: "Name, address, location, and checklist are required",
         });
       }
 
-      // Determine if the venue should be verified based on the user's role
-      const isVerified = userRole === "admin"; // Set to true if user is admin, otherwise false
+      // Parse checklist (should be array of booleans)
+      const parsedChecklist = JSON.parse(checklist);
+      if (!Array.isArray(parsedChecklist) || parsedChecklist.length > 1) {
+        return res.status(400).json({
+          error: "Checklist must contain at least 1 items",
+        });
+      }
 
-      // Create venue
+      // Handle image uploads
+      let imageUrls = [];
+      if (req.files && req.files.length > 0) {
+        imageUrls = req.files.map((file) => `uploads/${file.filename}`);
+      }
+
+      // Create new venue
       const venue = new Venue({
         name,
-        description,
         address,
-        phone,
+        socialMedia: {
+          website: website || "",
+          instagram: instagram || "",
+          facebook: facebook || "",
+        },
+        checklist: parsedChecklist,
+        additionalInformation: additionalInformation || "",
+        images: imageUrls,
         location: {
           type: "Point",
-          coordinates: location.coordinates, // [longitude, latitude]
+          coordinates: JSON.parse(location.coordinates),
         },
-        images: imageUrls,
-        menu,
-        website: website && website.trim() !== "" ? website : null, // Handle optional website field
-        alcoholFreeBeersOnTap: alcoholFreeBeersOnTap, // Handle optional field
-        alcoholFreeDrinkBrands: alcoholFreeDrinkBrands, // Handle optional field
-        createdBy,
-        isVerified, // Set isVerified based on the user's role
+        createdBy: req.user._id,
+        isVerified: req.user.role === "admin",
       });
 
-      // Save venue to the database
       await venue.save();
 
-      // Return success response with message
       res.status(201).json({
         success: true,
-        message: "Venue uploaded successfully!",
+        message: "Venue created successfully!",
         venue,
       });
     } catch (error) {
-      // Handle other errors
-      res.status(400).json({ error: error.message });
+      console.error("Error creating venue:", error);
+      res.status(500).json({
+        error: "Server Error",
+        message: error.message,
+      });
     }
   });
 };
-// 📌 Get All Venues with Filtering, Sorting, Pagination
 exports.getAllVenues = async (req, res) => {
   try {
     let query = Venue.find().select("-__v");
