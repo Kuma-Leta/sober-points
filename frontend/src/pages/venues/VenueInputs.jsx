@@ -2,45 +2,47 @@ import React from "react";
 
 export default function VenueInputs({ formData, handleChange }) {
   return (
-    <div className="w-full">
-      {/* Left Side Inputs */}
-      <div className="w-full">
-        {/* Name Input */}
+    <div className="w-full mt-4 flex flex-col gap-4">
+      <div>
+        <label className="block text-sm font-medium flex items-center justify-between mb-1">
+          Website <span className="text-gray-500 text-xs">Optional</span>
+        </label>
         <input
           type="text"
-          name="name"
-          placeholder="Venue Name"
+          name="website"
+          placeholder="Enter website URL"
           onChange={handleChange}
-          value={formData.name}
-          required
+          value={formData.website}
           className="w-full px-3 py-2 border dark:bg-darkBg rounded-lg"
         />
-        {/* Address Input */}
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium flex items-center justify-between">
+          Instagram <span className="text-gray-500 text-xs">Optional</span>
+        </label>
         <input
           type="text"
-          name="address"
-          placeholder="Address"
+          name="instagram"
+          placeholder="Enter Instagram handle"
           onChange={handleChange}
-          value={formData.address}
-          required
-          className="w-full px-3 py-2 border dark:bg-darkBg rounded-lg mt-4"
+          value={formData.instagram}
+          className="w-full px-3 py-2 border dark:bg-darkBg rounded-lg"
         />
-        {/* Description Textarea */}
-        <textarea
-          name="description"
-          placeholder="Description"
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium flex items-center justify-between">
+          Facebook <span className="text-gray-500 text-xs">Optional</span>
+        </label>
+        <input
+          type="text"
+          name="facebook"
+          placeholder="Enter Facebook page URL"
           onChange={handleChange}
-          value={formData.description}
-          className="w-full px-3 py-2 border dark:bg-darkBg rounded-lg mt-4"
-        ></textarea>
-        {/* Menu Textarea */}
-        <textarea
-          name="menu"
-          placeholder="Menu Details"
-          onChange={handleChange}
-          value={formData.menu}
-          className="w-full px-3 py-2 border dark:bg-darkBg rounded-lg mt-4"
-        ></textarea>
+          value={formData.facebook}
+          className="w-full px-3 py-2 border dark:bg-darkBg rounded-lg"
+        />
       </div>
     </div>
   );

@@ -8,7 +8,6 @@ import ToastNotifications, {
   showError,
 } from "./ToastNotifications";
 import VenueInputs from "./VenueInputs";
-import ContactInfo from "./PhoneWebsite";
 
 export default function VenueForm({
   mode = "create",
@@ -19,14 +18,11 @@ export default function VenueForm({
   const [formData, setFormData] = useState({
     name: "",
     address: "",
-    phone: "",
+    website: "",
+    instagram: "",
+    facebook: "",
     latitude: null,
     longitude: null,
-    description: "",
-    menu: "",
-    website: "",
-    alcoholFreeBeersOnTap: "", // Changed to string
-    alcoholFreeDrinkBrands: "", // Changed to string
     images: [],
   });
 
@@ -38,21 +34,16 @@ export default function VenueForm({
   const userRole = localStorage.getItem("userRole");
   const [searchQuery, setSearchQuery] = useState("");
 
-  useEffect(() => {}, [mode, venueId]);
-
   useEffect(() => {
     if (mode === "create") {
       setFormData({
         name: "",
         address: "",
-        phone: "",
+        website: "",
+        instagram: "",
+        facebook: "",
         latitude: null,
         longitude: null,
-        description: "",
-        menu: "",
-        website: "",
-        alcoholFreeBeersOnTap: "",
-        alcoholFreeDrinkBrands: "",
         images: [],
       });
       setRemovedImages([]);
@@ -61,7 +52,6 @@ export default function VenueForm({
 
   useEffect(() => {
     if (mode === "edit" && venueId) {
-      // In the fetchVenueData function within the useEffect for edit mode:
       const fetchVenueData = async () => {
         setLoading(true);
         try {
@@ -70,17 +60,26 @@ export default function VenueForm({
           setFormData({
             name: venueData.name,
             address: venueData.address,
-            phone: venueData.phone,
+            website: venueData.socialMedia?.website || "",
+            instagram: venueData.socialMedia?.instagram || "",
+            facebook: venueData.socialMedia?.facebook || "",
             latitude: venueData.location.coordinates[1],
             longitude: venueData.location.coordinates[0],
-            description: venueData.description,
-            menu: venueData.menu,
-            website: venueData.website || "",
-            // Ensure these fields are properly set from the API response
-            alcoholFreeBeersOnTap: venueData.alcoholFreeBeersOnTap || "",
-            alcoholFreeDrinkBrands: venueData.alcoholFreeDrinkBrands || "",
             images: venueData.images || [],
+            additionalInformation: venueData.additionalInformation || "",
           });
+
+          // Set checklist values in the form
+          if (venueData.checklist && venueData.checklist.length === 6) {
+            setTimeout(() => {
+              venueData.checklist.forEach((checked, index) => {
+                const checkbox = document.querySelector(`#check-${index}`);
+                if (checkbox) {
+                  checkbox.checked = checked;
+                }
+              });
+            }, 100);
+          }
         } catch (error) {
           setError("Failed to fetch venue data. Please try again.");
           showError("Failed to fetch venue data. Please try again.");
@@ -97,12 +96,6 @@ export default function VenueForm({
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const validatePhone = (phone) => {
-    const phoneRegex =
-      /^\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}$/;
-    return phoneRegex.test(phone);
-  };
-
   const handleCancel = () => {
     if (typeof onClose === "function") {
       onClose();
@@ -115,98 +108,92 @@ export default function VenueForm({
     e.preventDefault();
     setError(null);
 
+    // Validate required fields
     if (
       !formData.name ||
       !formData.address ||
-      !formData.phone ||
-      isNaN(formData.latitude) ||
-      isNaN(formData.longitude) ||
-      formData.latitude === null ||
-      formData.longitude === null
+      !formData.latitude ||
+      !formData.longitude
     ) {
       setError(
-        "Please fill out all required fields and select a valid location on the map."
+        "Please provide venue name, address, and select a location on the map"
       );
       return;
     }
 
-    if (!validatePhone(formData.phone)) {
-      setError("Please provide a valid phone number.");
+    // Validate checklist (require at least 3 checked items)
+    const checkboxes = formRef.current.querySelectorAll(
+      'input[name="submissionChecklist"]:checked'
+    );
+    if (checkboxes.length < 3) {
+      setError("Please check at least 3 items in the submission checklist");
       return;
     }
 
     setLoading(true);
 
     const formDataToSend = new FormData();
+
+    // Append all fields
     formDataToSend.append("name", formData.name);
     formDataToSend.append("address", formData.address);
-    formDataToSend.append("phone", formData.phone);
-    formDataToSend.append("description", formData.description);
-    formDataToSend.append("menu", formData.menu);
+    formDataToSend.append("website", formData.website || "");
+    formDataToSend.append("instagram", formData.instagram || "");
+    formDataToSend.append("facebook", formData.facebook || "");
     formDataToSend.append(
-      "alcoholFreeBeersOnTap",
-      JSON.stringify(formData.alcoholFreeBeersOnTap)
-    );
-    formDataToSend.append(
-      "alcoholFreeDrinkBrands",
-      JSON.stringify(formData.alcoholFreeDrinkBrands)
+      "additionalInformation",
+      formData.additionalInformation || ""
     );
 
-    if (formData.website.trim() !== "") {
-      formDataToSend.append("website", formData.website);
-    }
+    // Convert checklist to array of booleans
+    const checklistItems = Array.from(
+      formRef.current.querySelectorAll('input[name="submissionChecklist"]')
+    ).map((input) => input.checked);
+    formDataToSend.append("checklist", JSON.stringify(checklistItems));
 
-    formDataToSend.append("location[coordinates][0]", formData.longitude);
-    formDataToSend.append("location[coordinates][1]", formData.latitude);
+    // Location data
+    formDataToSend.append(
+      "location[coordinates]",
+      JSON.stringify([formData.longitude, formData.latitude])
+    );
 
+    // Handle images
     if (removedImages.length > 0) {
       formDataToSend.append("removedImages", JSON.stringify(removedImages));
     }
 
-    if (formData.images.length > 0) {
-      formData.images.forEach((file) => {
+    formData.images.forEach((file) => {
+      if (file instanceof File) {
         formDataToSend.append("images", file);
-      });
-    }
+      }
+    });
 
     try {
-      let response;
-      if (mode === "create") {
-        response = await axiosInstance.post("/venues/create", formDataToSend, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        });
-      } else {
-        response = await axiosInstance.put(
-          `/venues/${venueId}`,
-          formDataToSend,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          }
-        );
-      }
+      const endpoint =
+        mode === "create" ? "/venues/create" : `/venues/${venueId}`;
+
+      const method = mode === "create" ? "post" : "put";
+
+      const response = await axiosInstance[method](endpoint, formDataToSend, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
 
       showSuccess(
         `Venue ${mode === "create" ? "created" : "updated"} successfully!`
       );
 
-      setTimeout(() => {
-        handleFormReset();
-        setSearchQuery("");
-        if (typeof onUpdate === "function") {
-          onUpdate(response.data.venue);
-        }
-        if (typeof onClose === "function") {
-          onClose();
-        }
+      if (typeof onUpdate === "function") {
+        onUpdate(response.data.venue);
+      }
+      if (typeof onClose === "function") {
+        onClose();
+      }
 
-        if (mode === "create" && userRole !== "admin") {
-          navigate(`/venues/my-venue/${response.data.venue._id}`);
-        }
-      }, 4000);
+      if (mode === "create" && userRole !== "admin") {
+        navigate(`/venues/my-venue/${response.data.venue._id}`);
+      }
     } catch (error) {
       console.error(
         "Error saving venue:",
@@ -221,127 +208,127 @@ export default function VenueForm({
     }
   };
 
-  const handleFormReset = () => {
-    setFormData({
-      name: "",
-      address: "",
-      phone: "",
-      latitude: null,
-      longitude: null,
-      description: "",
-      menu: "",
-      website: "",
-      alcoholFreeBeersOnTap: "",
-      alcoholFreeDrinkBrands: "",
-      images: [],
-    });
-    setRemovedImages([]);
-  };
-
   return (
     <div className="p-4 mt-4 w-full max-w-6xl mx-auto bg-white dark:bg-darkCard rounded-md">
       <ToastNotifications />
       <div className="flex flex-col gap-4">
-        <div className="flex flex-col md:flex-row gap-4">
-          {/* Left Section */}
-          <div className="w-full md:w-1/2">
+        <div className="flex flex-col gap-4">
+          <div className="w-full">
             <h2 className="text-xl mb-4">
-              {mode === "create" ? "Add New Venue" : "Edit Venue"}
+              {mode === "create" ? "Add A Venue" : "Edit Venue"}
             </h2>
             {error && <div className="text-red-500 mb-4">{error}</div>}
-            <form ref={formRef} onSubmit={handleSubmit} className="space-y-4">
-              <VenueInputs formData={formData} handleChange={handleChange} />
-
-              {/* Alcohol-Free Beers on Tap (Left Side) */}
-              <div className="form-group">
-                <label className="block text-sm font-medium mb-1">
-                  Alcohol-Free Beers on Tap (comma separated)
-                </label>
-                <input
-                  type="text"
-                  name="alcoholFreeBeersOnTap"
-                  className="w-full p-2 border rounded"
-                  // value={formData.alcoholFreeBeersOnTap}
-                  // onChange={handleChange}
-                  value={
-                    Array.isArray(formData.alcoholFreeBeersOnTap)
-                      ? formData.alcoholFreeBeersOnTap.join(", ")
-                      : ""
-                  }
-                  onChange={(e) =>
-                    handleArrayChange("alcoholFreeBeersOnTap", e.target.value)
-                  }
-                  placeholder="e.g., Heineken 0.0, Budweiser Zero"
+            <form
+              ref={formRef}
+              onSubmit={handleSubmit}
+              className="space-y-4 flex flex-col gap-3"
+            >
+              <div className="relative h-80 w-full rounded-md border">
+                <MapComponent
+                  setFormData={setFormData}
+                  initialLatitude={formData.latitude}
+                  initialLongitude={formData.longitude}
+                  searchQuery={searchQuery}
+                  setSearchQuery={setSearchQuery}
                 />
               </div>
 
-              <ImageUploader
-                formData={formData}
-                setFormData={setFormData}
-                removedImages={removedImages}
-                setRemovedImages={setRemovedImages}
-              />
+              <div className="flex flex-col gap-4">
+                <div>
+                  <label className="block text-sm font-medium mb-1">
+                    Venue Name *
+                  </label>
+                  <input
+                    type="text"
+                    name="name"
+                    placeholder="Enter venue name"
+                    onChange={handleChange}
+                    value={formData.name}
+                    className="w-full px-3 py-2 border dark:bg-darkBg rounded-lg"
+                    required
+                  />
+                </div>
+                <div className="mt-4">
+                  <h3 className="text-lg font-semibold mb-4">
+                    Submission checklist <span className="text-red-500">*</span>
+                  </h3>
+                  <ul className="space-y-3">
+                    {[
+                      "This venue offers at least three alcohol-free drinks beyond basic soft drinks (e.g., alcohol-free beer, wine, cocktails, kombucha).",
+                      "The venue offers grown-up alcohol-free options, such as botanical sodas, adaptogenic drinks (like functional mushrooms or calming herbs), shrubs, or premium mixers.",
+                      "This venue offers alcohol-free beer on draught",
+                      "Alcohol-free options are clearly listed on the menu or drink board",
+                      "I have personally visited or have trustworthy knowledge of this venue.",
+                      "This venue feels like a welcoming, inclusive space for people choosing not to drink.",
+                    ].map((item, index) => (
+                      <li key={index} className="flex items-start">
+                        <input
+                          type="checkbox"
+                          id={`check-${index}`}
+                          name="submissionChecklist"
+                          value={item}
+                          className="mt-1 mr-3 w-5 h-5 text-ternary border-gray-300 rounded focus:ring-ternary"
+                        />
+                        <label
+                          htmlFor={`check-${index}`}
+                          className="text-gray-700 dark:text-gray-300"
+                        >
+                          {item}
+                        </label>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-1">
+                    Address *
+                  </label>
+                  <input
+                    type="text"
+                    name="address"
+                    placeholder="Enter venue address"
+                    onChange={handleChange}
+                    value={formData.address}
+                    className="w-full px-3 py-2 border dark:bg-darkBg rounded-lg"
+                    required
+                  />
+                </div>
+
+                <VenueInputs formData={formData} handleChange={handleChange} />
+
+                <ImageUploader
+                  formData={formData}
+                  setFormData={setFormData}
+                  removedImages={removedImages}
+                  setRemovedImages={setRemovedImages}
+                />
+                <div className="mt-4">
+                  <label className="block text-sm font-medium mb-1">
+                    {" "}
+                    Additional Information{" "}
+                  </label>
+                  <textarea
+                    name="additionalInformation"
+                    placeholder="any additional Information"
+                    className="w-full px-3 py-2 border dark:bg-darkBg min-h-[100px] rounded-lg"
+                  />
+                </div>
+              </div>
             </form>
-          </div>
-
-          {/* Right Section */}
-          <div className="w-full pt-12 md:w-1/2">
-            <ContactInfo formData={formData} handleChange={handleChange} />
-
-            {/* Alcohol-Free Drink Brands (Right Side) */}
-            <div className="form-group mb-4">
-              <label className="block text-sm font-medium mb-1">
-                Alcohol-Free Drink Brands (comma separated)
-              </label>
-              <input
-                type="text"
-                name="alcoholFreeDrinkBrands"
-                className="w-full p-2 border rounded"
-                value={
-                  Array.isArray(formData.alcoholFreeDrinkBrands)
-                    ? formData.alcoholFreeDrinkBrands.join(", ")
-                    : ""
-                }
-                onChange={(e) =>
-                  handleArrayChange("alcoholFreeDrinkBrands", e.target.value)
-                }
-                placeholder="e.g., Seedlip, Ritual Zero Proof"
-              />
-            </div>
-
-            <p className="text-left dark:bg-darkBg font-medium text-base mb-1 p-1">
-              Select Venue Location from Map (double click on the point)
-            </p>
-            <div className="relative h-80 w-full rounded-md border">
-              <MapComponent
-                setFormData={setFormData}
-                initialLatitude={formData.latitude}
-                initialLongitude={formData.longitude}
-                searchQuery={searchQuery}
-                setSearchQuery={setSearchQuery}
-              />
-            </div>
           </div>
         </div>
 
-        {/* Action Buttons */}
-        <div className="w-full flex justify-center mt-6">
-          <button
-            type="button"
-            className="bg-gray-400 px-4 py-2 mr-2 rounded text-white hover:bg-gray-500 transition"
-            onClick={handleCancel}
-          >
-            Cancel
-          </button>
+        <div className="w-full justify-center mt-6">
           <button
             type="button"
             onClick={handleSubmit}
-            className={`bg-red-600 px-4 py-2 rounded text-white hover:bg-red-700 transition ${
+            className={`bg-primary px-4 py-2 w-full rounded text-white hover:bg-red-700 transition ${
               loading ? "opacity-50" : ""
             }`}
             disabled={loading}
           >
-            {loading ? "Saving..." : mode === "create" ? "Create" : "Update"}
+            {loading ? "Saving..." : mode === "create" ? "Submit" : "Update"}
           </button>
         </div>
       </div>

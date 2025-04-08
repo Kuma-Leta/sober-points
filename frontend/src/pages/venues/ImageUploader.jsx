@@ -64,9 +64,9 @@ export default function ImageUploader({
 
   return (
     <div className="flex flex-col gap-2">
-      <label className="dark:bg-darkBg font-medium">Venue Images</label>
+      <label className="dark:bg-darkBg font-medium">Venue and menu mages</label>
       <div
-        className="border-2 border-dashed border-gray-400 rounded-lg p-4 flex flex-wrap items-center justify-center text-gray-500 cursor-pointer hover:bg-gray-100 min-h-[100px]"
+        className="border-2 border-dashed border-gray-400 rounded-lg p-4 flex flex-wrap items-start text-gray-500 cursor-pointer hover:bg-gray-100 min-h-[100px]"
         onDragOver={handleDragOver}
         onDrop={handleDrop}
         onClick={() => fileInputRef.current.click()} // Make the entire area clickable
@@ -100,7 +100,9 @@ export default function ImageUploader({
             ))}
           </div>
         ) : (
-          <p>Drag & Drop images here or click to upload</p>
+          <p className="text-left w-full pt-2 pl-2">
+            Drag & Drop images here or click to upload
+          </p>
         )}
       </div>
       <div className="flex items-center my-2">
@@ -122,7 +124,7 @@ export default function ImageUploader({
       {/* Upload button */}
       <button
         type="button"
-        className="flex items-center justify-center bg-gray-400 px-4 py-2 mr-2 rounded text-white hover:bg-gray-500 transition"
+        className="flex items-center justify-center bg-primary hover:bg-primaryLight px-4 py-2 mr-2 rounded text-white hover:bg-gray-500 transition"
         onClick={(e) => {
           e.stopPropagation(); // Prevent triggering the parent div's click event
           fileInputRef.current.click();
