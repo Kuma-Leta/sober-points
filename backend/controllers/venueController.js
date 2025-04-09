@@ -71,9 +71,9 @@ exports.createVenue = async (req, res) => {
 
       // Parse checklist (should be array of booleans)
       const parsedChecklist = JSON.parse(checklist);
-      if (!Array.isArray(parsedChecklist) || parsedChecklist.length > 1) {
+      if (!Array.isArray(parsedChecklist) || parsedChecklist.length < 6 ) {
         return res.status(400).json({
-          error: "Checklist must contain at least 1 items",
+          error: "Checklist must contain 6 items",
         });
       }
 
@@ -213,20 +213,20 @@ exports.getVenueDetails = async (req, res) => {
     const venueDetails = {
       _id: venue._id,
       name: venue.name,
-      description: venue.description,
+      additionalInformation: venue.additionalInformation,
       address: venue.address,
-      phone: venue.phone,
+
       location: venue.location,
       images: venue.images,
-      menu: venue.menu,
-      website: venue.website,
+      checklist: venue.checklist,
+
+      website: venue.socialMedia.website,
+      socialMedia: venue.socialMedia,
       isVerified: venue.isVerified,
       reviews: venue.reviews,
       rating: venue.rating,
       createdAt: venue.createdAt,
       updatedAt: venue.updatedAt,
-      alcoholFreeBeersOnTap: venue.alcoholFreeBeersOnTap,
-      alcoholFreeDrinkBrands: venue.alcoholFreeDrinkBrands,
     };
 
     // console.log("location:", venue.location);
@@ -264,97 +264,89 @@ exports.updateVenue = async (req, res) => {
     }
 
     try {
-      const { venueId } = req.params; // Get the venue ID from the request parameters
+      const { venueId } = req.params;
       const {
         name,
-        description,
         address,
-        phone,
-        location,
-        menu,
         website,
-        alcoholFreeBeersOnTap,
-        alcoholFreeDrinkBrands,
+        instagram,
+        facebook,
+        location,
+        checklist,
+        additionalInformation,
+        removedImages,
       } = req.body;
 
-      // Parse removedImages from the request body
-      let removedImages = [];
-      if (req.body.removedImages) {
-        removedImages = JSON.parse(req.body.removedImages); // Parse the JSON string
-      }
-
-      // Validate required fields
-      if (!name || !address || !phone || !location || !location.coordinates) {
-        return res
-          .status(400)
-          .json({ error: "Please provide all required fields" });
-      }
-
-      // Find the venue by ID
+      // Find existing venue
       const venue = await Venue.findById(venueId);
       if (!venue) {
         return res.status(404).json({ error: "Venue not found" });
       }
 
-      // Delete removed images from the server
-      if (removedImages.length > 0) {
-        removedImages.forEach((imagePath) => {
+      // Handle image updates
+      let currentImages = venue.images || [];
+
+      // Remove images marked for deletion
+      if (removedImages) {
+        const imagesToRemove = JSON.parse(removedImages);
+        imagesToRemove.forEach((imagePath) => {
           const fullPath = path.join(__dirname, "..", imagePath);
           if (fs.existsSync(fullPath)) {
-            fs.unlinkSync(fullPath); // Delete the file
+            fs.unlinkSync(fullPath);
           }
         });
+        currentImages = currentImages.filter(
+          (img) => !imagesToRemove.includes(img)
+        );
       }
 
-      // Get uploaded file paths (if any)
-      let imageUrls = venue.images || [];
+      // Add new images
       if (req.files && req.files.length > 0) {
-        req.files.forEach((file) => {
-          const relativePath = `uploads\\${file.filename}`;
-          imageUrls.push(relativePath);
-        });
-      }
-
-      // Filter out removed images from the venue's images array
-      if (removedImages.length > 0) {
-        imageUrls = imageUrls.filter((image) => !removedImages.includes(image));
+        const newImages = req.files.map((file) => `uploads/${file.filename}`);
+        currentImages = [...currentImages, ...newImages];
       }
 
       // Update venue fields
-      venue.name = name;
-      venue.description = description;
-      venue.address = address;
-      venue.phone = phone;
-      venue.location = {
-        type: "Point",
-        coordinates: location.coordinates,
+      venue.name = name || venue.name;
+      venue.address = address || venue.address;
+      venue.socialMedia = {
+        website: website || venue.socialMedia.website,
+        instagram: instagram || venue.socialMedia.instagram,
+        facebook: facebook || venue.socialMedia.facebook,
       };
-      venue.images = imageUrls;
-      venue.menu = menu;
-      venue.website = website && website.trim() !== "" ? website : null;
+      venue.images = currentImages;
 
-      // Update alcohol-free fields if they are provided
-      if (alcoholFreeBeersOnTap !== undefined) {
-        venue.alcoholFreeBeersOnTap = alcoholFreeBeersOnTap;
-      }
-      if (alcoholFreeDrinkBrands !== undefined) {
-        venue.alcoholFreeDrinkBrands = alcoholFreeDrinkBrands;
+      if (checklist) {
+        const parsedChecklist = JSON.parse(checklist);
+        if (Array.isArray(parsedChecklist)) {
+          venue.checklist = parsedChecklist;
+        }
       }
 
-      // Save the updated venue to the database
+      venue.additionalInformation =
+        additionalInformation || venue.additionalInformation;
+
+      if (location && location.coordinates) {
+        venue.location.coordinates = JSON.parse(location.coordinates);
+      }
+
       await venue.save();
 
-      // Return success response with message
-      res.status(200).json({
+      res.json({
         success: true,
         message: "Venue updated successfully!",
         venue,
       });
     } catch (error) {
-      res.status(400).json({ error: error.message });
+      console.error("Error updating venue:", error);
+      res.status(500).json({
+        error: "Server Error",
+        message: error.message,
+      });
     }
   });
 };
+
 // 📌 Delete Venue
 
 exports.searchVenues = async (req, res) => {

@@ -91,7 +91,7 @@ const Sidebar = () => {
       {isSidebarOpen && isMobile && (
         <div
           onClick={closeSidebar}
-          className="fixed inset-0 bg-black/50 z-[60]"
+          className="fixed inset-0 bg-black/50 z-[998]"
           aria-hidden="true"
         />
       )}
@@ -99,7 +99,7 @@ const Sidebar = () => {
       {/* Sidebar Container */}
       <div
         className={`${
-          isMobile ? "fixed top-0 left-0 h-full z-[70]" : "h-screen"
+          isMobile ? "fixed top-0 left-0 h-full z-[999]" : "h-screen"
         } ${
           isMobile && !isSidebarOpen ? "-translate-x-full" : "translate-x-0"
         } transition-transform duration-300 ease-in-out`}
@@ -115,7 +115,7 @@ const Sidebar = () => {
           {isMobile && (
             <button
               onClick={toggleSidebar}
-              className="absolute top-1 -right-10 p-2  text-white rounded-r-lg hover:bg-indigo-800 transition-colors z-[70]"
+              className="absolute top-30 -right-10 p-2 bg-white text-indigo-500 rounded-r-lg hover:bg-primary hover:text-white transition-colors z-[1000] cursor-pointer shadow-lg"
             >
               {!isSidebarOpen ? <FaBars size={24} /> : <IoMdClose size={24} />}
             </button>

@@ -24,6 +24,7 @@ export default function VenueForm({
     latitude: null,
     longitude: null,
     images: [],
+    additionalInformation: "", // Added initial state
   });
 
   const [loading, setLoading] = useState(false);
@@ -45,6 +46,7 @@ export default function VenueForm({
         latitude: null,
         longitude: null,
         images: [],
+        additionalInformation: "",
       });
       setRemovedImages([]);
     }
@@ -125,7 +127,7 @@ export default function VenueForm({
     const checkboxes = formRef.current.querySelectorAll(
       'input[name="submissionChecklist"]:checked'
     );
-    if (checkboxes.length < 3) {
+    if (checkboxes.length !== 6) {
       setError("Please check at least 3 items in the submission checklist");
       return;
     }
@@ -311,6 +313,8 @@ export default function VenueForm({
                   <textarea
                     name="additionalInformation"
                     placeholder="any additional Information"
+                    value={formData.additionalInformation}
+                    onChange={handleChange}
                     className="w-full px-3 py-2 border dark:bg-darkBg min-h-[100px] rounded-lg"
                   />
                 </div>
@@ -323,7 +327,7 @@ export default function VenueForm({
           <button
             type="button"
             onClick={handleSubmit}
-            className={`bg-primary px-4 py-2 w-full rounded text-white hover:bg-red-700 transition ${
+            className={`bg-primary px-4 py-2 w-full rounded text-white hover:primaryLight transition ${
               loading ? "opacity-50" : ""
             }`}
             disabled={loading}

@@ -13,37 +13,8 @@ export default function VenueDetailModal({
 }) {
   const backendBaseUrl = import.meta.env.VITE_API_URL;
   const [showConfirmation, setShowConfirmation] = useState(false);
-  const [reviews, setReviews] = useState([]);
-  const [loadingReviews, setLoadingReviews] = useState(false);
-  const [page, setPage] = useState(1);
-  const [limit] = useState(5);
-  const [totalPages, setTotalPages] = useState(1);
 
   // Fetch reviews for the venue
-  const fetchReviews = async () => {
-    if (!selectedVenueDetails?._id) return;
-
-    setLoadingReviews(true);
-    try {
-      const res = await axiosInstance.get(
-        `/ratings/${selectedVenueDetails._id}/getRating`,
-        {
-          params: { page, limit },
-        }
-      );
-      setReviews(res.data.ratings);
-      // Assuming you might want to calculate total pages based on total count
-      // You might need to modify your backend to return total count
-      setLoadingReviews(false);
-    } catch (error) {
-      console.error("Error fetching reviews:", error);
-      setLoadingReviews(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchReviews();
-  }, [selectedVenueDetails?._id, page, limit]);
 
   const handleVerifyClick = () => {
     setShowConfirmation(true);
@@ -59,19 +30,6 @@ export default function VenueDetailModal({
   };
 
   // Verify/Unverify a review
-  const handleReviewVerify = async (ratingId, verifyStatus) => {
-    try {
-      await axiosInstance.patch(
-        `/ratings/verify/${ratingId}/${selectedVenueDetails._id}`,
-        {
-          isVerified: verifyStatus,
-        }
-      );
-      fetchReviews(); // Refresh the reviews list
-    } catch (error) {
-      console.error("Error verifying review:", error);
-    }
-  };
 
   return (
     <>
@@ -200,90 +158,6 @@ export default function VenueDetailModal({
             </div>
 
             {/* Reviews Section */}
-            <div className="mt-8">
-              <h3 className="text-xl font-bold mb-4 text-gray-800 dark:text-white">
-                Reviews
-              </h3>
-
-              {loadingReviews ? (
-                <div>Loading reviews...</div>
-              ) : reviews.length === 0 ? (
-                <div>No reviews yet</div>
-              ) : (
-                <div className="space-y-4">
-                  {reviews.map((review) => (
-                    <div
-                      key={review._id}
-                      className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg"
-                    >
-                      <div className="flex justify-between items-start">
-                        <div>
-                          <h4 className="font-medium text-gray-800 dark:text-white">
-                            {review.user?.name || "Anonymous"}
-                          </h4>
-                          <p className=" flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
-                            Service:
-                            <RatingStars rating={review.serviceRating} />
-                          </p>
-                          <p className=" flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
-                            Location:
-                            <RatingStars rating={review.locationRating} />
-                          </p>
-                          {review.review && (
-                            <p className="mt-2 text-gray-700 dark:text-gray-300">
-                              {review.review}
-                            </p>
-                          )}
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <span
-                            className={`text-sm font-medium ${
-                              review.isVerified
-                                ? "text-green-500"
-                                : "text-red-500"
-                            }`}
-                          >
-                            {review.isVerified ? "Verified" : "Unverified"}
-                          </span>
-                          {review.isVerified ? (
-                            <button
-                              onClick={() =>
-                                handleReviewVerify(review._id, false)
-                              }
-                              className="text-red-500 hover:text-red-700"
-                              title="Unverify"
-                            >
-                              <FaTimes />
-                            </button>
-                          ) : (
-                            <button
-                              onClick={() =>
-                                handleReviewVerify(review._id, true)
-                              }
-                              className="text-green-500 hover:text-green-700"
-                              title="Verify"
-                            >
-                              <FaCheck />
-                            </button>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-
-                  {/* Pagination */}
-                  {totalPages > 1 && (
-                    <div className="mt-4">
-                      <Pagination
-                        currentPage={page}
-                        totalPages={totalPages}
-                        onPageChange={setPage}
-                      />
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
           </div>
 
           {/* Action Buttons */}

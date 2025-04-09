@@ -45,7 +45,7 @@ const VenueSchema = new mongoose.Schema(
       required: true,
       validate: {
         validator: function (v) {
-          return v.length >= 1; // Exactly 6 checklist items
+          return v.length === 6; // Exactly 6 checklist items
         },
         message: "Checklist must contain exactly 6 items",
       },

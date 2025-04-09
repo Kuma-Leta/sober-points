@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import axiosInstance from "../../api/api";
 import { FaRegHeart, FaHeart, FaRegComment, FaRegClock } from "react-icons/fa";
 import { motion } from "framer-motion";
 import DOMPurify from "dompurify";
 import { format } from "date-fns";
 import { useSelector } from "react-redux";
-
 const BlogRead = () => {
   const { slug } = useParams();
   const [blog, setBlog] = useState(null);
@@ -15,6 +14,8 @@ const BlogRead = () => {
   const [isLiked, setIsLiked] = useState(false);
   const [comment, setComment] = useState("");
   const user = useSelector((state) => state.auth.user);
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+  const navigate = useNavigate();
   useEffect(() => {
     setIsLiked(blog?.likes?.includes(user?._id));
   }, [user]);
@@ -52,6 +53,10 @@ const BlogRead = () => {
 
   const handleComment = async (e) => {
     e.preventDefault();
+    if (!isAuthenticated) {
+      // Save current location before redirecting
+      navigate("/auth/login", { state: { from: `/blog/${slug}` } });
+    }
     try {
       const response = await axiosInstance.post(`/blogs/${blog._id}/comments`, {
         text: comment,

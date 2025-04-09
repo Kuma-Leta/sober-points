@@ -381,14 +381,15 @@ const BlogForm = () => {
                       <div className="flex items-center">
                         <img
                           src={
-                            comment.user.profilePicture || "/default-avatar.png"
+                            comment?.user?.profilePicture ||
+                            "/default-avatar.png"
                           }
-                          alt={comment.user.name}
+                          alt={comment?.user?.name}
                           className="w-8 h-8 rounded-full mr-2"
                         />
                         <div>
                           <p className="font-medium text-gray-900 dark:text-white">
-                            {comment.user.name}
+                            {comment?.user?.name}
                           </p>
                           <p className="text-sm text-gray-500">
                             {formatDistanceToNow(new Date(comment.createdAt), {

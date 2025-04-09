@@ -20,6 +20,7 @@ import VenueDetailMap from "./venuedetail/VenueDetailMap";
 import VenueReviews from "./venuedetail/VenueReviews";
 import SearchBar from "../../components/search";
 import Tags from "./Tags";
+import { FaFacebook, FaGlobe, FaInstagram } from "react-icons/fa";
 
 const VenueDetail = () => {
   const { id } = useParams();
@@ -159,6 +160,78 @@ const VenueDetail = () => {
         <p className="text-gray-700 dark:text-gray-300 mt-4 leading-relaxed">
           {venue.description}
         </p>
+        <div className="flex gap-4 mt-3">
+          {venue.socialMedia?.instagram && (
+            <a
+              href={`https://instagram.com/${venue.socialMedia.instagram}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-lg text-pink-600 dark:text-pink-400 hover:text-pink-800 dark:hover:text-pink-300 flex items-center transition-colors duration-200"
+            >
+              <FaInstagram className="mr-1" />
+              <span className="underline">Instagram</span>
+            </a>
+          )}
+          {venue.socialMedia?.facebook && (
+            <a
+              href={venue.socialMedia.facebook}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-lg text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 flex items-center transition-colors duration-200"
+            >
+              <FaFacebook className="mr-1" />
+              <span className="underline">Facebook</span>
+            </a>
+          )}
+          {venue.socialMedia?.website && (
+            <a
+              href={venue.socialMedia.website}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-lg text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 flex items-center transition-colors duration-200"
+            >
+              <FaGlobe className="mr-1" />
+              <span className="underline">website</span>
+            </a>
+          )}
+        </div>
+        {venue?.additionalInformation && (
+          <div className="mt-6">
+            <h3 className="text-xl font-semibold mb-2 text-gray-800 dark:text-gray-200">
+              Additional Information
+            </h3>
+            <p className="text-gray-700 dark:text-gray-300 whitespace-pre-line">
+              {venue.additionalInformation}
+            </p>
+          </div>
+        )}
+        {/* Venue Checklist */}
+        <div className="mt-6">
+          <h3 className="text-xl font-semibold mb-4 text-gray-800 dark:text-gray-200">
+            Venue Features
+          </h3>
+          <ul className="space-y-3">
+            {[
+              "This venue offers at least three alcohol-free drinks beyond basic soft drinks (e.g., alcohol-free beer, wine, cocktails, kombucha).",
+              "The venue offers grown-up alcohol-free options, such as botanical sodas, adaptogenic drinks (like functional mushrooms or calming herbs), shrubs, or premium mixers.",
+              "This venue offers alcohol-free beer on draught",
+              "Alcohol-free options are clearly listed on the menu or drink board",
+            ].map(
+              (item, index) =>
+                venue?.checklist &&
+                venue?.checklist[index] && (
+                  <li key={index} className="flex items-start">
+                    <span className="text-green-500 mr-2">✓</span>
+                    <span className="text-gray-700 dark:text-gray-300">
+                      {item}
+                    </span>
+                  </li>
+                )
+            )}
+          </ul>
+        </div>
+
+        {/* Additional Information */}
 
         {/* Rating */}
         <div className="flex items-center mt-4">
@@ -174,9 +247,9 @@ const VenueDetail = () => {
         </div>
       </div>
       {/* Responsive Image Row */}
-      {venue.images.length > 0 && (
+      {venue?.images?.length > 0 && (
         <div className="flex gap-4 overflow-hidden">
-          {venue.images.slice(0, 3).map((image, index) => (
+          {venue?.images?.slice(0, 3).map((image, index) => (
             <div
               key={index}
               className="relative flex-shrink-0 w-full sm:w-1/2 lg:w-1/3 aspect-square overflow-hidden rounded cursor-pointer"
