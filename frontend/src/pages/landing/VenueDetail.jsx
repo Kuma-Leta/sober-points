@@ -119,20 +119,14 @@ const VenueDetail = () => {
   const [longitude, latitude] = venue.location.coordinates;
 
   return (
-    <div className=" sm:p-1 max-w-7xl mx-auto   bg-white dark:bg-darkBg min-h-screen">
+    <div className="max-w-7xl mx-auto bg-white mb-10 dark:bg-darkBg min-h-screen px-6 sm:px-8 lg:px-12">
       <ToastContainer />
-      <div className="pl-6 sm:pl-8 lg:pl-12 py-4">
+      <div className="py-4">
         <SearchBar />
       </div>
       <Tags />
-      <div className="mt-6 max-w-6xl mx-auto  sm:mt-8">
-        <h3 className="text-xl sm:text-2xl font-semibold text-gray-800 dark:text-darkText">
-          Reviews:
-        </h3>
-        <VenueReviews venueId={id} venue={venue} />
-      </div>
       {/* Venue Details */}
-      <div className="w-full mx-auto bg-white dark:bg-darkCard p-6 sm:p-8 rounded-lg my-4 border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow duration-300">
+      <div className="w-full bg-white dark:bg-darkCard p-6 sm:p-8 rounded-lg my-4 border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow duration-300">
         <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-darkText leading-tight mb-2">
           {venue.name}
         </h1>
@@ -231,8 +225,6 @@ const VenueDetail = () => {
           </ul>
         </div>
 
-        {/* Additional Information */}
-
         {/* Rating */}
         <div className="flex items-center mt-4">
           <RatingStars rating={venue.rating || 0} />
@@ -315,9 +307,15 @@ const VenueDetail = () => {
       </div>
 
       {/* Reviews Section */}
+      <div className="mt-6 sm:mt-8">
+        <h3 className="text-xl sm:text-2xl font-semibold text-gray-800 dark:text-darkText">
+          Reviews:
+        </h3>
+        <VenueReviews venueId={id} venue={venue} />
+      </div>
 
       {/* Nearby Venues Section */}
-      <div className="mt-6 max-w-6xl mx-auto sm:mt-8">
+      <div className="mt-6 sm:mt-8">
         <h2 className="text-xl sm:text-2xl font-semibold text-gray-800 dark:text-darkText">
           Nearby Venues
         </h2>

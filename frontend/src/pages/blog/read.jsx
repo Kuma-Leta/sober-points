@@ -218,7 +218,10 @@ const BlogRead = () => {
             </button>
             <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400">
               <FaRegComment />
-              {blog.comments.length} comments
+              {
+                blog.comments.filter((comment) => comment.isVerified).length
+              }{" "}
+              comments
             </div>
           </div>
 

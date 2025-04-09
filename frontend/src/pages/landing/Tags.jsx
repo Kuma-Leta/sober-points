@@ -41,7 +41,7 @@ const Tags = () => {
   };
 
   return (
-    <div className="flex space-x-3 p-4">
+    <div className="flex space-x-3 py-4">
       <button
         onClick={handleMostRatedClick}
         className={`px-4 py-2 text-sm font-semibold rounded-md  ${

@@ -8,6 +8,8 @@ import ToastNotifications, {
   showError,
 } from "./ToastNotifications";
 import VenueInputs from "./VenueInputs";
+import { FaQuestionCircle } from "react-icons/fa";
+import { message } from "antd";
 
 export default function VenueForm({
   mode = "create",
@@ -24,7 +26,7 @@ export default function VenueForm({
     latitude: null,
     longitude: null,
     images: [],
-    additionalInformation: "", // Added initial state
+    additionalInformation: "",
   });
 
   const [loading, setLoading] = useState(false);
@@ -82,9 +84,11 @@ export default function VenueForm({
               });
             }, 100);
           }
+          message.success("Venue data loaded successfully");
         } catch (error) {
           setError("Failed to fetch venue data. Please try again.");
-          showError("Failed to fetch venue data. Please try again.");
+          message.error("Failed to fetch venue data. Please try again.");
+          window.scrollTo(0, 0);
         } finally {
           setLoading(false);
         }
@@ -99,6 +103,7 @@ export default function VenueForm({
   };
 
   const handleCancel = () => {
+    message.info("Cancelling form submission");
     if (typeof onClose === "function") {
       onClose();
     } else {
@@ -120,6 +125,8 @@ export default function VenueForm({
       setError(
         "Please provide venue name, address, and select a location on the map"
       );
+      message.error("Please fill in all required fields");
+      window.scrollTo(0, 0);
       return;
     }
 
@@ -128,11 +135,14 @@ export default function VenueForm({
       'input[name="submissionChecklist"]:checked'
     );
     if (checkboxes.length !== 6) {
-      setError("Please check at least 3 items in the submission checklist");
+      setError("Please check all items in the submission checklist");
+      message.error("Please check all items in the submission checklist");
+      window.scrollTo(0, 0);
       return;
     }
 
     setLoading(true);
+    message.loading("Saving venue data...");
 
     const formDataToSend = new FormData();
 
@@ -182,7 +192,7 @@ export default function VenueForm({
         },
       });
 
-      showSuccess(
+      message.success(
         `Venue ${mode === "create" ? "created" : "updated"} successfully!`
       );
 
@@ -204,7 +214,8 @@ export default function VenueForm({
       setError(
         error.response?.data?.message || error.message || "Error saving venue"
       );
-      showError("Failed to save venue. Please try again.");
+      message.error("Failed to save venue. Please try again.");
+      window.scrollTo(0, 0);
     } finally {
       setLoading(false);
     }
@@ -251,8 +262,18 @@ export default function VenueForm({
                   />
                 </div>
                 <div className="mt-4">
-                  <h3 className="text-lg font-semibold mb-4">
-                    Submission checklist <span className="text-red-500">*</span>
+                  <h3 className="text-lg font-semibold flex items-center mb-4">
+                    Submission checklist{" "}
+                    <span className="text-primary flex items-center">
+                      *
+                      <FaQuestionCircle
+                        onMouseEnter={() =>
+                          message.info(
+                            "Please check each item in the list to confirm your submission meets our criteria"
+                          )
+                        }
+                      />
+                    </span>
                   </h3>
                   <ul className="space-y-3">
                     {[
@@ -270,6 +291,9 @@ export default function VenueForm({
                           name="submissionChecklist"
                           value={item}
                           className="mt-1 mr-3 w-5 h-5 text-ternary border-gray-300 rounded focus:ring-ternary"
+                          onChange={() =>
+                            message.info("Checklist item updated")
+                          }
                         />
                         <label
                           htmlFor={`check-${index}`}

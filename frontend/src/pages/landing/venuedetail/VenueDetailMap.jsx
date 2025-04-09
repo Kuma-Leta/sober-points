@@ -83,7 +83,7 @@ function VenueDetailMap({ venue }) {
   const mapHeight = useDynamicHeight();
 
   return (
-    <div className="mt-6 w-full px-4">
+    <div className="mt-6 w-full ">
       <div className="w-full h-full bg-white shadow-lg rounded overflow-hidden">
         <MapContainer
           center={[latitude, longitude]}

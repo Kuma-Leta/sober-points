@@ -249,60 +249,59 @@ const DetailFeature = ({
             </div>
 
             {/* Right Side: Images and Map */}
-            <div className="space-y-8">
-              {/* Venue Images */}
+
+            {/* Venue Images */}
+            <div className="bg-gray-50 dark:bg-gray-800 p-6 rounded-lg shadow-sm">
+              <h3 className="text-xl font-semibold mb-4 text-gray-800 dark:text-gray-200 border-b pb-2 border-gray-200 dark:border-gray-700">
+                Venue Images
+              </h3>
+              {loading ? (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="h-64 bg-gray-300 dark:bg-gray-700 rounded-lg animate-pulse"></div>
+                  <div className="h-64 bg-gray-300 dark:bg-gray-700 rounded-lg animate-pulse"></div>
+                </div>
+              ) : (
+                <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
+                  {venue.images.map((image, index) => (
+                    <div
+                      key={index}
+                      className="overflow-hidden rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300"
+                    >
+                      <img
+                        src={`${import.meta.env.VITE_API_URL}/${image.replace(
+                          /\\/g,
+                          "/"
+                        )}`}
+                        alt={`Venue Image ${index + 1}`}
+                        loading="lazy"
+                        className="w-full h-48 object-cover hover:scale-105 transition-transform duration-300"
+                      />
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Location Map */}
+            {loading ? (
               <div className="bg-gray-50 dark:bg-gray-800 p-6 rounded-lg shadow-sm">
                 <h3 className="text-xl font-semibold mb-4 text-gray-800 dark:text-gray-200 border-b pb-2 border-gray-200 dark:border-gray-700">
-                  Venue Images
+                  Location
                 </h3>
-                {loading ? (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div className="h-64 bg-gray-300 dark:bg-gray-700 rounded-lg animate-pulse"></div>
-                    <div className="h-64 bg-gray-300 dark:bg-gray-700 rounded-lg animate-pulse"></div>
-                  </div>
-                ) : (
-                  <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
-                    {venue.images.map((image, index) => (
-                      <div
-                        key={index}
-                        className="overflow-hidden rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300"
-                      >
-                        <img
-                          src={`${import.meta.env.VITE_API_URL}/${image.replace(
-                            /\\/g,
-                            "/"
-                          )}`}
-                          alt={`Venue Image ${index + 1}`}
-                          loading="lazy"
-                          className="w-full h-48 object-cover hover:scale-105 transition-transform duration-300"
-                        />
-                      </div>
-                    ))}
-                  </div>
-                )}
+                <div className="h-96 bg-gray-300 dark:bg-gray-700 rounded-lg animate-pulse"></div>
               </div>
-
-              {/* Location Map */}
-              {loading ? (
+            ) : (
+              coordinates && (
                 <div className="bg-gray-50 dark:bg-gray-800 p-6 rounded-lg shadow-sm">
                   <h3 className="text-xl font-semibold mb-4 text-gray-800 dark:text-gray-200 border-b pb-2 border-gray-200 dark:border-gray-700">
                     Location
                   </h3>
-                  <div className="h-96 bg-gray-300 dark:bg-gray-700 rounded-lg animate-pulse"></div>
-                </div>
-              ) : (
-                coordinates && (
-                  <div className="bg-gray-50 dark:bg-gray-800 p-6 rounded-lg shadow-sm">
-                    <h3 className="text-xl font-semibold mb-4 text-gray-800 dark:text-gray-200 border-b pb-2 border-gray-200 dark:border-gray-700">
-                      Location
-                    </h3>
-                    <div className="h-96 w-full rounded-lg overflow-hidden shadow-md">
-                      <MapComponent coordinates={coordinates} isStatic={true} />
-                    </div>
+                  <div className="h-96 w-full rounded-lg overflow-hidden shadow-md">
+                    <MapComponent coordinates={coordinates} isStatic={true} />
                   </div>
-                )
-              )}
-            </div>
+                </div>
+              )
+            )}
           </div>
         </div>
       </div>
