@@ -3,6 +3,7 @@ const router = express.Router();
 const { addRating } = require("../controllers/ratingController");
 const { authenticate, authorize } = require("../middleware/authMiddleware");
 const {
+  bulkCreateVenues,
   createVenue,
   getAllVenues,
   getVenueById,
@@ -31,6 +32,7 @@ router.post(
   authorize(["admin", "customer"]),
   createVenue
 );
+router.post("/bulk",bulkCreateVenues)
 router.post("/add-rating", authenticate, addRating);
 router.get("/suggestions", getVenueSuggestions);
 // 📌 Get Nearby Venues

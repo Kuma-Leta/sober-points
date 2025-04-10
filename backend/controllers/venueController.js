@@ -718,3 +718,67 @@ exports.getNearestVenues = async (req, res) => {
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
+
+
+  const DEFAULT_IMAGE  = path.join(__dirname, '..', 'uploads', '1741502329403-france3.jpg.jpg'); // You'll need to define this
+
+// Add this to your venue routes
+
+
+// In your venueController.js
+exports.bulkCreateVenues = async (req, res) => {
+  try {
+    const { venues } = req.body; // Array of venue objects
+    const createdBy = req.user.id; // From authenticated user
+
+    if (!Array.isArray(venues)) {
+      return res.status(400).json({
+        success: false,
+        message: "Payload must contain an array of venues"
+      });
+    }
+
+    // Default image path - adjust this to your actual default image
+  
+
+    // Process venues
+    const venueDocs = venues.map(venueData => {
+      return {
+        name: venueData.name,
+        address: venueData.address,
+        location: {
+          type: "Point",
+          coordinates: [venueData.longitude, venueData.latitude]
+        },
+        images: [DEFAULT_IMAGE], // Set default image
+        socialMedia: {
+          website: venueData.website || ''
+        },
+        isVerified:true,
+        additionalInformation: venueData.additionalInformation || '',
+        createdBy,
+        isVerified: false, // Default to unverified
+        rating: 0,
+        serviceRating: 0,
+        locationRating: 0
+      };
+    });
+
+    // Insert all venues
+    const createdVenues = await Venue.insertMany(venueDocs);
+
+    res.status(201).json({
+      success: true,
+      count: createdVenues.length,
+      venues: createdVenues
+    });
+
+  } catch (error) {
+    console.error("Bulk venue creation error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Error creating venues in bulk",
+      error: error.message
+    });
+  }
+};
