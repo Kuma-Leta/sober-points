@@ -55,6 +55,7 @@ const BlogList = () => {
       const response = await axiosInstance.get(`/blogs`, { params });
 
       setAllBlogs(response.data.blogs);
+      console.log("allBlogs", response.data.blogs);
       setBlogs(response.data.blogs);
       setTotalPages(response.data.totalPages);
       setError("");
@@ -372,7 +373,16 @@ const BlogList = () => {
 
                         <div className="flex items-center">
                           <FaRegComment className="mr-1" />
-                          <span>{blog.comments?.length || 0}</span>
+                          <span>
+                            {blog.comments.filter(
+                              (comment) => comment.isVerified
+                            ).length +
+                              blog.comments.filter(
+                                (comment) =>
+                                  !comment.isVerified &&
+                                  comment.user?._id === user?._id
+                              ).length}{" "}
+                          </span>
                         </div>
                       </div>
                     </div>

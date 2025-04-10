@@ -425,7 +425,7 @@ exports.getNearbyVenues = async (req, res) => {
       return res.status(400).json({ message: "Longitude out of range" });
 
     // Base match query (excluding geospatial)
-    const matchQuery = {  }; 
+    const matchQuery = {};
     if (query) {
       matchQuery.$or = [
         { name: { $regex: query, $options: "i" } },
@@ -440,7 +440,7 @@ exports.getNearbyVenues = async (req, res) => {
           near: { type: "Point", coordinates: [longitude, latitude] },
           distanceField: "distance",
           spherical: true,
-          maxDistance:16000,
+          maxDistance: 16000,
           query: matchQuery,
         },
       },

@@ -26,6 +26,7 @@ const BlogRead = () => {
         const response = await axiosInstance.get(`/blogs/${slug}`);
         setBlog(response.data.blog);
         setIsLiked(response.data.blog.likes.includes(response.data.blog._id));
+        console.log("comments", response.data.blog.comments);
       } catch (err) {
         setError("Failed to fetch blog post");
       } finally {
@@ -218,9 +219,11 @@ const BlogRead = () => {
             </button>
             <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400">
               <FaRegComment />
-              {
-                blog.comments.filter((comment) => comment.isVerified).length
-              }{" "}
+              {blog.comments.filter((comment) => comment.isVerified).length +
+                blog.comments.filter(
+                  (comment) =>
+                    !comment.isVerified && comment.user?._id === user?._id
+                ).length}{" "}
               comments
             </div>
           </div>
