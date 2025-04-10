@@ -213,20 +213,20 @@ exports.getVenueDetails = async (req, res) => {
     const venueDetails = {
       _id: venue._id,
       name: venue.name,
-      additionalInformation: venue.additionalInformation,
+      additionalInformation: venue?.additionalInformation,
       address: venue.address,
 
-      location: venue.location,
-      images: venue.images,
-      checklist: venue.checklist,
+      location: venue?.location,
+      images: venue?.images,
+      checklist: venue?.checklist,
 
-      website: venue.socialMedia.website,
-      socialMedia: venue.socialMedia,
-      isVerified: venue.isVerified,
-      reviews: venue.reviews,
-      rating: venue.rating,
-      createdAt: venue.createdAt,
-      updatedAt: venue.updatedAt,
+      website: venue?.socialMedia?.website,
+      socialMedia: venue?.socialMedia,
+      isVerified: venue?.isVerified,
+      reviews: venue?.reviews,
+      rating: venue?.rating,
+      createdAt: venue?.createdAt,
+      updatedAt: venue?.updatedAt,
     };
 
     // console.log("location:", venue.location);

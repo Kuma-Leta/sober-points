@@ -297,7 +297,7 @@ const DetailFeature = ({
                     Location
                   </h3>
                   <div className="h-96 w-full rounded-lg overflow-hidden shadow-md">
-                    <MapComponent coordinates={coordinates} isStatic={true} />
+                    <MapComponent coordinates={coordinates} isStatic={false} />
                   </div>
                 </div>
               )
