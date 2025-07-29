@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 
-const API_URL = "http://localhost:5000/api";
+const API_URL = "https://sober-points.onrender.com//api";
 
 const AreaForm = ({ onClose, onAreaCreated }) => {
   const [name, setName] = useState("");
